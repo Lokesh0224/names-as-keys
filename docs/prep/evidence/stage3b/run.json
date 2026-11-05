@@ -1,0 +1,22 @@
+{
+  "stage": "3B verification only",
+  "dateIST": "2026-11-06",
+  "chainId": 11155111,
+  "forkBlock": 12071220,
+  "forkBlockHash": "0x0da28eda62d82e725492bd61af1eac89a09379b6e407821a69d735cc4457739c",
+  "command": "forge test --root contracts --fork-url https://ethereum-sepolia-rpc.publicnode.com --fork-block-number 12071220 -vv",
+  "exitCode": 0,
+  "source": "contracts/test/stage3/ThreeLevelENSv2.t.sol",
+  "sourceSHA256": "550b3386e0c92d1bc9f9071f5cd6a79213561145f089034ddc069d9cf7f9f37d",
+  "logSHA256": "7aa6758beaefd7470384bbf555299a6c8fd694ffeaabe589edad10a2eaf26fa8",
+  "results": {
+    "newStage3B": 25,
+    "allTestExecutions": 62,
+    "failed": 0,
+    "skipped": 0,
+    "note": "ClosureA3Lite inherits the 15 ENSv2Questions tests; full total includes those duplicate executions."
+  },
+  "signing": "none",
+  "liveWrites": false,
+  "environmentSecretsRead": false
+}
