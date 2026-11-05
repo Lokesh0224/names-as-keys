@@ -1,0 +1,2 @@
+# Preserve captured evidence byte-for-byte, including command-line end spaces.
+docs/prep/evidence/*.log whitespace=-blank-at-eol

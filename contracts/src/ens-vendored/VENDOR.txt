@@ -1,0 +1,15 @@
+Vendored from ensdomains/contracts-v2
+  tag:    sepolia-deployment-2026-09-15
+  commit: f2f0a05e6c1711134b73204a1e37f8e6c1aea6ab
+  url:    https://github.com/ensdomains/contracts-v2/tree/sepolia-deployment-2026-09-15
+
+Live Sepolia addresses used in this spike are from ENS Docs (October 1, 2026
+deployment), NOT from contracts/docs/addresses/sepolia.md on that tag (which is
+stale). On-chain check: UserRegistryImpl.initialize((address,uint256)[]) exists
+(reverts InvalidInitialization 0xf92ee8a9), matching Grant[] from this tag.
+
+IVerifiableFactory: https://github.com/ensdomains/verifiable-factory
+  (interface copied from src/IVerifiableFactory.sol on main)
+
+Interfaces are copies of contracts/src/**/*.sol with relative imports preserved.
+Do not treat this tree as a full contracts-v2 checkout.

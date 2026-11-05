@@ -1,0 +1,9 @@
+contracts/.env exists: yes.
+Variable names: SEPOLIA_RPC_URL.
+Flagged sensitive-name variables: none.
+SEPOLIA_RPC_URL: set; scheme https; path component yes; query component no. Host and path withheld.
+.env.example: absent; no variable names available for comparison.
+Script env references found: SEPOLIA_RPC_URL, ANVIL_RPC_URL, A6_PARENT_OWNER, A6_PARENT_LABEL, ENS_TEST_NAME, ENS_EXPECTED_ADDRESS, SPIKE_VERBOSITY.
+cast chain-id: FAILED, DNS resolution error (redacted).
+cast block-number: FAILED, DNS resolution error (redacted).
+No private key or mnemonic used.

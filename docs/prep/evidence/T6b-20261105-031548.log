@@ -1,0 +1,140 @@
+task_id=T6b
+start_utc=20261105-031548
+executed_by=HUMAN-LOCAL
+forge_version=forge Version: 1.3.5-stable
+Commit SHA: 9979a41b5daa5da1572d973d7ac5a3dd2afc0221
+Build Timestamp: 2025-09-09T04:48:08.305566906Z (1757393288)
+Build Profile: maxperf
+chain_id_before=11155111
+block_before=12066800
+command=bash docs/prep/runners/run-a6-pair.sh 
+e6794a156260573fc1ed15a6a02a1f9d3c785ca159ee97bea2a19d00689b8257  contracts/test/spike/ENSv2Questions.t.sol
+9a3852e8b7c5564c8dfc3dc1d2b1726a0b3b7f2dfe1292101bf72ba91bea4d10  contracts/test/spike/SepoliaDeploymentSmoke.t.sol
+e858041ea2459201cf8a970b82229e6583e24a5117a9bbdb446800a17246a597  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/run-evidence.sh
+2911c10281c91ae03cbe59c991e1f179b0f07c188c9db6406b28232899d105bb  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/redact.py
+No files changed, compilation skipped
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/interfaces/IUniversalResolver.sol:13:14
+   |
+13 |     function isENSv2() external view returns (bool);
+   |              -------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:75:14
+   |
+75 |     function setURI(string calldata uri, IRegistryURIRenderer renderer) external;
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:11:44
+   |
+11 |     IPermissionedRegistry public immutable subregistry;
+   |                                            -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:80:14
+   |
+80 |     function getURI() external view returns (string memory uri, IRegistryURIRenderer renderer);
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IRegistryURIRenderer.sol:12:14
+   |
+12 |     function renderURI(IRegistry registry, uint256 tokenId) external view returns (string memory);
+   |              ---------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registrar/interfaces/IETHRenewer.sol:88:14
+   |
+88 |     function GRACE_PERIOD() external view returns (uint64);
+   |              ------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:12:30
+   |
+12 |     address public immutable resolver;
+   |                              --------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:13:44
+   |
+13 |     IPermissionedRegistry public immutable parentRegistry;
+   |                                            --------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/access-control/interfaces/IEnhancedAccessControl.sol:92:14
+   |
+92 |     function ROOT_RESOURCE() external view returns (uint256);
+   |              -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:14:30
+   |
+14 |     address public immutable parentOwner;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+forge_build_exit_code=0
+anvil_chain_id_before=11155111
+anvil_fork_block_before=12066798
+1ac846ec4e1ff8dcb09b44fb384045cd57a76a607517408dc900d4e67d8cad7b  scripts/seed-anvil-resolution.ts
+bb05f3ff6480854970fb986ba0367b7dbb23781dafc7176c17ca4dca3c31c53f  scripts/resolve-test.ts
+5c7e2dd8a953615ac95cd01a866f2f935d84918b1fc1f4884b116858269bcb10  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/run-a6-pair.sh
+{"step":"commit parent","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0xf633e7FC17e2bbE0D0965D18ec1821dcB754a3d3","functionSignature":"commit(bytes32)","functionSelector":"0xf14fcbc8"}
+{"step":"mint mock payment","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0x240b0316Df57887DBBE58b586508b19e633a14aa","functionSignature":"mint(address,uint256)","functionSelector":"0x40c10f19"}
+{"step":"approve registrar payment","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0x240b0316Df57887DBBE58b586508b19e633a14aa","functionSignature":"approve(address,uint256)","functionSelector":"0x095ea7b3"}
+{"step":"register parent","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0xf633e7FC17e2bbE0D0965D18ec1821dcB754a3d3","functionSignature":"register(string,address,bytes32,address,address,uint64,address,bytes32)","functionSelector":"0xcff3e7c2","label":"a6120667981793848524","parentOwner":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","parentOwnerCode":"0x"}
+{"step":"deploy UserRegistry proxy","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0xDa70306C98E97eCe36F997a21368e53298572991","functionSignature":"deployProxy(address,uint256,bytes)","functionSelector":"0x5d84121a"}
+{"step":"attach UserRegistry","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0xD4eBcbBdF463C9c45784603Db0dDD499BC44A8B4","functionSignature":"setSubregistry(uint256,address)","functionSelector":"0x341ec559"}
+{"step":"deploy PermissionedResolver proxy","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0xDa70306C98E97eCe36F997a21368e53298572991","functionSignature":"deployProxy(address,uint256,bytes)","functionSelector":"0x5d84121a"}
+{"step":"register mira child","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0xD7Eab5Ff5DF8785D2ecBCcc72Fd48e90d1566805","functionSignature":"register(string,address,address,address,uint256,uint64)","functionSelector":"0x85f3e643","label":"mira","guest":"0x0000000000000000000000000000000000000B0b","expiry":1794453412}
+{"step":"set guest address record","action":"submit","from":"0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA","contract":"0x9159171fB2Cb3502753B69B212BE1f9bf3498326","functionSignature":"setAddress(bytes,uint256,bytes)","functionSelector":"0xb4436dde","name":"mira.a6120667981793848524.eth","coinType":60,"expectedAddress":"0x0000000000000000000000000000000000000B0b"}
+A6_FULL_NAME=mira.a6120667981793848524.eth
+{
+  "chainId": "11155111",
+  "fullName": "mira.a6120667981793848524.eth",
+  "expectedAddress": "0x0000000000000000000000000000000000000B0b",
+  "parentOwner": "0x6F1b8abaEbF3E2c7d2Aa3299bbCCefc061a051aA",
+  "parentTokenId": "107082448867887001850428326825049441111986370284095154145043676294461807132672",
+  "userRegistry": "0xD7Eab5Ff5DF8785D2ecBCcc72Fd48e90d1566805",
+  "permissionedResolver": "0x9159171fB2Cb3502753B69B212BE1f9bf3498326",
+  "instruction": "Run: ENS_TEST_NAME=mira.a6120667981793848524.eth ENS_EXPECTED_ADDRESS=0x0000000000000000000000000000000000000B0b npx tsx scripts/resolve-test.ts"
+}
+{
+  "chainId": "11155111",
+  "name": "mira.a6120667981793848524.eth",
+  "expectedAddress": "0x0000000000000000000000000000000000000B0b",
+  "ethersV6": "0x0000000000000000000000000000000000000B0b",
+  "ethersV6Error": null,
+  "universalResolverContract": "0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe",
+  "resolverReturnedByUniversalResolver": "0x9159171fB2Cb3502753B69B212BE1f9bf3498326",
+  "directResult": "0x0000000000000000000000000000000000000B0b",
+  "directError": null,
+  "ethersMatches": true,
+  "directMatches": true,
+  "pathsAgree": true
+}
+anvil_chain_id_after=11155111
+anvil_block_after=12066808
+chain_id_after=11155111
+block_after=12066801
+exit_code=0

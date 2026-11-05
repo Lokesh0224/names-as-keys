@@ -1,0 +1,35 @@
+.env
+.env.*
+!.env.example
+**/node_modules/
+out/
+**/out/
+cache/
+**/cache/
+broadcast/
+**/broadcast/
+dist/
+**/dist/
+
+# Wallet material and local credentials (retain locally, never commit)
+*.pem
+*.key
+*.p12
+*.pfx
+*mnemonic*
+*seed-phrase*
+*private-key*
+*private_key*
+credentials*
+secrets.*
+.aws/
+.codex/
+.agents/
+# Generated artifacts and local caches
+**/build/
+**/coverage/
+**/.cache/
+**/.next/
+**/__pycache__/
+*.pyc
+.DS_Store

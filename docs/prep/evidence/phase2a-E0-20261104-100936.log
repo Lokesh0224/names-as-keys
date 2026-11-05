@@ -1,0 +1,1 @@
+E0 masked: contracts/.env exists; only SEPOLIA_RPC_URL set and non-empty; no flagged sensitive-name variables; SEPOLIA_RPC_URL scheme/path/query withheld-by-host-safe-mask; .env.example absent; script references SEPOLIA_RPC_URL, ANVIL_RPC_URL, A6_PARENT_OWNER, A6_PARENT_LABEL, ENS_TEST_NAME, ENS_EXPECTED_ADDRESS, SPIKE_VERBOSITY (source scan). RPC calls failed DNS (redacted).

@@ -1,0 +1,232 @@
+task_id=A3lite
+start_utc=20261105-033934
+executed_by=HUMAN-LOCAL
+forge_version=forge Version: 1.3.5-stable
+Commit SHA: 9979a41b5daa5da1572d973d7ac5a3dd2afc0221
+Build Timestamp: 2025-09-09T04:48:08.305566906Z (1757393288)
+Build Profile: maxperf
+chain_id_before=11155111
+block_before=12066912
+command=forge test --root contracts --fork-url sepolia --match-path test/spike/ClosureA3Lite.t.sol --match-test testA3Lite -vvv 
+01b3e685ae340f18707b5bdea935dae139367e2a5b211b659ed5b272020fafe8  contracts/test/spike/ClosureA3Lite.t.sol
+e6794a156260573fc1ed15a6a02a1f9d3c785ca159ee97bea2a19d00689b8257  contracts/test/spike/ENSv2Questions.t.sol
+9a3852e8b7c5564c8dfc3dc1d2b1726a0b3b7f2dfe1292101bf72ba91bea4d10  contracts/test/spike/SepoliaDeploymentSmoke.t.sol
+e858041ea2459201cf8a970b82229e6583e24a5117a9bbdb446800a17246a597  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/run-evidence.sh
+2911c10281c91ae03cbe59c991e1f179b0f07c188c9db6406b28232899d105bb  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/redact.py
+No files changed, compilation skipped
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/interfaces/IUniversalResolver.sol:13:14
+   |
+13 |     function isENSv2() external view returns (bool);
+   |              -------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/access-control/interfaces/IEnhancedAccessControl.sol:92:14
+   |
+92 |     function ROOT_RESOURCE() external view returns (uint256);
+   |              -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:11:44
+   |
+11 |     IPermissionedRegistry public immutable subregistry;
+   |                                            -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:12:30
+   |
+12 |     address public immutable resolver;
+   |                              --------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:13:44
+   |
+13 |     IPermissionedRegistry public immutable parentRegistry;
+   |                                            --------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:14:30
+   |
+14 |     address public immutable parentOwner;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registrar/interfaces/IETHRenewer.sol:88:14
+   |
+88 |     function GRACE_PERIOD() external view returns (uint64);
+   |              ------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:75:14
+   |
+75 |     function setURI(string calldata uri, IRegistryURIRenderer renderer) external;
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:80:14
+   |
+80 |     function getURI() external view returns (string memory uri, IRegistryURIRenderer renderer);
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IRegistryURIRenderer.sol:12:14
+   |
+12 |     function renderURI(IRegistry registry, uint256 tokenId) external view returns (string memory);
+   |              ---------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+forge_build_exit_code=0
+No files changed, compilation skipped
+
+Ran 5 tests for test/spike/ClosureA3Lite.t.sol:ClosureA3LiteTest
+[PASS] testA3LiteControlTransferCapableUnsafeSucceeds() (gas: 1933164)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike937239993558
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 42516770547294899396769690196482994799859986438275013297985508715897122979840
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  A3LITE_CONTROL_SOURCE_PREDICTED_SUCCESS true
+  A3LITE_CONTROL_TOKEN_BITMAP 91343852333181432387730302044767688728495783936
+  A3LITE_CONTROL_OBSERVED_SUCCESS true
+  A3LITE_CONTROL_OBSERVED_SELECTOR_DECIMAL 0
+
+[PASS] testA3LiteEmptyBitmapGuestSelfGrantReverts() (gas: 1870968)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike937239993558
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 42516770547294899396769690196482994799859986438275013297985508715897122979840
+  deployProxyGas 181870
+  setSubregistryGas 28192
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 99594
+  A3LITE_SELF_GRANT_SOURCE_PREDICTED_REVERT true
+  A3LITE_SELF_GRANT_OBSERVED_SUCCESS false
+  A3LITE_SELF_GRANT_OBSERVED_SELECTOR_DECIMAL 3517166421
+  A3LITE_SELF_GRANT_RESOURCE 114522197848524855389878704732907971312385501133826931904371081339632311336960
+  A3LITE_SELF_GRANT_TOKEN_ID 114522197848524855389878704732907971312385501133826931904371081339632311336960
+
+[PASS] testA3LiteEmptyBitmapSafeSingleReverts() (gas: 1877640)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike937239993558
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 42516770547294899396769690196482994799859986438275013297985508715897122979840
+  deployProxyGas 181870
+  setSubregistryGas 28192
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 100332
+  A3LITE_EMPTY_SAFE_SOURCE_PREDICTED_REVERT true
+  A3LITE_EMPTY_SAFE_SOURCE_PREDICTED_SELECTOR 1417908120
+  A3LITE_EMPTY_SAFE_OBSERVED_SUCCESS false
+  A3LITE_EMPTY_SAFE_OBSERVED_SELECTOR_DECIMAL 1417908120
+  A3LITE_EMPTY_SAFE_RESOURCE_BITMAP 0
+
+[PASS] testA3LiteEmptyBitmapUnsafeSingleReverts() (gas: 1880058)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike937239993558
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 42516770547294899396769690196482994799859986438275013297985508715897122979840
+  deployProxyGas 181870
+  setSubregistryGas 28192
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 98856
+  A3LITE_EMPTY_UNSAFE_SOURCE_PREDICTED_REVERT true
+  A3LITE_EMPTY_UNSAFE_SOURCE_PREDICTED_SELECTOR 3851382106
+  A3LITE_EMPTY_UNSAFE_OBSERVED_SUCCESS false
+  A3LITE_EMPTY_UNSAFE_OBSERVED_SELECTOR_DECIMAL 3851382106
+  A3LITE_EMPTY_UNSAFE_RESOURCE_BITMAP 0
+
+[PASS] testA3LiteIsEmancipatedFalseInFixtureSetup() (gas: 1761000)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike937239993558
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 42516770547294899396769690196482994799859986438275013297985508715897122979840
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  A3LITE_EMANCIPATION_SOURCE_PREDICTED false
+  A3LITE_EMANCIPATION_OBSERVED false
+  A3LITE_OWNER_ROOT_BITMAP 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  A3LITE_REGISTRAR_ROOT_BITMAP 4097
+
+Suite result: ok. 5 passed; 0 failed; 0 skipped; finished in 6.85s (27.64s CPU time)
+
+Ran 1 test suite in 7.59s (6.85s CPU time): 5 tests passed, 0 failed, 0 skipped (5 total tests)
+chain_id_after=11155111
+block_after=12066913
+exit_code=0

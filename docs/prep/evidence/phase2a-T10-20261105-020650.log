@@ -1,0 +1,10 @@
+Phase 2a continuation, source tracing only; upstream read via public raw source at commit 07e55a056f5b6a9c90119f501bdd05714e67dddd, with vendored f2f0a05e6c1711134b73204a1e37f8e6c1aea6ab role/interface files inspected locally.
+
+Primary upstream sources and cited ranges:
+- contracts/src/registry/UserRegistry.sol:22-27, 41-63, 95-102
+- contracts/src/registry/PermissionedRegistry.sol:59, 168-205, 240-255, 307-341, 395-401, 477-590, 610-640
+- contracts/src/erc1155/ERC1155Singleton.sol:65-107, 225-294
+- contracts/src/access-control/EnhancedAccessControl.sol:107-153, 205-231, 355-430
+Vendored files cited in A3_EXPERIMENT_DESIGN.md: RegistryRolesLib.sol, EACBaseRolesLib.sol, IEnhancedAccessControl.sol, IPermissionedRegistry.sol.
+
+Findings: UserRegistry inherits PermissionedRegistry and does not override register, transfer, role grant/revoke, or isEmancipated. Safe transfer checks emancipation before per-token ROLE_CAN_TRANSFER_ADMIN; unsafe variants bypass emancipation but retain token-resource role check. `4097 = ROLE_REGISTRAR | ROLE_UNREGISTER`; if assigned at root, it contributes a forbidden root role. `0x4b27a133` is generic EACUnauthorizedAccountRoles, not a direct transfer update gate. All matrix expectations are source-derived; matrix UNEXECUTED and runtime cells 2b-type / UNAUTHORIZED. Actual Sepolia state NOT OBSERVED. No transactions, signing, tests, Git actions, env access, or files outside the two authorized docs paths.

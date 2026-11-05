@@ -1,0 +1,4 @@
+forge-std/=lib/forge-std/src/
+@openzeppelin/contracts/token/ERC20/IERC20.sol=src/ens-vendored/oz/IERC20.sol
+@openzeppelin/contracts/token/ERC1155/IERC1155.sol=src/ens-vendored/oz/IERC1155.sol
+ens-vendored/=src/ens-vendored/

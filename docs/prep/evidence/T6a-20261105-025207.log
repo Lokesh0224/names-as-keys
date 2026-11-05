@@ -1,0 +1,188 @@
+task_id=T6a
+start_utc=20261105-025207
+executed_by=HUMAN-LOCAL
+forge_version=forge Version: 1.3.5-stable
+Commit SHA: 9979a41b5daa5da1572d973d7ac5a3dd2afc0221
+Build Timestamp: 2025-09-09T04:48:08.305566906Z (1757393288)
+Build Profile: maxperf
+chain_id_before=11155111
+block_before=12066685
+command=bash -c cd\ contracts\ \&\&\ forge\ test\ --fork-url\ sepolia\ --match-path\ \"test/spike/\*\"\ --match-test\ testClosure\ -vvv 
+e6794a156260573fc1ed15a6a02a1f9d3c785ca159ee97bea2a19d00689b8257  contracts/test/spike/ENSv2Questions.t.sol
+9a3852e8b7c5564c8dfc3dc1d2b1726a0b3b7f2dfe1292101bf72ba91bea4d10  contracts/test/spike/SepoliaDeploymentSmoke.t.sol
+e858041ea2459201cf8a970b82229e6583e24a5117a9bbdb446800a17246a597  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/run-evidence.sh
+2911c10281c91ae03cbe59c991e1f179b0f07c188c9db6406b28232899d105bb  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/redact.py
+No files changed, compilation skipped
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/interfaces/IUniversalResolver.sol:13:14
+   |
+13 |     function isENSv2() external view returns (bool);
+   |              -------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IRegistryURIRenderer.sol:12:14
+   |
+12 |     function renderURI(IRegistry registry, uint256 tokenId) external view returns (string memory);
+   |              ---------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:75:14
+   |
+75 |     function setURI(string calldata uri, IRegistryURIRenderer renderer) external;
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:80:14
+   |
+80 |     function getURI() external view returns (string memory uri, IRegistryURIRenderer renderer);
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registrar/interfaces/IETHRenewer.sol:88:14
+   |
+88 |     function GRACE_PERIOD() external view returns (uint64);
+   |              ------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:11:44
+   |
+11 |     IPermissionedRegistry public immutable subregistry;
+   |                                            -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:12:30
+   |
+12 |     address public immutable resolver;
+   |                              --------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:13:44
+   |
+13 |     IPermissionedRegistry public immutable parentRegistry;
+   |                                            --------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/access-control/interfaces/IEnhancedAccessControl.sol:92:14
+   |
+92 |     function ROOT_RESOURCE() external view returns (uint256);
+   |              -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:14:30
+   |
+14 |     address public immutable parentOwner;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+forge_build_exit_code=0
+No files changed, compilation skipped
+
+Ran 4 tests for test/spike/ENSv2Questions.t.sol:ENSv2QuestionsTest
+[PASS] testClosureA4ParentResaleAndReplacementSubregistry() (gas: 2105754)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike613966609863
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 82525162923916218693204846906492529920043537633815741507967074861610436657152
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+
+[PASS] testClosureV2CapsChildExpiryAtParentAndThirtyDayLimit() (gas: 1869302)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike613966609863
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 82525162923916218693204846906492529920043537633815741507967074861610436657152
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+
+[PASS] testClosureV2RejectsExpiredParentAndDetachedSubregistry() (gas: 1909794)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike613966609863
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 82525162923916218693204846906492529920043537633815741507967074861610436657152
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 98856
+
+[PASS] testClosureV2ValidWrongOwnerChildExpiredAndRevoked() (gas: 2029070)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike613966609863
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 82525162923916218693204846906492529920043537633815741507967074861610436657152
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 98610
+  registerSubnameGas 94602
+
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 6.84s (20.90s CPU time)
+
+Ran 1 test suite in 7.85s (6.84s CPU time): 4 tests passed, 0 failed, 0 skipped (4 total tests)
+chain_id_after=11155111
+block_after=12066686
+exit_code=0

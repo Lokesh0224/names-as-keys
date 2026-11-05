@@ -1,0 +1,152 @@
+task_id=Q11-retest2
+start_utc=20261105-044757
+executed_by=HUMAN-LOCAL
+forge_version=forge Version: 1.3.5-stable
+Commit SHA: 9979a41b5daa5da1572d973d7ac5a3dd2afc0221
+Build Timestamp: 2025-09-09T04:48:08.305566906Z (1757393288)
+Build Profile: maxperf
+chain_id_before=11155111
+block_before=12067224
+command=forge test --root contracts --fork-url sepolia --match-path test/spike/ENSv2Questions.t.sol --match-test testQ11_ObserveEventsExpiryAndLabelValidation -vvv 
+01b3e685ae340f18707b5bdea935dae139367e2a5b211b659ed5b272020fafe8  contracts/test/spike/ClosureA3Lite.t.sol
+e1954b1cf4be001ebac4f3f2b407b61178766fab0e914e3cbfa37c0286fdb8e8  contracts/test/spike/ENSv2Questions.t.sol
+9a3852e8b7c5564c8dfc3dc1d2b1726a0b3b7f2dfe1292101bf72ba91bea4d10  contracts/test/spike/SepoliaDeploymentSmoke.t.sol
+e858041ea2459201cf8a970b82229e6583e24a5117a9bbdb446800a17246a597  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/run-evidence.sh
+2911c10281c91ae03cbe59c991e1f179b0f07c188c9db6406b28232899d105bb  /home/l/EthMumbai2026/names-as-keys/docs/prep/runners/redact.py
+Compiling 1 files with Solc 0.8.25
+Solc 0.8.25 finished in 5.45s
+Compiler run successful!
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/interfaces/IUniversalResolver.sol:13:14
+   |
+13 |     function isENSv2() external view returns (bool);
+   |              -------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/access-control/interfaces/IEnhancedAccessControl.sol:92:14
+   |
+92 |     function ROOT_RESOURCE() external view returns (uint256);
+   |              -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:75:14
+   |
+75 |     function setURI(string calldata uri, IRegistryURIRenderer renderer) external;
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:80:14
+   |
+80 |     function getURI() external view returns (string memory uri, IRegistryURIRenderer renderer);
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registrar/interfaces/IETHRenewer.sol:88:14
+   |
+88 |     function GRACE_PERIOD() external view returns (uint64);
+   |              ------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:11:44
+   |
+11 |     IPermissionedRegistry public immutable subregistry;
+   |                                            -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:12:30
+   |
+12 |     address public immutable resolver;
+   |                              --------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:13:44
+   |
+13 |     IPermissionedRegistry public immutable parentRegistry;
+   |                                            --------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:14:30
+   |
+14 |     address public immutable parentOwner;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IRegistryURIRenderer.sol:12:14
+   |
+12 |     function renderURI(IRegistry registry, uint256 tokenId) external view returns (string memory);
+   |              ---------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+forge_build_exit_code=0
+No files changed, compilation skipped
+
+Ran 1 test for test/spike/ENSv2Questions.t.sol:ENSv2QuestionsTest
+[PASS] testQ11_ObserveEventsExpiryAndLabelValidation() (gas: 2020731)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike453786979905
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 42967727990867361437027485760080859383007099934713794943805989540122173898752
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q11_registerTopic0
+  0x4acabfe38b19342d926f219b03cae7c02831d64c4449ccd3d6726b8ef1f99630
+  Q11_registerTopic0
+  0x2fe093918572373e9f1f0368f414dffd0043a74ae8c9fd7b0e390b26a0d20b6e
+  Q11_registerTopic0
+  0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62
+  Q11_registerTopic0
+  0x35190fb7cb1f442974e3c68fa2be9cf56828d0043b1cfcfbd17b4efa85669296
+  Q11_registerTopic0
+  0x2b1274f9e871d533eff13606684d28766b4c24b2c0802f9436feb289465e3f33
+  Q11_renewTopic0
+  0x3260962d42d8f7ae0af25cbfdb2983c214a859cfa2ac6df8ea29b534c267d429
+  0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c6c6162656c206c656e6774680000000000000000000000000000000000000000
+  0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000d6c6162656c206368617273657400000000000000000000000000000000000000
+  0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000106578706972792062656c6f772036307300000000000000000000000000000000
+  0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000106578706972792062656c6f772036307300000000000000000000000000000000
+  Q11_unregisterTopic0
+  0x5293e83951c7b759c1ef192ceed240dc2caa652e29ddbd95cafe1d88e5a9cea8
+  Q11_unregisterTopic0
+  0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62
+  Q11_parentStateAfterExpiry 0
+  Q11_childStateAfterParentExpiry 0
+  Q11_parentExpiryUnlock false
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 7.25s (6.21s CPU time)
+
+Ran 1 test suite in 7.78s (7.25s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+chain_id_after=11155111
+block_after=12067226
+exit_code=0
