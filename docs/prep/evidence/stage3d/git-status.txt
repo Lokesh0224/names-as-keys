@@ -1,0 +1,12 @@
+?? contracts/src/DoorKeys.sol
+?? contracts/test/stage3d/DoorKeys.t.sol
+?? docs/prep/PHASE3D_SECURITY_DECISIONS.md
+?? docs/prep/evidence/stage3d/SHA256SUMS
+?? docs/prep/evidence/stage3d/architecture-before-implementation.md
+?? docs/prep/evidence/stage3d/focused-final-pass.log
+?? docs/prep/evidence/stage3d/focused-initial-25-pass.log
+?? docs/prep/evidence/stage3d/focused-receiver-probe-26-pass.log
+?? docs/prep/evidence/stage3d/full-pass.log
+?? docs/prep/evidence/stage3d/git-status.txt
+?? docs/prep/evidence/stage3d/run.json
+?? docs/prep/evidence/stage3d/runtime-opcode-verification.json

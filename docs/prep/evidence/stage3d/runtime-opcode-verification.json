@@ -1,0 +1,18 @@
+{
+  "artifact": "contracts/out/DoorKeys.sol/DoorKeys.json",
+  "kind": "Locally compiled DoorKeys runtime template with immutable placeholders; not an onchain address/code hash or ENS source equivalence proof",
+  "metadataBytesRemoved": 53,
+  "executableTemplateSHA256": "be2848bacb475ba4b120ec532a04409ea693ed8cdf37793e8d65c980186fc524",
+  "opcodeCounts": {
+    "STATICCALL": 15,
+    "CALL": 0,
+    "CALLCODE": 0,
+    "DELEGATECALL": 0,
+    "CREATE": 0,
+    "CREATE2": 0,
+    "SELFDESTRUCT": 0,
+    "SSTORE": 1,
+    "LOG4": 1
+  },
+  "command": "cast disassemble <runtime-template excluding trailing Solidity CBOR metadata>"
+}

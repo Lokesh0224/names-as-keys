@@ -1,0 +1,34 @@
+Compiling 2 files with Solc 0.8.25
+Solc 0.8.25 finished in 2.78s
+Compiler run successful!
+2026-11-05T19:45:11.558451Z  WARN traces::etherscan: etherscan config not found
+
+Ran 25 tests for test/stage3d/DoorKeys.t.sol:DoorKeysTest
+[PASS] testDoorAdminLabelReuseFollowsCurrentOwnerAndEventGeneration() (gas: 1480942)
+[PASS] testDoorAdminRenewalRestoresOnlyValidCurrentState() (gas: 1456944)
+[PASS] testDoorAncestorExpiryAndBounds() (gas: 1362167)
+[PASS] testDoorAncestorRoleChurnDenied() (gas: 1324684)
+[PASS] testDoorCredentialExpiryBoundary() (gas: 1356411)
+[PASS] testDoorDescendantExpiryBeyondAncestorsDenied() (gas: 1341912)
+[PASS] testDoorDetachedReplacedR1Denied() (gas: 1517848)
+[PASS] testDoorDetachedReplacedR2Denied() (gas: 1513975)
+[PASS] testDoorDistinctContractsAndEpochsHaveDistinctIdentities() (gas: 3783160)
+[PASS] testDoorEmancipationDeniedEvenIfGuestStillOwnsToken() (gas: 1307240)
+[PASS] testDoorGuestAndNonOwnerRoleAssigneesDenied() (gas: 1533664)
+[PASS] testDoorGuestOwnershipTransferAndRoleRequirements() (gas: 1530581)
+[PASS] testDoorInvalidLabelsAndConstructorInputs() (gas: 1476521)
+[PASS] testDoorLockGenerationChangeDenied() (gas: 2606242)
+[PASS] testDoorMiraUnlockEventAndDoorIdentity() (gas: 1394456)
+[PASS] testDoorRegistrarPermissionRevocationIsNotCredentialRevocation() (gas: 3501571)
+[PASS] testDoorRestoredAttachmentsFollowCurrentStatePolicy() (gas: 1459821)
+[PASS] testDoorRevokedMissingReservedDenied() (gas: 1467553)
+[PASS] testDoorRootAndLockOwnershipChangesDeniedAndRestored() (gas: 1504664)
+[PASS] testDoorRootExpiryWithAlignedDescendants() (gas: 1378481)
+[PASS] testDoorRootGenerationChangeDeniedWithOtherwiseValidPath() (gas: 2780995)
+[PASS] testDoorUnexpectedReadFailuresAndMalformedDataFailClosed() (gas: 1407554)
+[PASS] testDoorUnlockDoesNotCallGuestReceiverOrChangeENS() (gas: 1466454)
+[PASS] testDoorWrongChainAndGlobalAttachmentDenied() (gas: 1260455)
+[PASS] testDoorWrongWalletAndApprovedOperatorDenied() (gas: 1429685)
+Suite result: ok. 25 passed; 0 failed; 0 skipped; finished in 540.83ms (534.29ms CPU time)
+
+Ran 1 test suite in 1.05s (540.83ms CPU time): 25 tests passed, 0 failed, 0 skipped (25 total tests)

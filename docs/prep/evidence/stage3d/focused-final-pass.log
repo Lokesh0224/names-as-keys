@@ -1,0 +1,35 @@
+Compiling 1 files with Solc 0.8.25
+Solc 0.8.25 finished in 2.88s
+Compiler run successful!
+2026-11-05T19:47:14.660415Z  WARN traces::etherscan: etherscan config not found
+
+Ran 26 tests for test/stage3d/DoorKeys.t.sol:DoorKeysTest
+[PASS] testDoorAdminLabelReuseFollowsCurrentOwnerAndEventGeneration() (gas: 1480932)
+[PASS] testDoorAdminRenewalRestoresOnlyValidCurrentState() (gas: 1456962)
+[PASS] testDoorAncestorExpiryAndBounds() (gas: 1362173)
+[PASS] testDoorAncestorRoleChurnDenied() (gas: 1324668)
+[PASS] testDoorCredentialExpiryBoundary() (gas: 1356395)
+[PASS] testDoorDescendantExpiryBeyondAncestorsDenied() (gas: 1341902)
+[PASS] testDoorDetachedReplacedR1Denied() (gas: 1517838)
+[PASS] testDoorDetachedReplacedR2Denied() (gas: 1513965)
+[PASS] testDoorDistinctContractsAndEpochsHaveDistinctIdentities() (gas: 3783158)
+[PASS] testDoorEmancipationDeniedEvenIfGuestStillOwnsToken() (gas: 1307224)
+[PASS] testDoorGuestAndNonOwnerRoleAssigneesDenied() (gas: 1533654)
+[PASS] testDoorGuestOwnershipTransferAndRoleRequirements() (gas: 1530666)
+[PASS] testDoorInvalidLabelsAndConstructorInputs() (gas: 1476535)
+[PASS] testDoorLockGenerationChangeDenied() (gas: 2606226)
+[PASS] testDoorMiraUnlockEventAndDoorIdentity() (gas: 1387570)
+[PASS] testDoorRegistrarPermissionRevocationIsNotCredentialRevocation() (gas: 3501555)
+[PASS] testDoorRestoredAttachmentsFollowCurrentStatePolicy() (gas: 1459811)
+[PASS] testDoorRevokedMissingReservedDenied() (gas: 1467571)
+[PASS] testDoorRootAndLockOwnershipChangesDeniedAndRestored() (gas: 1504742)
+[PASS] testDoorRootExpiryWithAlignedDescendants() (gas: 1378465)
+[PASS] testDoorRootGenerationChangeDeniedWithOtherwiseValidPath() (gas: 2781001)
+[PASS] testDoorStaticRegistryReadCannotMutateState() (gas: 3268925)
+[PASS] testDoorUnexpectedReadFailuresAndMalformedDataFailClosed() (gas: 1407556)
+[PASS] testDoorUnlockDoesNotCallGuestReceiverOrChangeENS() (gas: 1676120)
+[PASS] testDoorWrongChainAndGlobalAttachmentDenied() (gas: 1260467)
+[PASS] testDoorWrongWalletAndApprovedOperatorDenied() (gas: 1429675)
+Suite result: ok. 26 passed; 0 failed; 0 skipped; finished in 53.29ms (47.34ms CPU time)
+
+Ran 1 test suite in 552.74ms (53.29ms CPU time): 26 tests passed, 0 failed, 0 skipped (26 total tests)
