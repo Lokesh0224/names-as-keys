@@ -1,0 +1,1366 @@
+Compiling 1 files with Solc 0.8.25
+Solc 0.8.25 finished in 2.78s
+Compiler run successful!
+2026-11-05T19:05:29.880116Z  WARN traces::etherscan: etherscan config not found
+
+Ran 20 tests for test/spike/ClosureA3Lite.t.sol:ClosureA3LiteTest
+[PASS] testA3LiteControlTransferCapableUnsafeSucceeds() (gas: 1933164)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  A3LITE_CONTROL_SOURCE_PREDICTED_SUCCESS true
+  A3LITE_CONTROL_TOKEN_BITMAP 91343852333181432387730302044767688728495783936
+  A3LITE_CONTROL_OBSERVED_SUCCESS true
+  A3LITE_CONTROL_OBSERVED_SELECTOR_DECIMAL 0
+
+[PASS] testA3LiteEmptyBitmapGuestSelfGrantReverts() (gas: 1870968)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28192
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 99594
+  A3LITE_SELF_GRANT_SOURCE_PREDICTED_REVERT true
+  A3LITE_SELF_GRANT_OBSERVED_SUCCESS false
+  A3LITE_SELF_GRANT_OBSERVED_SELECTOR_DECIMAL 3517166421
+  A3LITE_SELF_GRANT_RESOURCE 114522197848524855389878704732907971312385501133826931904371081339632311336960
+  A3LITE_SELF_GRANT_TOKEN_ID 114522197848524855389878704732907971312385501133826931904371081339632311336960
+
+[PASS] testA3LiteEmptyBitmapSafeSingleReverts() (gas: 1877640)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28192
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 100332
+  A3LITE_EMPTY_SAFE_SOURCE_PREDICTED_REVERT true
+  A3LITE_EMPTY_SAFE_SOURCE_PREDICTED_SELECTOR 1417908120
+  A3LITE_EMPTY_SAFE_OBSERVED_SUCCESS false
+  A3LITE_EMPTY_SAFE_OBSERVED_SELECTOR_DECIMAL 1417908120
+  A3LITE_EMPTY_SAFE_RESOURCE_BITMAP 0
+
+[PASS] testA3LiteEmptyBitmapUnsafeSingleReverts() (gas: 1880058)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28192
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 98856
+  A3LITE_EMPTY_UNSAFE_SOURCE_PREDICTED_REVERT true
+  A3LITE_EMPTY_UNSAFE_SOURCE_PREDICTED_SELECTOR 3851382106
+  A3LITE_EMPTY_UNSAFE_OBSERVED_SUCCESS false
+  A3LITE_EMPTY_UNSAFE_OBSERVED_SELECTOR_DECIMAL 3851382106
+  A3LITE_EMPTY_UNSAFE_RESOURCE_BITMAP 0
+
+[PASS] testA3LiteIsEmancipatedFalseInFixtureSetup() (gas: 1761000)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  A3LITE_EMANCIPATION_SOURCE_PREDICTED false
+  A3LITE_EMANCIPATION_OBSERVED false
+  A3LITE_OWNER_ROOT_BITMAP 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  A3LITE_REGISTRAR_ROOT_BITMAP 4097
+
+[PASS] testClosureA4ParentResaleAndReplacementSubregistry() (gas: 2105754)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+
+[PASS] testClosureV2CapsChildExpiryAtParentAndThirtyDayLimit() (gas: 1869302)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+
+[PASS] testClosureV2RejectsExpiredParentAndDetachedSubregistry() (gas: 1909794)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 98856
+
+[PASS] testClosureV2ValidWrongOwnerChildExpiredAndRevoked() (gas: 2029070)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 98610
+  registerSubnameGas 94602
+
+[PASS] testQ10_LogGasForOperationsAndUnlockView() (gas: 1881066)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  canUnlockGas 7860
+  unregisterSubnameGas 36408
+
+[PASS] testQ11_ObserveEventsExpiryAndLabelValidation() (gas: 2020731)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q11_registerTopic0
+  0x4acabfe38b19342d926f219b03cae7c02831d64c4449ccd3d6726b8ef1f99630
+  Q11_registerTopic0
+  0x2fe093918572373e9f1f0368f414dffd0043a74ae8c9fd7b0e390b26a0d20b6e
+  Q11_registerTopic0
+  0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62
+  Q11_registerTopic0
+  0x35190fb7cb1f442974e3c68fa2be9cf56828d0043b1cfcfbd17b4efa85669296
+  Q11_registerTopic0
+  0x2b1274f9e871d533eff13606684d28766b4c24b2c0802f9436feb289465e3f33
+  Q11_renewTopic0
+  0x3260962d42d8f7ae0af25cbfdb2983c214a859cfa2ac6df8ea29b534c267d429
+  0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c6c6162656c206c656e6774680000000000000000000000000000000000000000
+  0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000d6c6162656c206368617273657400000000000000000000000000000000000000
+  0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000106578706972792062656c6f772036307300000000000000000000000000000000
+  0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000106578706972792062656c6f772036307300000000000000000000000000000000
+  Q11_unregisterTopic0
+  0x5293e83951c7b759c1ef192ceed240dc2caa652e29ddbd95cafe1d88e5a9cea8
+  Q11_unregisterTopic0
+  0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62
+  Q11_parentStateAfterExpiry 0
+  Q11_childStateAfterParentExpiry 0
+  Q11_parentExpiryUnlock false
+
+[PASS] testQ1_RegisterFreshParentCommitRevealAndPrice() (gas: 424827)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  Q1_minRegisterDurationGetter true
+  Q1_minRegisterDuration 2419200
+  Q1_minCommitmentAgeGetter true
+  Q1_minCommitmentAge 60
+  Q1_maxCommitmentAgeGetter true
+  Q1_maxCommitmentAge 86400
+
+[PASS] testQ2_DeploySubregistryAttachAndProveRoles() (gas: 1750911)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+
+[PASS] testQ3_RegisterMiraEmptyBitmapAndProbeResolverZero() (gas: 3004174)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  miraTokenId 22525466630966598848928789999894602506900603399969195729871270327397585518592
+  miraExpiry 1793903005
+
+[PASS] testQ4_CanUnlockChecksStatusOwnerAndExpiry() (gas: 1902499)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q4_status 2
+  Q4_expiry 1793903005
+  Q4_guestOwner 0x0000000000000000000000000000000000000B0b
+  Q4_guestUnlock true
+  Q4_strangerUnlock false
+
+[PASS] testQ5_ExpiredNameFailsUnlockAndRecordRawValues() (gas: 1941174)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q5_statusAfterExpiry 0
+  Q5_latestOwner 0x0000000000000000000000000000000000000B0b
+  Q5_getOwner 0x0000000000000000000000000000000000000000
+  Q5_getExpiry 1793903005
+  Q5_unlock false
+  Q5_registerAfterExpiry true
+
+[PASS] testQ6_UnregisterAndProbeSameAndDifferentLabelReuse() (gas: 2051557)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q6_statusAfterUnregister 0
+  Q6_ownerAfterUnregister 0x0000000000000000000000000000000000000000
+  Q6_expiryAfterUnregister 1793902885
+  reregisterSucceeded mira
+  reregisterReverted mira
+  reregisterErrorSelector 3740616100
+
+[PASS] testQ7_EmptyBitmapBlocksGuestAndAllowsParentOwnerOverride() (gas: 2000938)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q7_transferError 1417908120
+  Q7_batchTransferError 1417908120
+  Q7_unsafeTransferError 3851382106
+  Q7_unsafeBatchTransferError 3851382106
+  Q7_setResolverError 1260888371
+  Q7_setSubregistryError 1260888371
+  Q7_unregisterError 1260888371
+  Q7_renewError 1260888371
+
+[PASS] testQ8_OwnerRevokesRegistrarAndRecoversDirectControl() (gas: 1928618)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q8_registerAfterRevocationError 1260888371
+  Q8_unregisterAfterRevocationError 1260888371
+  Q8_ownerDirectUnregister true
+
+[PASS] testQ9_SetAndForwardResolveAddressRecord() (gas: 3243577)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 99061
+  Q9_resolver 0xBE86F7614Bb6d6CaF9ABEcd95628AdAcC0032C3E
+  Q9_resolvedAddress 0x0000000000000000000000000000000000000B0b
+
+Suite result: ok. 20 passed; 0 failed; 0 skipped; finished in 37.51ms (35.87ms CPU time)
+
+Ran 52 tests for test/stage3c/CredentialRegistrar.t.sol:CredentialRegistrarTest
+[PASS] testAncestorExpiryWithStillLiveDescendants() (gas: 114242)
+[PASS] testCanonicalParentMetadataDoesNotAttachRegistry() (gas: 325687)
+[PASS] testCredentialExpiryBoundary() (gas: 99427)
+[PASS] testCredentialRevocation() (gas: 110432)
+[PASS] testDetachedAndReplacedR1Rejects() (gas: 313108)
+[PASS] testDetachedAndReplacedR2Rejects() (gas: 320399)
+[PASS] testEmancipationRemovesFixtureOwnerRevocationAuthority() (gas: 121457)
+[PASS] testGuestCannotSelfGrantTransferRole() (gas: 34378)
+[PASS] testHierarchyOwnershipExpiryAndBothLinks() (gas: 169649)
+[PASS] testIndividualOperationRolesAreRequired() (gas: 240262)
+[PASS] testLockExpiryBoundaryWithAlignedGuest() (gas: 118013)
+[PASS] testLockGenerationChangeSameOwnerRejects() (gas: 231291)
+[PASS] testLockOwnerTransferRejectsLiveGuest() (gas: 126397)
+[PASS] testRegistrarAuthorizedIssueAndRevokeEvents() (gas: 2285283)
+[PASS] testRegistrarBadRegistryPostconditionRollsBackMint() (gas: 2159103)
+[PASS] testRegistrarDetachmentReplacementAndCleanup() (gas: 2587925)
+[PASS] testRegistrarExpiredCredentialCannotUnlockOrBeUnregistered() (gas: 2246352)
+[PASS] testRegistrarExpiredRootAndLockRejectIssue() (gas: 2090568)
+[PASS] testRegistrarExpiryBoundsAndBoundary() (gas: 2750194)
+[PASS] testRegistrarGuestAndOperatorCannotEmancipateOrTransferIssuedCredential() (gas: 2367491)
+[PASS] testRegistrarLabelValidationAndNoPrivilegeForwarding() (gas: 2196720)
+[PASS] testRegistrarLockGenerationRejectsIssue() (gas: 2112868)
+[PASS] testRegistrarOwnerChangesRejectIssue() (gas: 2104059)
+[PASS] testRegistrarReceiverCallbackCannotUseIssuerAuthority() (gas: 2505970)
+[PASS] testRegistrarRegistryReadFailureFailsClosed() (gas: 2050084)
+[PASS] testRegistrarRejectsActiveRevokedExpiredAndReservedLabelReuse() (gas: 2721101)
+[PASS] testRegistrarRejectsInvalidConstructorConfiguration() (gas: 2297976)
+[PASS] testRegistrarRejectsInvalidGuests() (gas: 2247510)
+[PASS] testRegistrarRejectsLockExpiryBeyondRoot() (gas: 2064791)
+[PASS] testRegistrarRestoredPathIsCurrentStateNotPermanentInvalidation() (gas: 2252191)
+[PASS] testRegistrarRetainedRoleMitigationSurvivesOwnerDroppingOwnRoles() (gas: 2223777)
+[PASS] testRegistrarRevokedIssueRoleKeepsEmergencyRevoke() (gas: 2280193)
+[PASS] testRegistrarRevokedUnregisterRoleBlocksIssueAndRevoke() (gas: 2291306)
+[PASS] testRegistrarRoleChurnRejectsIssue() (gas: 2104004)
+[PASS] testRegistrarRootGenerationRejectsWithOtherwiseValidPath() (gas: 4400521)
+[PASS] testRegistrarRootOwnerChangeRejectsIssue() (gas: 2100645)
+[PASS] testRegistrarStaleRevokeCannotRevokeNewGeneration() (gas: 2308019)
+[PASS] testRegistrarUnauthorizedIssueRevokeAndApprovedOperator() (gas: 2221454)
+[PASS] testRegistrarUnexpectedExtraRolesBlockIssue() (gas: 2074598)
+[PASS] testRegistrarWrongChainAndImplementationFailClosed() (gas: 2104823)
+[PASS] testRegistryRootAdminCannotTransferWithoutGuestApproval() (gas: 196501)
+[PASS] testReservedCredentialRejected() (gas: 130987)
+[PASS] testRestoringSameAttachmentRestoresCurrentStateAcceptance() (gas: 126403)
+[PASS] testRoleChangeRegeneratesTokenWithoutNewRegistrationResource() (gas: 129908)
+[PASS] testRoleRequirementsAndRevocation() (gas: 416143)
+[PASS] testRootExpiryBoundaryWithAlignedDescendants() (gas: 132305)
+[PASS] testRootGenerationChangeSameOwnerRejects() (gas: 500188)
+[PASS] testRootOwnerTransferRejectsLiveGuest() (gas: 122062)
+[PASS] testTransferMatrixEmancipated() (gas: 2355111)
+Logs:
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 0
+  success false
+  0xe58f6d5ae07b5f822b13fda6af587d1a1157c02c74a7744cd5c0b35bf55332bb000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 1
+  success false
+  0xe58f6d5a7609f8ee057f3e60166b48a3aab7372e4f60a3d41b6070e3b621ddf7000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 2
+  success false
+  0xe58f6d5ac5b570ee370816541899f75dce4f72b15e7c65d1b92c4b287c700dfc000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 3
+  success false
+  0xe58f6d5a1526966eedb683431c4e1cfe183a4ed93e12f1c9098b7d5797d3a376000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 0
+  success false
+  0xe58f6d5a508b131bfd2023b28c1e54b817553fa374c3b29e17dd8e6cc99c0ed6000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 1
+  success false
+  0xe58f6d5aa161336cdf42b2e7261e285e1a107a1950319f0c5f5fac042c481bd5000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 2
+  success false
+  0xe58f6d5a1cdff5534ad81a168d44afc51d3dea4f80cf646c07dd7481fe408375000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 3
+  success false
+  0xe58f6d5abe81d5c6093d7c1713bba2b39ce3077769d60158c7f98fbb8fcd0227000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 0
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 1
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 2
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 3
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 0
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 1
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 2
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 3
+  success true
+
+[PASS] testTransferMatrixUnemancipated() (gas: 2258550)
+Logs:
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 2
+  success false
+  0xe58f6d5ac5b570ee370816541899f75dce4f72b15e7c65d1b92c4b287c700dfc000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 3
+  success false
+  0xe58f6d5a1526966eedb683431c4e1cfe183a4ed93e12f1c9098b7d5797d3a376000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 2
+  success false
+  0xe58f6d5a1cdff5534ad81a168d44afc51d3dea4f80cf646c07dd7481fe408375000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 3
+  success false
+  0xe58f6d5abe81d5c6093d7c1713bba2b39ce3077769d60158c7f98fbb8fcd0227000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 2
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 3
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 2
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 3
+  success true
+
+[PASS] testTransferableCredentialFollowsCurrentENSOwner() (gas: 298772)
+[PASS] testUnapprovedOperatorCannotTransferTransferableCredential() (gas: 196478)
+Suite result: ok. 52 passed; 0 failed; 0 skipped; finished in 567.22ms (565.57ms CPU time)
+
+Ran 15 tests for test/spike/ENSv2Questions.t.sol:ENSv2QuestionsTest
+[PASS] testClosureA4ParentResaleAndReplacementSubregistry() (gas: 2105754)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+
+[PASS] testClosureV2CapsChildExpiryAtParentAndThirtyDayLimit() (gas: 1869302)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+
+[PASS] testClosureV2RejectsExpiredParentAndDetachedSubregistry() (gas: 1909794)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 98856
+
+[PASS] testClosureV2ValidWrongOwnerChildExpiredAndRevoked() (gas: 2029070)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 98610
+  registerSubnameGas 94602
+
+[PASS] testQ10_LogGasForOperationsAndUnlockView() (gas: 1880977)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  canUnlockGas 7860
+  unregisterSubnameGas 36408
+
+[PASS] testQ11_ObserveEventsExpiryAndLabelValidation() (gas: 2020731)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q11_registerTopic0
+  0x4acabfe38b19342d926f219b03cae7c02831d64c4449ccd3d6726b8ef1f99630
+  Q11_registerTopic0
+  0x2fe093918572373e9f1f0368f414dffd0043a74ae8c9fd7b0e390b26a0d20b6e
+  Q11_registerTopic0
+  0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62
+  Q11_registerTopic0
+  0x35190fb7cb1f442974e3c68fa2be9cf56828d0043b1cfcfbd17b4efa85669296
+  Q11_registerTopic0
+  0x2b1274f9e871d533eff13606684d28766b4c24b2c0802f9436feb289465e3f33
+  Q11_renewTopic0
+  0x3260962d42d8f7ae0af25cbfdb2983c214a859cfa2ac6df8ea29b534c267d429
+  0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c6c6162656c206c656e6774680000000000000000000000000000000000000000
+  0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000d6c6162656c206368617273657400000000000000000000000000000000000000
+  0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000106578706972792062656c6f772036307300000000000000000000000000000000
+  0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000106578706972792062656c6f772036307300000000000000000000000000000000
+  Q11_unregisterTopic0
+  0x5293e83951c7b759c1ef192ceed240dc2caa652e29ddbd95cafe1d88e5a9cea8
+  Q11_unregisterTopic0
+  0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62
+  Q11_parentStateAfterExpiry 0
+  Q11_childStateAfterParentExpiry 0
+  Q11_parentExpiryUnlock false
+
+[PASS] testQ1_RegisterFreshParentCommitRevealAndPrice() (gas: 424827)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  Q1_minRegisterDurationGetter true
+  Q1_minRegisterDuration 2419200
+  Q1_minCommitmentAgeGetter true
+  Q1_minCommitmentAge 60
+  Q1_maxCommitmentAgeGetter true
+  Q1_maxCommitmentAge 86400
+
+[PASS] testQ2_DeploySubregistryAttachAndProveRoles() (gas: 1750889)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+
+[PASS] testQ3_RegisterMiraEmptyBitmapAndProbeResolverZero() (gas: 3004152)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  miraTokenId 22525466630966598848928789999894602506900603399969195729871270327397585518592
+  miraExpiry 1793903005
+
+[PASS] testQ4_CanUnlockChecksStatusOwnerAndExpiry() (gas: 1902499)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q4_status 2
+  Q4_expiry 1793903005
+  Q4_guestOwner 0x0000000000000000000000000000000000000B0b
+  Q4_guestUnlock true
+  Q4_strangerUnlock false
+
+[PASS] testQ5_ExpiredNameFailsUnlockAndRecordRawValues() (gas: 1941174)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q5_statusAfterExpiry 0
+  Q5_latestOwner 0x0000000000000000000000000000000000000B0b
+  Q5_getOwner 0x0000000000000000000000000000000000000000
+  Q5_getExpiry 1793903005
+  Q5_unlock false
+  Q5_registerAfterExpiry true
+
+[PASS] testQ6_UnregisterAndProbeSameAndDifferentLabelReuse() (gas: 2051645)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q6_statusAfterUnregister 0
+  Q6_ownerAfterUnregister 0x0000000000000000000000000000000000000000
+  Q6_expiryAfterUnregister 1793902885
+  reregisterSucceeded mira
+  reregisterReverted mira
+  reregisterErrorSelector 3740616100
+
+[PASS] testQ7_EmptyBitmapBlocksGuestAndAllowsParentOwnerOverride() (gas: 2000938)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q7_transferError 1417908120
+  Q7_batchTransferError 1417908120
+  Q7_unsafeTransferError 3851382106
+  Q7_unsafeBatchTransferError 3851382106
+  Q7_setResolverError 1260888371
+  Q7_setSubregistryError 1260888371
+  Q7_unregisterError 1260888371
+  Q7_renewError 1260888371
+
+[PASS] testQ8_OwnerRevokesRegistrarAndRecoversDirectControl() (gas: 1928618)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 97134
+  Q8_registerAfterRevocationError 1260888371
+  Q8_unregisterAfterRevocationError 1260888371
+  Q8_ownerDirectUnregister true
+
+[PASS] testQ9_SetAndForwardResolveAddressRecord() (gas: 3243577)
+Logs:
+  Q1_acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  Q1_priceBase 8000021
+  Q1_pricePremium 0
+  Q1_acceptedPaymentToken 0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b
+  Q1_priceBase 8000020944000000000
+  Q1_pricePremium 0
+  parentLabel spike316823805868
+  acceptedPaymentToken 0x240b0316Df57887DBBE58b586508b19e633a14aa
+  parentBasePrice 8000021
+  parentPremium 0
+  parentDuration 31536000
+  parentRegisterGas 190743
+  parentTokenId 32929870584332951518004432811754716796460262630756769603497628794651292991488
+  deployProxyGas 181870
+  setSubregistryGas 28193
+  ownerRootRoleBitmap 7237005577332262213973186563049083738426697824737617966966759564104568999937
+  registrarRootRoleBitmap 4097
+  registerSubnameGas 99061
+  Q9_resolver 0xBE86F7614Bb6d6CaF9ABEcd95628AdAcC0032C3E
+  Q9_resolvedAddress 0x0000000000000000000000000000000000000B0b
+
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 15.68ms (15.32ms CPU time)
+
+Ran 32 tests for test/stage3c/SecurityPreflight.t.sol:CredentialSecurityPreflightTest
+[PASS] testAncestorExpiryWithStillLiveDescendants() (gas: 114219)
+[PASS] testCanonicalParentMetadataDoesNotAttachRegistry() (gas: 325686)
+[PASS] testCredentialExpiryBoundary() (gas: 99471)
+[PASS] testCredentialRevocation() (gas: 110410)
+[PASS] testDetachedAndReplacedR1Rejects() (gas: 313130)
+[PASS] testDetachedAndReplacedR2Rejects() (gas: 320443)
+[PASS] testEmancipationRemovesFixtureOwnerRevocationAuthority() (gas: 121425)
+[PASS] testGuestCannotSelfGrantTransferRole() (gas: 34355)
+[PASS] testHierarchyOwnershipExpiryAndBothLinks() (gas: 169548)
+[PASS] testIndividualOperationRolesAreRequired() (gas: 240262)
+[PASS] testLockExpiryBoundaryWithAlignedGuest() (gas: 118078)
+[PASS] testLockGenerationChangeSameOwnerRejects() (gas: 231291)
+[PASS] testLockOwnerTransferRejectsLiveGuest() (gas: 126441)
+[PASS] testRegistryRootAdminCannotTransferWithoutGuestApproval() (gas: 196456)
+[PASS] testReservedCredentialRejected() (gas: 130923)
+[PASS] testRestoringSameAttachmentRestoresCurrentStateAcceptance() (gas: 126381)
+[PASS] testRoleChangeRegeneratesTokenWithoutNewRegistrationResource() (gas: 129821)
+[PASS] testRoleRequirementsAndRevocation() (gas: 416175)
+[PASS] testRootExpiryBoundaryWithAlignedDescendants() (gas: 132282)
+[PASS] testRootGenerationChangeSameOwnerRejects() (gas: 500232)
+[PASS] testRootOwnerTransferRejectsLiveGuest() (gas: 121995)
+[PASS] testSecurityGuestOperatorAndDelegatedRoleCannotEmancipate() (gas: 785696)
+[PASS] testSecurityMinimalRegistrarCallerRestrictions() (gas: 419572)
+[PASS] testSecurityOwnerCanDeliberatelyDisableRevocation() (gas: 308132)
+[PASS] testSecurityRetainedRegistrarPreventsEmancipationAfterOwnerDropsOwnOverrides() (gas: 346820)
+[PASS] testSecurityRevocationReuseAndExpiryGeneration() (gas: 262987)
+[PASS] testSecurityRootTransferAdminEmancipationCompatibilityProbe() (gas: 195041)
+Logs:
+  rootTransferAdminOnlyIsEmancipated false
+
+[PASS] testSecurityZeroRoleApprovalsAndMixedBatchCannotTransfer() (gas: 562858)
+[PASS] testTransferMatrixEmancipated() (gas: 2353844)
+Logs:
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 0
+  success false
+  0xe58f6d5ae07b5f822b13fda6af587d1a1157c02c74a7744cd5c0b35bf55332bb000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 1
+  success false
+  0xe58f6d5a7609f8ee057f3e60166b48a3aab7372e4f60a3d41b6070e3b621ddf7000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 2
+  success false
+  0xe58f6d5ac5b570ee370816541899f75dce4f72b15e7c65d1b92c4b287c700dfc000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 3
+  success false
+  0xe58f6d5a1526966eedb683431c4e1cfe183a4ed93e12f1c9098b7d5797d3a376000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 0
+  success false
+  0xe58f6d5a508b131bfd2023b28c1e54b817553fa374c3b29e17dd8e6cc99c0ed6000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 1
+  success false
+  0xe58f6d5aa161336cdf42b2e7261e285e1a107a1950319f0c5f5fac042c481bd5000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 2
+  success false
+  0xe58f6d5a1cdff5534ad81a168d44afc51d3dea4f80cf646c07dd7481fe408375000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 3
+  success false
+  0xe58f6d5abe81d5c6093d7c1713bba2b39ce3077769d60158c7f98fbb8fcd0227000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 0
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 1
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 2
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 3
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 0
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 1
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 2
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 3
+  success true
+
+[PASS] testTransferMatrixUnemancipated() (gas: 2257442)
+Logs:
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 2
+  success false
+  0xe58f6d5ac5b570ee370816541899f75dce4f72b15e7c65d1b92c4b287c700dfc000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 3
+  success false
+  0xe58f6d5a1526966eedb683431c4e1cfe183a4ed93e12f1c9098b7d5797d3a376000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 2
+  success false
+  0xe58f6d5a1cdff5534ad81a168d44afc51d3dea4f80cf646c07dd7481fe408375000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 3
+  success false
+  0xe58f6d5abe81d5c6093d7c1713bba2b39ce3077769d60158c7f98fbb8fcd0227000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 2
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 3
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 2
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 3
+  success true
+
+[PASS] testTransferableCredentialFollowsCurrentENSOwner() (gas: 298771)
+[PASS] testUnapprovedOperatorCannotTransferTransferableCredential() (gas: 196478)
+Suite result: ok. 32 passed; 0 failed; 0 skipped; finished in 13.72ms (12.63ms CPU time)
+
+Ran 2 tests for test/spike/SepoliaDeploymentSmoke.t.sol:SepoliaDeploymentSmokeTest
+[PASS] testSepoliaENSv2DeploymentHasCode() (gas: 16757)
+[PASS] testUniversalResolverReportsENSv2() (gas: 13954)
+Suite result: ok. 2 passed; 0 failed; 0 skipped; finished in 925.15µs (313.57µs CPU time)
+
+Ran 25 tests for test/stage3/ThreeLevelENSv2.t.sol:ThreeLevelENSv2Test
+[PASS] testAncestorExpiryWithStillLiveDescendants() (gas: 114197)
+[PASS] testCanonicalParentMetadataDoesNotAttachRegistry() (gas: 325642)
+[PASS] testCredentialExpiryBoundary() (gas: 99405)
+[PASS] testCredentialRevocation() (gas: 110410)
+[PASS] testDetachedAndReplacedR1Rejects() (gas: 313086)
+[PASS] testDetachedAndReplacedR2Rejects() (gas: 320399)
+[PASS] testEmancipationRemovesFixtureOwnerRevocationAuthority() (gas: 121413)
+[PASS] testGuestCannotSelfGrantTransferRole() (gas: 34289)
+[PASS] testHierarchyOwnershipExpiryAndBothLinks() (gas: 169493)
+[PASS] testIndividualOperationRolesAreRequired() (gas: 240195)
+[PASS] testLockExpiryBoundaryWithAlignedGuest() (gas: 118056)
+[PASS] testLockGenerationChangeSameOwnerRejects() (gas: 231269)
+[PASS] testLockOwnerTransferRejectsLiveGuest() (gas: 126397)
+[PASS] testRegistryRootAdminCannotTransferWithoutGuestApproval() (gas: 196434)
+[PASS] testReservedCredentialRejected() (gas: 130857)
+[PASS] testRestoringSameAttachmentRestoresCurrentStateAcceptance() (gas: 126381)
+[PASS] testRoleChangeRegeneratesTokenWithoutNewRegistrationResource() (gas: 129841)
+[PASS] testRoleRequirementsAndRevocation() (gas: 415948)
+[PASS] testRootExpiryBoundaryWithAlignedDescendants() (gas: 132282)
+[PASS] testRootGenerationChangeSameOwnerRejects() (gas: 500232)
+[PASS] testRootOwnerTransferRejectsLiveGuest() (gas: 122062)
+[PASS] testTransferMatrixEmancipated() (gas: 2353239)
+Logs:
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 0
+  success false
+  0xe58f6d5ae07b5f822b13fda6af587d1a1157c02c74a7744cd5c0b35bf55332bb000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 1
+  success false
+  0xe58f6d5a7609f8ee057f3e60166b48a3aab7372e4f60a3d41b6070e3b621ddf7000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 2
+  success false
+  0xe58f6d5ac5b570ee370816541899f75dce4f72b15e7c65d1b92c4b287c700dfc000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 0 3
+  success false
+  0xe58f6d5a1526966eedb683431c4e1cfe183a4ed93e12f1c9098b7d5797d3a376000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 0
+  success false
+  0xe58f6d5a508b131bfd2023b28c1e54b817553fa374c3b29e17dd8e6cc99c0ed6000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 1
+  success false
+  0xe58f6d5aa161336cdf42b2e7261e285e1a107a1950319f0c5f5fac042c481bd5000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 2
+  success false
+  0xe58f6d5a1cdff5534ad81a168d44afc51d3dea4f80cf646c07dd7481fe408375000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  0 1 3
+  success false
+  0xe58f6d5abe81d5c6093d7c1713bba2b39ce3077769d60158c7f98fbb8fcd0227000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 0
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 1
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 2
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 0 3
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 0
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 1
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 2
+  success true
+  transfer cell emancipated/bitmap/actor/method true
+  1 1 3
+  success true
+
+[PASS] testTransferMatrixUnemancipated() (gas: 2256722)
+Logs:
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 2
+  success false
+  0xe58f6d5ac5b570ee370816541899f75dce4f72b15e7c65d1b92c4b287c700dfc000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 0 3
+  success false
+  0xe58f6d5a1526966eedb683431c4e1cfe183a4ed93e12f1c9098b7d5797d3a376000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 2
+  success false
+  0xe58f6d5a1cdff5534ad81a168d44afc51d3dea4f80cf646c07dd7481fe408375000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  0 1 3
+  success false
+  0xe58f6d5abe81d5c6093d7c1713bba2b39ce3077769d60158c7f98fbb8fcd0227000000000000000000000000000000000000000000000000000000000000000000000b0b
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 2
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 0 3
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 0
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 1
+  success false
+  0x54838f98
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 2
+  success true
+  transfer cell emancipated/bitmap/actor/method false
+  1 1 3
+  success true
+
+[PASS] testTransferableCredentialFollowsCurrentENSOwner() (gas: 298727)
+[PASS] testUnapprovedOperatorCannotTransferTransferableCredential() (gas: 196456)
+Suite result: ok. 25 passed; 0 failed; 0 skipped; finished in 12.76ms (11.58ms CPU time)
+
+Ran 6 test suites in 1.16s (647.82ms CPU time): 146 tests passed, 0 failed, 0 skipped (146 total tests)

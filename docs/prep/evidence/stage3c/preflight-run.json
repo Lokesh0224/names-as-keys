@@ -1,0 +1,15 @@
+{
+  "checkpoint": "b84d97721ef152be40db01a0333fc1e5932005e5",
+  "chainId": 11155111,
+  "forkBlock": 12071220,
+  "forkBlockHash": "0x0da28eda62d82e725492bd61af1eac89a09379b6e407821a69d735cc4457739c",
+  "command": "forge test --root contracts --match-contract CredentialSecurityPreflightTest --match-test testSecurity --fork-url https://1rpc.io/sepolia --fork-block-number 12071220 -vv",
+  "exitCode": 0,
+  "passed": 7,
+  "failed": 0,
+  "skipped": 0,
+  "sourceSHA256": "63399474f4bb47c9b16c8189c7739534d329d159e524ffb03375a926e22b9af0",
+  "source": "contracts/test/stage3c/SecurityPreflight.t.sol",
+  "completedBeforeProductionImplementation": true,
+  "liveWrites": false
+}

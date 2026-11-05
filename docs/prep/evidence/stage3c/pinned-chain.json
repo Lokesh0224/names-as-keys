@@ -1,0 +1,29 @@
+{
+  "chainId": 11155111,
+  "block": 12071220,
+  "hash": "0x0da28eda62d82e725492bd61af1eac89a09379b6e407821a69d735cc4457739c",
+  "stateRoot": "0x31a1a16230d12a1d34e577b9c21987f04aaffd0345bb64058624f06d2adfc2d7",
+  "readOnly": true,
+  "contracts": {
+    "UserRegistryImpl": {
+      "address": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+      "runtimeBytes": 18982,
+      "runtimeKeccak256": "0xed6d71bc90b0882fa63ef78a8dddabff2730b4c1cab9eab2ad91fa2aacd269f7"
+    },
+    "VerifiableFactory": {
+      "address": "0xda70306c98e97ece36f997a21368e53298572991",
+      "runtimeBytes": 1524,
+      "runtimeKeccak256": "0x141dc0d5ee8c60ae9b9cce12c870d3babc28719602238ee0f77016a9f1916265"
+    },
+    "ETHRegistry": {
+      "address": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+      "runtimeBytes": 16000,
+      "runtimeKeccak256": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98"
+    },
+    "RootRegistry": {
+      "address": "0xb458d6a3a77919449d03e7a6903c26827c1ec43f",
+      "runtimeBytes": 16000,
+      "runtimeKeccak256": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98"
+    }
+  }
+}

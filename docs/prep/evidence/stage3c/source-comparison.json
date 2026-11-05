@@ -1,0 +1,170 @@
+[
+  {
+    "path": "access-control/EnhancedAccessControl.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/access-control/EnhancedAccessControl.sol",
+    "upstreamSHA256": "8b49a2b0f9ae013de42c500fe077b2a442c9b0925574d052b4335870d66dbbe4",
+    "vendoredPresent": false,
+    "vendoredSHA256": null,
+    "byteEqual": null
+  },
+  {
+    "path": "access-control/interfaces/IEACGrantInitializable.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/access-control/interfaces/IEACGrantInitializable.sol",
+    "upstreamSHA256": "25213bedc2e75886f3f4e96cafc76d0968c79a1c179d8c27b3d97715048c08cf",
+    "vendoredPresent": true,
+    "vendoredSHA256": "25213bedc2e75886f3f4e96cafc76d0968c79a1c179d8c27b3d97715048c08cf",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/access-control/interfaces/IEACGrantInitializable.sol"
+  },
+  {
+    "path": "access-control/interfaces/IEnhancedAccessControl.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/access-control/interfaces/IEnhancedAccessControl.sol",
+    "upstreamSHA256": "171f246e22bdc75c2917851c1acc36eeb7974336a6acc17c6b40aff714f11de7",
+    "vendoredPresent": true,
+    "vendoredSHA256": "171f246e22bdc75c2917851c1acc36eeb7974336a6acc17c6b40aff714f11de7",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/access-control/interfaces/IEnhancedAccessControl.sol"
+  },
+  {
+    "path": "erc1155/ERC1155Singleton.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/erc1155/ERC1155Singleton.sol",
+    "upstreamSHA256": "7079b7ce2ae3d5455f371df79ac7f16e1318b1ca462887477b6d42ea4dad4b9c",
+    "vendoredPresent": false,
+    "vendoredSHA256": null,
+    "byteEqual": null
+  },
+  {
+    "path": "registrar/ETHRegistrar.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registrar/ETHRegistrar.sol",
+    "upstreamSHA256": "914833f2492620c89d7b1c406b8b6b85b81fce2a135fd40468ba93646b6ce547",
+    "vendoredPresent": false,
+    "vendoredSHA256": null,
+    "byteEqual": null
+  },
+  {
+    "path": "registry/PermissionedRegistry.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/PermissionedRegistry.sol",
+    "upstreamSHA256": "9405110eb3ddc54100a8be99fd39d10f47c02e2ec63114479903402cc383b6ed",
+    "vendoredPresent": false,
+    "vendoredSHA256": null,
+    "byteEqual": null
+  },
+  {
+    "path": "registry/UserRegistry.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/UserRegistry.sol",
+    "upstreamSHA256": "05694665da0d1fb13e5266d98d1daecd2898ca1b9fbfd87bf5f1be61f65f2168",
+    "vendoredPresent": false,
+    "vendoredSHA256": null,
+    "byteEqual": null
+  },
+  {
+    "path": "registry/interfaces/IPermissionedRegistry.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/interfaces/IPermissionedRegistry.sol",
+    "upstreamSHA256": "db222851c83eda348facb36cfaaff882cf98fe2987d43a07e89e21c90d22efca",
+    "vendoredPresent": true,
+    "vendoredSHA256": "db222851c83eda348facb36cfaaff882cf98fe2987d43a07e89e21c90d22efca",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol"
+  },
+  {
+    "path": "registry/interfaces/IRegistry.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/interfaces/IRegistry.sol",
+    "upstreamSHA256": "e0f7801793a6794f954083fe9dc8906ba81a5484bcc6e5ce953d20e961130278",
+    "vendoredPresent": true,
+    "vendoredSHA256": "e0f7801793a6794f954083fe9dc8906ba81a5484bcc6e5ce953d20e961130278",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/registry/interfaces/IRegistry.sol"
+  },
+  {
+    "path": "registry/interfaces/IStandardRegistry.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/interfaces/IStandardRegistry.sol",
+    "upstreamSHA256": "9e8f602c8bc51c49b23b7b7c12004daa4df47e18294a066c58a99597d667c07a",
+    "vendoredPresent": true,
+    "vendoredSHA256": "9e8f602c8bc51c49b23b7b7c12004daa4df47e18294a066c58a99597d667c07a",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/registry/interfaces/IStandardRegistry.sol"
+  },
+  {
+    "path": "registry/libraries/RegistryRolesLib.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/libraries/RegistryRolesLib.sol",
+    "upstreamSHA256": "da0f53769ed1a4ade7b9abb88df03bd65b20690ce90c9120be154358e18e0026",
+    "vendoredPresent": true,
+    "vendoredSHA256": "b56caf7a52c1f7048b09f6421a4ca58f0d02321fb9f23efa2cd0536f18b01d9e",
+    "byteEqual": false,
+    "vendoredPath": "contracts/src/ens-vendored/registry/libraries/RegistryRolesLib.sol",
+    "difference": "Upstream adds ROLE_CAN_TRANSFER_ADMIN to UNEMANCIPATED_ROLE_BITMAP; production uses live isEmancipated(), not this vendored mask."
+  },
+  {
+    "path": "factory/IVerifiableFactory.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/verifiable-factory/c1090aec465ab30d494c96bd7d2a147b4f0b0173/src/IVerifiableFactory.sol",
+    "upstreamSHA256": "4109ca5ca519cc022511e2e8a0bda499a56e8083314f9bc2f62c8ec73b0b23f1",
+    "vendoredPresent": true,
+    "vendoredSHA256": "467c3e24624b54f3c266de937c5361ef1867882a9d90e8e5ea8ec65029e81e62",
+    "byteEqual": false,
+    "vendoredPath": "contracts/src/ens-vendored/verifiable-factory/IVerifiableFactory.sol",
+    "difference": "Only comments and formatting; declarations match after removing both."
+  },
+  {
+    "path": "factory/VerifiableFactory.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/verifiable-factory/c1090aec465ab30d494c96bd7d2a147b4f0b0173/src/VerifiableFactory.sol",
+    "upstreamSHA256": "df3f2008e3bb3173139dc97d620d0c9453eaf310b6c600d79fe9003620f337fb",
+    "vendoredPresent": false,
+    "vendoredSHA256": null,
+    "byteEqual": null
+  },
+  {
+    "path": "registry/interfaces/ITemporalRegistry.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/interfaces/ITemporalRegistry.sol",
+    "upstreamSHA256": "6ff78d73a2c44d96c4c9a03e1a4b5f60202d0ece7bc5245bfb251b94a6ad2c76",
+    "vendoredPresent": true,
+    "vendoredSHA256": "6ff78d73a2c44d96c4c9a03e1a4b5f60202d0ece7bc5245bfb251b94a6ad2c76",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/registry/interfaces/ITemporalRegistry.sol"
+  },
+  {
+    "path": "registry/interfaces/ITokenizedRegistry.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/interfaces/ITokenizedRegistry.sol",
+    "upstreamSHA256": "e6e39ef5935c490a441b55908d3b5b1fe2b71a74869b3bc5efccd25c5bbc49c3",
+    "vendoredPresent": true,
+    "vendoredSHA256": "87f9a114acb680d7dab6a3ccea108162e0ca449a1b0191e1b69fd68329e54cc1",
+    "byteEqual": false,
+    "vendoredPath": "contracts/src/ens-vendored/registry/interfaces/ITokenizedRegistry.sol",
+    "difference": "Upstream additionally inherits IERC1155MetadataURI. Consumed registry ownership/state/lifecycle signatures unchanged; metadata/ERC165 equivalence not assumed."
+  },
+  {
+    "path": "registry/interfaces/IOwnedRegistry.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/registry/interfaces/IOwnedRegistry.sol",
+    "upstreamSHA256": "1842555fe6a0a9c54cf008211a084e6a4a7e933be70607e68f159cc3aa2393ec",
+    "vendoredPresent": true,
+    "vendoredSHA256": "1842555fe6a0a9c54cf008211a084e6a4a7e933be70607e68f159cc3aa2393ec",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/registry/interfaces/IOwnedRegistry.sol"
+  },
+  {
+    "path": "erc1155/interfaces/IERC1155Singleton.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/erc1155/interfaces/IERC1155Singleton.sol",
+    "upstreamSHA256": "08d753c376f30aa673da4efe7a44756023ed1c38326baca67a7b2ccb4c61f16c",
+    "vendoredPresent": true,
+    "vendoredSHA256": "08d753c376f30aa673da4efe7a44756023ed1c38326baca67a7b2ccb4c61f16c",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/erc1155/interfaces/IERC1155Singleton.sol"
+  },
+  {
+    "path": "utils/interfaces/IUnsafeTransferable.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/utils/interfaces/IUnsafeTransferable.sol",
+    "upstreamSHA256": "5c50f9d4a28109307860f45f28dbf67b9ce0740e6279a1ed8e5dfa80915afd3f",
+    "vendoredPresent": true,
+    "vendoredSHA256": "5c50f9d4a28109307860f45f28dbf67b9ce0740e6279a1ed8e5dfa80915afd3f",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/utils/interfaces/IUnsafeTransferable.sol"
+  },
+  {
+    "path": "utils/LibLabel.sol",
+    "sourceURL": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/src/utils/LibLabel.sol",
+    "upstreamSHA256": "c4c6f7747818e60cbfef535146ba4e95731574d740a5191cf349db0d8eb7aa1a",
+    "vendoredPresent": true,
+    "vendoredSHA256": "c4c6f7747818e60cbfef535146ba4e95731574d740a5191cf349db0d8eb7aa1a",
+    "byteEqual": true,
+    "vendoredPath": "contracts/src/ens-vendored/utils/LibLabel.sol"
+  }
+]

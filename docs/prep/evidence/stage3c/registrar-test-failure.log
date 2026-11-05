@@ -1,0 +1,40 @@
+Compiling 2 files with Solc 0.8.25
+Solc 0.8.25 finished in 2.74s
+Compiler run successful!
+2026-11-05T19:04:25.000331Z  WARN traces::etherscan: etherscan config not found
+
+Ran 25 tests for test/stage3c/CredentialRegistrar.t.sol:CredentialRegistrarTest
+[PASS] testRegistrarAuthorizedIssueAndRevokeEvents() (gas: 2285305)
+[PASS] testRegistrarDetachmentReplacementAndCleanup() (gas: 2587925)
+[PASS] testRegistrarExpiredCredentialCannotUnlockOrBeUnregistered() (gas: 2246352)
+[PASS] testRegistrarExpiredRootAndLockRejectIssue() (gas: 2090568)
+[PASS] testRegistrarExpiryBoundsAndBoundary() (gas: 2750194)
+[PASS] testRegistrarGuestAndOperatorCannotEmancipateOrTransferIssuedCredential() (gas: 2367491)
+[PASS] testRegistrarLabelValidationAndNoPrivilegeForwarding() (gas: 2196698)
+[PASS] testRegistrarLockGenerationRejectsIssue() (gas: 2112868)
+[PASS] testRegistrarOwnerChangesRejectIssue() (gas: 2104070)
+[PASS] testRegistrarReceiverCallbackCannotUseIssuerAuthority() (gas: 2505970)
+[PASS] testRegistrarRegistryReadFailureFailsClosed() (gas: 2050017)
+[PASS] testRegistrarRejectsActiveRevokedExpiredAndReservedLabelReuse() (gas: 2721101)
+[PASS] testRegistrarRejectsInvalidConstructorConfiguration() (gas: 2297976)
+[PASS] testRegistrarRejectsInvalidGuests() (gas: 2247510)
+[PASS] testRegistrarRestoredPathIsCurrentStateNotPermanentInvalidation() (gas: 2252191)
+[PASS] testRegistrarRetainedRoleMitigationSurvivesOwnerDroppingOwnRoles() (gas: 2223799)
+[PASS] testRegistrarRevokedIssueRoleKeepsEmergencyRevoke() (gas: 2280193)
+[PASS] testRegistrarRevokedUnregisterRoleBlocksIssueAndRevoke() (gas: 2291306)
+[PASS] testRegistrarRoleChurnRejectsIssue() (gas: 2103993)
+[FAIL: EACUnauthorizedAccountRoles(44058796675038520504801569636438252801473183425383913991093836489951650250752 [4.405e76], 65536 [6.553e4], 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496)] testRegistrarRootGenerationRejectsWithOtherwiseValidPath() (gas: 2023912)
+[PASS] testRegistrarRootOwnerChangeRejectsIssue() (gas: 2100656)
+[PASS] testRegistrarStaleRevokeCannotRevokeNewGeneration() (gas: 2308019)
+[PASS] testRegistrarUnauthorizedIssueRevokeAndApprovedOperator() (gas: 2221476)
+[PASS] testRegistrarUnexpectedExtraRolesBlockIssue() (gas: 2074620)
+[PASS] testRegistrarWrongChainAndImplementationFailClosed() (gas: 2104823)
+Suite result: FAILED. 24 passed; 1 failed; 0 skipped; finished in 3.18s (3.18s CPU time)
+
+Ran 1 test suite in 3.76s (3.18s CPU time): 24 tests passed, 1 failed, 0 skipped (25 total tests)
+
+Failing tests:
+Encountered 1 failing test in test/stage3c/CredentialRegistrar.t.sol:CredentialRegistrarTest
+[FAIL: EACUnauthorizedAccountRoles(44058796675038520504801569636438252801473183425383913991093836489951650250752 [4.405e76], 65536 [6.553e4], 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496)] testRegistrarRootGenerationRejectsWithOtherwiseValidPath() (gas: 2023912)
+
+Encountered a total of 1 failing tests, 24 tests succeeded

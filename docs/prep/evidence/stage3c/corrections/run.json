@@ -1,0 +1,50 @@
+{
+  "checkpoint": "b84d97721ef152be40db01a0333fc1e5932005e5",
+  "dateIST": "2026-11-06",
+  "chainId": 11155111,
+  "forkBlock": 12071220,
+  "forkBlockHash": "0x0da28eda62d82e725492bd61af1eac89a09379b6e407821a69d735cc4457739c",
+  "sources": {
+    "contracts/src/CredentialRegistrar.sol": "6a789bef3e0c5f61b108188aa67497f06bd816d43a3e161c76df294eb4caf7bd",
+    "contracts/test/stage3c/FinalArchitectureCorrections.t.sol": "a4d759dd135e1fc62f7bf72dbc37dacbe5d7ae0c9f490cfefa6791358a1ba286",
+    "contracts/test/stage3c/CredentialRegistrar.t.sol": "13f24de7f8eedd56b4cc1d9be062603da69f6f0cef41cbe5e5264b0daea6e762",
+    "contracts/test/stage3c/SecurityPreflight.t.sol": "63399474f4bb47c9b16c8189c7739534d329d159e524ffb03375a926e22b9af0",
+    "contracts/test/stage3/ThreeLevelENSv2.t.sol": "550b3386e0c92d1bc9f9071f5cd6a79213561145f089034ddc069d9cf7f9f37d"
+  },
+  "runs": [
+    {
+      "log": "focused-pass.log",
+      "command": "forge test --root contracts --match-path 'test/stage3c/*' --match-test 'test(Security|Registrar|Final)' --threads 1 --fork-url https://sepolia.gateway.tenderly.co --fork-block-number 12071220 --fork-retries 3 --fork-retry-backoff 500 -vv",
+      "exitCode": 0,
+      "passed": 45,
+      "failed": 0,
+      "skipped": 0,
+      "sha256": "c25bd9d1ac273ea4ff25fad5d1727189d5b5b7ae4ab116cc83a74ca0511f258a"
+    },
+    {
+      "log": "full-pass.log",
+      "command": "forge test --root contracts --threads 1 --fork-url https://sepolia.gateway.tenderly.co --fork-block-number 12071220 --fork-retries 3 --fork-retry-backoff 500 -vv",
+      "exitCode": 0,
+      "passed": 182,
+      "failed": 0,
+      "skipped": 0,
+      "sha256": "e3391aeca9479238af11c308acc82c3f964f42379488f4e10db8b882b69279df"
+    }
+  ],
+  "newCorrectionTests": 11,
+  "suiteCounts": {
+    "ClosureA3LiteTest": 20,
+    "CredentialRegistrarTest": 52,
+    "ENSv2QuestionsTest": 15,
+    "FinalArchitectureCorrectionsTest": 36,
+    "CredentialSecurityPreflightTest": 32,
+    "SepoliaDeploymentSmokeTest": 2,
+    "ThreeLevelENSv2Test": 25
+  },
+  "note": "Full suite includes inherited executions; focused selection runs only the 45 Stage 3C-specific methods. No failures occurred in these two correction runs. Previous failures remain retained.",
+  "liveWrites": false,
+  "signing": "none",
+  "sourceBytecodeEquivalence": "BLOCKED: no reproducible build comparison performed",
+  "supersedesForCurrentSources": "../run.json",
+  "priorSourceSnapshot": "prior-source/CredentialRegistrar.sol.txt"
+}

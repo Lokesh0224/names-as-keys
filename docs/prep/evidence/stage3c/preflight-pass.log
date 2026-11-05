@@ -1,0 +1,17 @@
+No files changed, compilation skipped
+2026-11-05T18:58:45.167850Z  WARN traces::etherscan: etherscan config not found
+
+Ran 7 tests for test/stage3c/SecurityPreflight.t.sol:CredentialSecurityPreflightTest
+[PASS] testSecurityGuestOperatorAndDelegatedRoleCannotEmancipate() (gas: 785696)
+[PASS] testSecurityMinimalRegistrarCallerRestrictions() (gas: 419572)
+[PASS] testSecurityOwnerCanDeliberatelyDisableRevocation() (gas: 308132)
+[PASS] testSecurityRetainedRegistrarPreventsEmancipationAfterOwnerDropsOwnOverrides() (gas: 346820)
+[PASS] testSecurityRevocationReuseAndExpiryGeneration() (gas: 262987)
+[PASS] testSecurityRootTransferAdminEmancipationCompatibilityProbe() (gas: 195041)
+Logs:
+  rootTransferAdminOnlyIsEmancipated false
+
+[PASS] testSecurityZeroRoleApprovalsAndMixedBatchCannotTransfer() (gas: 562858)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 828.18ms (862.54ms CPU time)
+
+Ran 1 test suite in 3.24s (828.18ms CPU time): 7 tests passed, 0 failed, 0 skipped (7 total tests)

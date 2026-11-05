@@ -1,0 +1,63 @@
+Compiling 3 files with Solc 0.8.25
+Solc 0.8.25 finished in 3.82s
+Compiler run successful!
+2026-11-05T19:26:30.508661Z  WARN traces::etherscan: etherscan config not found
+
+Ran 27 tests for test/stage3c/CredentialRegistrar.t.sol:CredentialRegistrarTest
+[PASS] testRegistrarAuthorizedIssueAndRevokeEvents() (gas: 2310702)
+[PASS] testRegistrarBadRegistryPostconditionRollsBackMint() (gas: 2184517)
+[PASS] testRegistrarDetachmentReplacementAndCleanup() (gas: 2613326)
+[PASS] testRegistrarExpiredCredentialCannotUnlockOrBeUnregistered() (gas: 2271771)
+[PASS] testRegistrarExpiredRootAndLockRejectIssue() (gas: 2115634)
+[PASS] testRegistrarExpiryBoundsAndBoundary() (gas: 2776301)
+[PASS] testRegistrarGuestAndOperatorCannotEmancipateOrTransferIssuedCredential() (gas: 2392892)
+[PASS] testRegistrarLabelValidationAndNoPrivilegeForwarding() (gas: 2221768)
+[PASS] testRegistrarLockGenerationRejectsIssue() (gas: 2137934)
+[PASS] testRegistrarOwnerChangesRejectIssue() (gas: 2129125)
+[PASS] testRegistrarReceiverCallbackCannotUseIssuerAuthority() (gas: 2531389)
+[PASS] testRegistrarRegistryReadFailureFailsClosed() (gas: 2075150)
+[PASS] testRegistrarRejectsActiveRevokedExpiredAndReservedLabelReuse() (gas: 2747295)
+[PASS] testRegistrarRejectsInvalidConstructorConfiguration() (gas: 2323143)
+[PASS] testRegistrarRejectsInvalidGuests() (gas: 2272558)
+[PASS] testRegistrarRejectsLockExpiryBeyondRoot() (gas: 2089857)
+[PASS] testRegistrarRestoredPathIsCurrentStateNotPermanentInvalidation() (gas: 2277610)
+[PASS] testRegistrarRetainedRoleMitigationSurvivesOwnerDroppingOwnRoles() (gas: 2249196)
+[PASS] testRegistrarRevokedIssueRoleKeepsEmergencyRevoke() (gas: 2305612)
+[PASS] testRegistrarRevokedUnregisterRoleBlocksIssueAndRevoke() (gas: 2316725)
+[PASS] testRegistrarRoleChurnRejectsIssue() (gas: 2129070)
+[PASS] testRegistrarRootGenerationRejectsWithOtherwiseValidPath() (gas: 4450993)
+[PASS] testRegistrarRootOwnerChangeRejectsIssue() (gas: 2125711)
+[PASS] testRegistrarStaleRevokeCannotRevokeNewGeneration() (gas: 2333438)
+[PASS] testRegistrarUnauthorizedIssueRevokeAndApprovedOperator() (gas: 2246855)
+[PASS] testRegistrarUnexpectedExtraRolesBlockIssue() (gas: 2099664)
+[PASS] testRegistrarWrongChainAndImplementationFailClosed() (gas: 2129914)
+Suite result: ok. 27 passed; 0 failed; 0 skipped; finished in 57.87ms (52.32ms CPU time)
+
+Ran 11 tests for test/stage3c/FinalArchitectureCorrections.t.sol:FinalArchitectureCorrectionsTest
+[PASS] testFinalAdminDelegationCanDestroyRevocationGuarantee() (gas: 2090197)
+[PASS] testFinalDefensiveStatusExpiryMatrix() (gas: 2349192)
+[PASS] testFinalDefensiveZeroExpiryHistoryFieldsReject() (gas: 2211594)
+[PASS] testFinalExpiredOwnershipUnregisterAndAdministrativeRevival() (gas: 2233724)
+[PASS] testFinalFactoryVerificationIdentityAndRuntimeAreSeparate() (gas: 2251673)
+[PASS] testFinalMinimalRegistrarCannotRenewExpiredCredential() (gas: 2044824)
+[PASS] testFinalOptionalAtomicAdminCleanupBurnsExpiredResidualToken() (gas: 463397)
+[PASS] testFinalReachableStatusExpiryCombinations() (gas: 2451629)
+[PASS] testFinalRenewRemovalAndRegrantAreAdministratorChoices() (gas: 134524)
+[PASS] testFinalRevokedAndRenewedReservationStatesRetainUseEvidence() (gas: 2162529)
+[PASS] testFinalZeroExpiryUnavailableStatesAreNotReachableThroughVerifiedAPIs() (gas: 211857)
+Suite result: ok. 11 passed; 0 failed; 0 skipped; finished in 2.72s (2.72s CPU time)
+
+Ran 7 tests for test/stage3c/SecurityPreflight.t.sol:CredentialSecurityPreflightTest
+[PASS] testSecurityGuestOperatorAndDelegatedRoleCannotEmancipate() (gas: 785696)
+[PASS] testSecurityMinimalRegistrarCallerRestrictions() (gas: 419572)
+[PASS] testSecurityOwnerCanDeliberatelyDisableRevocation() (gas: 308132)
+[PASS] testSecurityRetainedRegistrarPreventsEmancipationAfterOwnerDropsOwnOverrides() (gas: 346820)
+[PASS] testSecurityRevocationReuseAndExpiryGeneration() (gas: 262987)
+[PASS] testSecurityRootTransferAdminEmancipationCompatibilityProbe() (gas: 195041)
+Logs:
+  rootTransferAdminOnlyIsEmancipated false
+
+[PASS] testSecurityZeroRoleApprovalsAndMixedBatchCannotTransfer() (gas: 562858)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 10.07ms (6.43ms CPU time)
+
+Ran 3 test suites in 3.34s (2.79s CPU time): 45 tests passed, 0 failed, 0 skipped (45 total tests)

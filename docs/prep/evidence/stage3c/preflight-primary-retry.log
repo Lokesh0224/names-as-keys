@@ -1,0 +1,24 @@
+No files changed, compilation skipped
+2026-11-05T18:57:43.090957Z  WARN traces::etherscan: etherscan config not found
+2026-11-05T18:57:44.451447Z ERROR sharedbackend: Failed to send/recv `storage` err=failed to get storage for 0xed8246FF02203a4d4cb262bD78bEAA7408A57cAE at 80302165000791396942158504362113306882136220546327508938902850172954313318128: server returned an error response: error code -32000: historical state 31a1a16230d12a1d34e577b9c21987f04aaffd0345bb64058624f06d2adfc2d7 is not available address=0xed8246FF02203a4d4cb262bD78bEAA7408A57cAE index=80302165000791396942158504362113306882136220546327508938902850172954313318128
+
+Ran 7 tests for test/stage3c/SecurityPreflight.t.sol:CredentialSecurityPreflightTest
+[PASS] testSecurityGuestOperatorAndDelegatedRoleCannotEmancipate() (gas: 785696)
+[FAIL: EVM error; database error: failed to get storage for 0xed8246FF02203a4d4cb262bD78bEAA7408A57cAE at 80302165000791396942158504362113306882136220546327508938902850172954313318128: server returned an error response: error code -32000: historical state 31a1a16230d12a1d34e577b9c21987f04aaffd0345bb64058624f06d2adfc2d7 is not available] testSecurityMinimalRegistrarCallerRestrictions() (gas: 0)
+[PASS] testSecurityOwnerCanDeliberatelyDisableRevocation() (gas: 308132)
+[PASS] testSecurityRetainedRegistrarPreventsEmancipationAfterOwnerDropsOwnOverrides() (gas: 346820)
+[PASS] testSecurityRevocationReuseAndExpiryGeneration() (gas: 262987)
+[PASS] testSecurityRootTransferAdminEmancipationCompatibilityProbe() (gas: 195041)
+Logs:
+  rootTransferAdminOnlyIsEmancipated false
+
+[PASS] testSecurityZeroRoleApprovalsAndMixedBatchCannotTransfer() (gas: 562858)
+Suite result: FAILED. 6 passed; 1 failed; 0 skipped; finished in 502.01ms (511.63ms CPU time)
+
+Ran 1 test suite in 1.36s (502.01ms CPU time): 6 tests passed, 1 failed, 0 skipped (7 total tests)
+
+Failing tests:
+Encountered 1 failing test in test/stage3c/SecurityPreflight.t.sol:CredentialSecurityPreflightTest
+[FAIL: EVM error; database error: failed to get storage for 0xed8246FF02203a4d4cb262bD78bEAA7408A57cAE at 80302165000791396942158504362113306882136220546327508938902850172954313318128: server returned an error response: error code -32000: historical state 31a1a16230d12a1d34e577b9c21987f04aaffd0345bb64058624f06d2adfc2d7 is not available] testSecurityMinimalRegistrarCallerRestrictions() (gas: 0)
+
+Encountered a total of 1 failing tests, 6 tests succeeded
