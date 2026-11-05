@@ -1,0 +1,2 @@
+# Preserve the captured Foundry build output byte-for-byte, including its final blank line.
+offline-build.log whitespace=-blank-at-eof

@@ -1,0 +1,31 @@
+# Administrator and ENS role-verification checklist
+
+VERIFIED design/API requirements; actual project account/registry permissions remain **UNVERIFIED** because owner/guest and R1/R2 do not exist in this preparation plan. Complete inventory is a **BLOCKED deployment gate**, not assumed from successful fork tests.
+
+| Account/resource | Exact bitmap or requirement | Evidence / required read |
+|---|---|---|
+| Root-name owner in ETHRegistry | Registration role bitmap 97409655027181761882228017414928043058140282880 (SET_SUBREGISTRY/SET_RESOLVER, their admins, CAN_TRANSFER_ADMIN) | Published ETHRegistrar REGISTRATION_ROLE_BITMAP; after registration getState/getOwner/getResource and roles(resource,owner); hasRoles(resource,1<<20,owner) true |
+| R1 root owner | 380593917518227438537563280301172632627253505 | Initialize Grant explicitly to selected owner; roles(ROOT_RESOURCE,owner) exact; REGISTRAR/UNREGISTER/RENEW/SET_SUBREGISTRY/SET_PARENT and corresponding admin bits only |
+| Lock token owner | 91700664256357922357994873537130062512592519168 | Mirrors tested Stage 3B SET_SUBREGISTRY + SET_SUBREGISTRY_ADMIN + CAN_TRANSFER_ADMIN; roles(getResource(lockId),owner) exact; owner accepts transfer authority on its own token |
+| R2 root owner | Same owner bitmap as R1 | Explicit initialization; verify root roleCount and roles; isEmancipated false; retained RENEW permits administrative expiry revival as already documented |
+| CredentialRegistrar R2 root | **4097** | roles(ROOT_RESOURCE,registrar)==4097; hasRootRoles(1,registrar) and hasRootRoles(4096,registrar) true; no admin/RENEW/UPGRADE |
+| Mira guest | Token resource roleCount **0**, caller root roles **0** | getState/current getOwner == selected guest; roleCount(state.resource)==0; roles(ROOT_RESOURCE,guest)==0 |
+| DoorKeys | No ENS roles | roles(ROOT_RESOURCE,door)==0; no guest list; all actual authorization from ENS reads |
+
+Owner operations bitmap 1118465 is decimal representation of bits 0,8,12,16,20; corresponding admin bits are each shifted 128 higher. No UPGRADE or UPGRADE_ADMIN is in this initialization policy. Do not copy the historical spike's broad upgrade-capable bitmap. Do not use the outdated vendored emancipation mask; query isEmancipated(). Bitmaps are encoded as exact integers in nested initialize calldata, not floating-point JSON numbers in JavaScript (use bigint/decimal strings).
+
+The same selected MetaMask owner EOA must be root token owner, lock token owner, CredentialRegistrar.owner and DoorKeys.administrator. Factory deployer should be that EOA for matching predictProxyAddress calculations, but initialization must explicitly grant that EOA rather than infer msg.sender. R1/R2 root-role administration and token ownership are distinct concepts; verify both. ENS's observed global registrar administrator is not the project owner.
+
+Before issuing: read current chain/block/code identities; factory verifyContract(R1/R2); root and lock getState/getOwner/getSubregistry with current token snapshots, REGISTERED status, active/bounded expiries; R1/R2 getParent canonical metadata; production getter configurations; R2 exact registrar roles, zero guest roles and unemancipated state; unused mira full initial getState predicate; guest expiry bounds. Follow Stage 3C readiness checklist without modifying it. All unexpected read failures are blockers.
+
+Inventory all trusted root-role assignees from complete EACRolesChanged history, confirm each roles(ROOT_RESOURCE,account), roleCount and getAssigneeCount. EAC has no complete address enumeration getter. Reconcile counts and investigate unexpected holders; missing event history is a blocker. Identify REGISTRAR_ADMIN, UNREGISTER_ADMIN, REGISTER_RESERVED(_ADMIN), RENEW(_ADMIN) and UPGRADE(_ADMIN) assignees. Check token-resource assignees as well. Do not treat a partial list or zero guest bitmap as an exhaustive trust audit.
+
+Administrator actions that exceed the guarantee: removing registrar UNREGISTER; granting root admins to a guest/operator; removing recovery roles; incompatible proxy upgrades; reissuing names directly or renewing naturally expired unburned tokens. RENEW can restore access if current hierarchy remains valid; registrar-role revocation alone does not revoke existing credentials. Ancestor role churn can change token IDs and invalidate both production configurations. Restored attachments/owners can restore validity without a generation change. These are the already approved trusted-admin/current-state semantics, not a redesign.
+
+## Final-review role proof (Stage 3E corrections)
+
+No numerical mismatch was found. The deployment-linked `project/src/registrar/ETHRegistrar.sol:18–23` constant is the OR of SET_SUBREGISTRY, SET_SUBREGISTRY_ADMIN, SET_RESOLVER, SET_RESOLVER_ADMIN and CAN_TRANSFER_ADMIN. `RegistryRolesLib.sol:34–47` defines their bit positions. Exact decimal bitmap: **97409655027181761882228017414928043058140282880**. There is no public constant getter in the exported ABI: this is a file-level source constant, not a callable `REGISTRATION_ROLE_BITMAP()` method.
+
+`testStage3ERegistrationAndInitializationRoleReadback` exercises the deployed registrar on a pinned Sepolia fork (12071220), using the existing isolated synthetic Stage 3B registration fixture. It asserts `ETH.roles(ETH.getResource(rootToken), OWNER)` equals that constant, R1/R2 owner root roles equal **380593917518227438537563280301172632627253505**, lock owner token roles equal **91700664256357922357994873537130062512592519168**, and guest token roleCount is zero. The final fork log prints the three observed bitmaps. The Python source-derived test independently parses the retained deployment-source role expressions and compares the source, checklist, manifest and Solidity assertion. No UPGRADE, UPGRADE_ADMIN or additional guest privilege was added.
+
+This is deployed fork behavior plus deployment-linked source agreement, not completed live-runtime source attestation. All live account/role checks and runtime-equivalence gates remain blocked. The fork root is `nak3b-fixture-12071220`, NOT the intended live root; no live name was registered or ownership asserted. See CORRECTIONS_REVIEW.md and `../evidence/stage3e/corrections/fork-role-readback-final.log`.

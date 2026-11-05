@@ -1,0 +1,3 @@
+# Preserve exact raw failed-validation output; only these logs retain blank-at-eol.
+validation-attempt1.log whitespace=-blank-at-eol
+validation-attempt2.log whitespace=-blank-at-eol

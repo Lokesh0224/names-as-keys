@@ -1,0 +1,180 @@
+{
+  "ETHRegistrar": {
+    "address": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+    "block": 12071722,
+    "status": "VERIFIED",
+    "runtimeBytes": 8037,
+    "runtimeKeccak256": "0xb025a7edb8e81862c2d28857211a7a91c1fb2b17c5bcf28b983987067f083c2a",
+    "trailingMetadataHex": "a2646970667358221220c497406a365ecb0573c50a049d40404f7a930161cd9b7c333c755f39940cdbd964736f6c63430008190033",
+    "abi": "abis/ETHRegistrar.json",
+    "abiProvenance": "official deployment-linked artifact",
+    "sourceCommit": "07e55a056f5b6a9c90119f501bdd05714e67dddd",
+    "abiSHA256": "a98d5cd2d43c5157906535e35b6b4c1a4cc1f480e25fba0b24d740efde33ead4"
+  },
+  "ETHRegistry": {
+    "address": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+    "block": 12071722,
+    "status": "VERIFIED",
+    "runtimeBytes": 16000,
+    "runtimeKeccak256": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98",
+    "trailingMetadataHex": "a26469706673582212208bfefc60b2e6500d04ffb23678d7fbfc73c7634a4f82b005cba095b645fe7f9964736f6c63430008190033",
+    "abi": "abis/ETHRegistry.json",
+    "abiProvenance": "official deployment-linked artifact",
+    "sourceCommit": "07e55a056f5b6a9c90119f501bdd05714e67dddd",
+    "abiSHA256": "7d1eeede140c6e95c660974d89db05560896197cc94657c093f3be90768f9d67"
+  },
+  "RootRegistry": {
+    "address": "0xb458d6a3a77919449d03e7a6903c26827c1ec43f",
+    "block": 12071722,
+    "status": "VERIFIED",
+    "runtimeBytes": 16000,
+    "runtimeKeccak256": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98",
+    "trailingMetadataHex": "a26469706673582212208bfefc60b2e6500d04ffb23678d7fbfc73c7634a4f82b005cba095b645fe7f9964736f6c63430008190033",
+    "abi": "abis/RootRegistry.json",
+    "abiProvenance": "official deployment-linked artifact",
+    "sourceCommit": "07e55a056f5b6a9c90119f501bdd05714e67dddd",
+    "abiSHA256": "7d1eeede140c6e95c660974d89db05560896197cc94657c093f3be90768f9d67"
+  },
+  "UserRegistryImpl": {
+    "address": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+    "block": 12071722,
+    "status": "VERIFIED",
+    "runtimeBytes": 18982,
+    "runtimeKeccak256": "0xed6d71bc90b0882fa63ef78a8dddabff2730b4c1cab9eab2ad91fa2aacd269f7",
+    "trailingMetadataHex": "a264697066735822122096e34a28a6e22e4bb8d4bc96a19c887864f7b00635de93ff48c792b08064ea5d64736f6c63430008190033",
+    "abi": "abis/UserRegistryImpl.json",
+    "abiProvenance": "official deployment-linked artifact",
+    "sourceCommit": "07e55a056f5b6a9c90119f501bdd05714e67dddd",
+    "abiSHA256": "c8c55d2b548956d44b817a338136aabbc4c03a7ce3c025e359df69b6eb36bb94"
+  },
+  "VerifiableFactory": {
+    "address": "0xda70306c98e97ece36f997a21368e53298572991",
+    "block": 12071722,
+    "status": "VERIFIED",
+    "runtimeBytes": 1524,
+    "runtimeKeccak256": "0x141dc0d5ee8c60ae9b9cce12c870d3babc28719602238ee0f77016a9f1916265",
+    "trailingMetadataHex": "a26469706673582212200ab47e9fbaab46e5aff231db90bbe9f2f40e832e41f0bfbea12b3e75f34ebfc064736f6c63430008190033",
+    "abi": "abis/VerifiableFactory.json",
+    "abiProvenance": "official deployment-linked artifact",
+    "sourceCommit": "07e55a056f5b6a9c90119f501bdd05714e67dddd",
+    "abiSHA256": "c659e4540db251791688a5fa7dfccb79b2e01d3fe646ab2415052e9cdba3f446"
+  },
+  "MockUSDC": {
+    "address": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+    "block": 12071722,
+    "status": "VERIFIED",
+    "runtimeBytes": 4309,
+    "runtimeKeccak256": "0xa9a4749f886f5035336f6e16dce5ca6f339ae73f76e94ad4b8f46a447dc335f3",
+    "trailingMetadataHex": "a2646970667358221220a98bf71413b937609fc9292af169dd4082d89c90cd526dd794697b01fb1d5ac164736f6c63430008190033",
+    "abi": "abis/MockUSDC.json",
+    "abiProvenance": "official deployment-linked artifact",
+    "sourceCommit": "07e55a056f5b6a9c90119f501bdd05714e67dddd",
+    "abiSHA256": "44343e47c2c9edfcbcc46ed8d2455fd263ca8617447af92f155e68b933c91eac"
+  },
+  "MockDAI": {
+    "address": "0xf6fac8a58a0be13b9197f27c41b73162fe32572b",
+    "block": 12071722,
+    "status": "VERIFIED",
+    "runtimeBytes": 4309,
+    "runtimeKeccak256": "0x951cd0a95008826dc60d6ac8fd817ede568a8b482fa171aa0c9f71430b3cddef",
+    "trailingMetadataHex": "a2646970667358221220a98bf71413b937609fc9292af169dd4082d89c90cd526dd794697b01fb1d5ac164736f6c63430008190033",
+    "abi": "abis/MockDAI.json",
+    "abiProvenance": "official deployment-linked artifact",
+    "sourceCommit": "07e55a056f5b6a9c90119f501bdd05714e67dddd",
+    "abiSHA256": "44343e47c2c9edfcbcc46ed8d2455fd263ca8617447af92f155e68b933c91eac"
+  },
+  "StandardRentPriceOracle": {
+    "address": "0x8196665d4ca7488b6474a9ec8e7d2719fb42263a",
+    "block": 12071722,
+    "status": "VERIFIED",
+    "runtimeBytes": 8355,
+    "runtimeKeccak256": "0x69ea77f5ed37a8fd60ee59d82fbaad59dbd02995d59b462139c02f0cc0009f88",
+    "trailingMetadataHex": "a26469706673582212205d01301978e047c61209b60f5301bfc4a5606d9d3f58e4dd149dc7645d6bba3a64736f6c63430008190033",
+    "abi": "abis/StandardRentPriceOracle.json",
+    "abiProvenance": "official deployment-linked artifact",
+    "sourceCommit": "07e55a056f5b6a9c90119f501bdd05714e67dddd",
+    "abiSHA256": "e6a74bb36074015c6c41ae12a93b52933ba8d4b7b0e32f72df14ecd1d8f03db3"
+  },
+  "CredentialRegistrar": {
+    "address": null,
+    "status": "UNVERIFIED",
+    "abi": "abis/CredentialRegistrar.json",
+    "abiProvenance": "current locally compiled unchanged production contract",
+    "creationBytecodeSHA256": "ff0fe23fe25bf96b15242c29c73f47766f2eaf4e9123519b54a1ea39b1878190",
+    "abiSHA256": "812d56ff13c4bf7e8dcec7badd7b54bc7e5affcac1a0293396b3c4f54e7894ab"
+  },
+  "DoorKeys": {
+    "address": null,
+    "status": "UNVERIFIED",
+    "abi": "abis/DoorKeys.json",
+    "abiProvenance": "current locally compiled unchanged production contract",
+    "creationBytecodeSHA256": "dd9eded41e7a50904c9b85304bf7cf688ca99afebea52c3b24b39946ce350ee6",
+    "abiSHA256": "e729da585e8daa14f2a1d4db2354d7fc5945e92f98cabde6ee608ca2d1a324cd"
+  },
+  "otherVerifiedAddresses": {
+    "UpgradableUniversalResolverProxy": {
+      "address": "0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 2491,
+      "runtimeKeccak256": "0xf7ead24f8e5e731683ed38f7cd5052db9e3e8150fb2b5bc76c1a1bb450af74c5",
+      "trailingMetadataHex": "a2646970667358221220f2efbee937954e44c18c73bc5ab353d4bcb9fc3d8bcb4e01d175e0c9f719dcaa64736f6c63430008190033"
+    },
+    "ManagedUniversalResolverProxy": {
+      "address": "0x6d80F2172CFdEc5730fE683860C33d26fC42e6F1",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 2612,
+      "runtimeKeccak256": "0xba6ae56546e53515a294152a398155a1094ef337abdb76bc541f2d78744b4b12",
+      "trailingMetadataHex": "a2646970667358221220279d9d6797af016644e3ccab38510ac50a266b554e0ccfc76c6215c485dcca4264736f6c634300081b0033"
+    },
+    "UniversalResolverV2": {
+      "address": "0x24e1d8e068620b647ca097f961a61055f4f42d72",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 18792,
+      "runtimeKeccak256": "0xba000662dd1e21589f13962b7d6c23638d040698cb74006e1f9d78fd10a74753",
+      "trailingMetadataHex": "a2646970667358221220ba35617fc648d85e3c37a5f584208e3768223d8ae4e58034ffb453f1ad81a84164736f6c63430008190033"
+    },
+    "PermissionedResolverImpl": {
+      "address": "0x115eb53f0c60696633855f90b138178fb40b2b2c",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 15608,
+      "runtimeKeccak256": "0x02d6c15c6443251e5d3c5acbd971d66057c8e13ee0d0f046d5c65cd27a20b007",
+      "trailingMetadataHex": "a2646970667358221220982844d5badc1edbfeb40a741f42dac1fb12ddcf6edebf6b37c0a1e93e58928e64736f6c63430008190033"
+    },
+    "PublicResolverV2": {
+      "address": "0xdc4a563d00f5c3012b699794eb9e13a561be386f",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 14327,
+      "runtimeKeccak256": "0x04359a1efd638740104492646990972a028c2f74da718798545b9a5c4f4ff860",
+      "trailingMetadataHex": "a264697066735822122074be8b41c455ba39b021be7be1e744992963543d51f58b0ed6eb880d9d490a8164736f6c63430008190033"
+    },
+    "LabelStore": {
+      "address": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 1930,
+      "runtimeKeccak256": "0x4ae0bd010e15f87a091e364daf14c40acd8453587f72db75823ee69b72d51c0c",
+      "trailingMetadataHex": "a26469706673582212203388b7de4202116f8d71533b5837c0a3e06d3d9b1bf7faf72554db85e8c9261564736f6c63430008190033"
+    },
+    "WrapperRegistryImpl": {
+      "address": "0xbe768b63e5fbbfbb0ae97e9064e0002df8001880",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 24118,
+      "runtimeKeccak256": "0xffc3aba1241b66c4fd5f5a83848ee7897bc7cd7ec30421812338c31bee6dc40b",
+      "trailingMetadataHex": "a26469706673582212204b85dabf9e24342259ee3508df96fa4036dcf2e1dac1e791f45e09448057f8a964736f6c63430008190033"
+    },
+    "BatchRegistrar": {
+      "address": "0x4a4c8b7cdab6b19dc2cdb417cdb53a2ccbaf5322",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 2196,
+      "runtimeKeccak256": "0x8061eea4f4e297d177c472285786923d69874d849ba37bce0088db99c6422596",
+      "trailingMetadataHex": "a2646970667358221220f3ef6204771f83e3a99ad607dfb403016e9414a59970f3216557adf71efd373064736f6c63430008190033"
+    }
+  }
+}

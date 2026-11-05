@@ -1,0 +1,50 @@
+{
+  "ETHRegistrar": {
+    "status": "VERIFIED",
+    "runtimeMatchesOutsideImmutableSlots": true,
+    "creationInputExact": true,
+    "creationInputEndsWithCompiledCreationAndArgs": true
+  },
+  "ETHRegistry": {
+    "status": "VERIFIED",
+    "runtimeMatchesOutsideImmutableSlots": true,
+    "creationInputExact": true,
+    "creationInputEndsWithCompiledCreationAndArgs": true
+  },
+  "MockDAI": {
+    "status": "VERIFIED",
+    "runtimeMatchesOutsideImmutableSlots": true,
+    "creationInputExact": true,
+    "creationInputEndsWithCompiledCreationAndArgs": true
+  },
+  "MockUSDC": {
+    "status": "VERIFIED",
+    "runtimeMatchesOutsideImmutableSlots": true,
+    "creationInputExact": true,
+    "creationInputEndsWithCompiledCreationAndArgs": true
+  },
+  "RootRegistry": {
+    "status": "VERIFIED",
+    "runtimeMatchesOutsideImmutableSlots": true,
+    "creationInputExact": true,
+    "creationInputEndsWithCompiledCreationAndArgs": true
+  },
+  "StandardRentPriceOracle": {
+    "status": "VERIFIED",
+    "runtimeMatchesOutsideImmutableSlots": true,
+    "creationInputExact": true,
+    "creationInputEndsWithCompiledCreationAndArgs": true
+  },
+  "UserRegistryImpl": {
+    "status": "VERIFIED",
+    "runtimeMatchesOutsideImmutableSlots": true,
+    "creationInputExact": true,
+    "creationInputEndsWithCompiledCreationAndArgs": true
+  },
+  "VerifiableFactory": {
+    "status": "VERIFIED",
+    "runtimeMatchesOutsideImmutableSlots": true,
+    "creationInputExact": true,
+    "creationInputEndsWithCompiledCreationAndArgs": true
+  }
+}

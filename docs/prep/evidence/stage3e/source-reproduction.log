@@ -1,0 +1,45 @@
+{
+  "sources": 82,
+  "contracts": {
+    "ETHRegistrar": {
+      "creationTemplateByteEqual": true,
+      "runtimeTemplateByteEqual": true,
+      "abiEqual": true
+    },
+    "ETHRegistry": {
+      "creationTemplateByteEqual": true,
+      "runtimeTemplateByteEqual": true,
+      "abiEqual": true
+    },
+    "MockDAI": {
+      "creationTemplateByteEqual": true,
+      "runtimeTemplateByteEqual": true,
+      "abiEqual": true
+    },
+    "MockUSDC": {
+      "creationTemplateByteEqual": true,
+      "runtimeTemplateByteEqual": true,
+      "abiEqual": true
+    },
+    "RootRegistry": {
+      "creationTemplateByteEqual": true,
+      "runtimeTemplateByteEqual": true,
+      "abiEqual": true
+    },
+    "StandardRentPriceOracle": {
+      "creationTemplateByteEqual": true,
+      "runtimeTemplateByteEqual": true,
+      "abiEqual": true
+    },
+    "UserRegistryImpl": {
+      "creationTemplateByteEqual": true,
+      "runtimeTemplateByteEqual": true,
+      "abiEqual": true
+    },
+    "VerifiableFactory": {
+      "creationTemplateByteEqual": true,
+      "runtimeTemplateByteEqual": true,
+      "abiEqual": true
+    }
+  }
+}

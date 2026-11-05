@@ -1,0 +1,327 @@
+{
+  "scope": "OFFLINE_ONLY: no complete manifest transaction or future live execution simulated",
+  "knownLeaves": [
+    {
+      "transaction": "T02",
+      "argumentIndex": 0,
+      "type": "address",
+      "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+      "encoding": "0x000000000000000000000000f633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T04",
+      "argumentIndex": 0,
+      "type": "string",
+      "value": "nak-lokesh-20261105",
+      "encoding": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T04",
+      "argumentIndex": 3,
+      "type": "address",
+      "value": "0x0000000000000000000000000000000000000000",
+      "encoding": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T04",
+      "argumentIndex": 4,
+      "type": "address",
+      "value": "0x0000000000000000000000000000000000000000",
+      "encoding": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T04",
+      "argumentIndex": 5,
+      "type": "uint64",
+      "value": 31536000,
+      "encoding": "0x0000000000000000000000000000000000000000000000000000000001e13380",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T04",
+      "argumentIndex": 6,
+      "type": "address",
+      "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+      "encoding": "0x000000000000000000000000240b0316df57887dbbe58b586508b19e633a14aa",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T04",
+      "argumentIndex": 7,
+      "type": "bytes32",
+      "value": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "encoding": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T05",
+      "argumentIndex": 0,
+      "type": "address",
+      "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+      "encoding": "0x0000000000000000000000009bd8a88719068d09ecee662f36c0e3856708366a",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T07",
+      "argumentIndex": 0,
+      "type": "address",
+      "value": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+      "encoding": "0x000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T07",
+      "argumentIndex": 1,
+      "type": "string",
+      "value": "nak-lokesh-20261105",
+      "encoding": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T08",
+      "argumentIndex": 0,
+      "type": "string",
+      "value": "lock",
+      "encoding": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000046c6f636b00000000000000000000000000000000000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T08",
+      "argumentIndex": 2,
+      "type": "address",
+      "value": "0x0000000000000000000000000000000000000000",
+      "encoding": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T08",
+      "argumentIndex": 3,
+      "type": "address",
+      "value": "0x0000000000000000000000000000000000000000",
+      "encoding": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T08",
+      "argumentIndex": 4,
+      "type": "uint256",
+      "value": "91700664256357922357994873537130062512592519168",
+      "encoding": "0x0000000000000000000000001010000000000000000000000000000000100000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T09",
+      "argumentIndex": 0,
+      "type": "address",
+      "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+      "encoding": "0x0000000000000000000000009bd8a88719068d09ecee662f36c0e3856708366a",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T11",
+      "argumentIndex": 1,
+      "type": "string",
+      "value": "lock",
+      "encoding": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000046c6f636b00000000000000000000000000000000000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T12",
+      "argumentIndex": 1,
+      "type": "string",
+      "value": "nak-lokesh-20261105",
+      "encoding": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T13",
+      "argumentIndex": 0,
+      "type": "uint256",
+      "value": 4097,
+      "encoding": "0x0000000000000000000000000000000000000000000000000000000000001001",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T14",
+      "argumentIndex": 1,
+      "type": "string",
+      "value": "nak-lokesh-20261105",
+      "encoding": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T14",
+      "argumentIndex": 4,
+      "type": "uint256",
+      "value": 1,
+      "encoding": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "comparison": "PASS: cast vs independent reference encoder"
+    },
+    {
+      "transaction": "T15",
+      "argumentIndex": 0,
+      "type": "string",
+      "value": "mira",
+      "encoding": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000046d69726100000000000000000000000000000000000000000000000000000000",
+      "comparison": "PASS: cast vs independent reference encoder"
+    }
+  ],
+  "blockedTransactions": [
+    {
+      "id": "T01",
+      "calldata": null,
+      "unresolved": [
+        "accounts.owner",
+        "quote.basePlusPremium"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T02",
+      "calldata": null,
+      "unresolved": [
+        "quote.basePlusPremium"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T03",
+      "calldata": null,
+      "unresolved": [
+        "registration.commitment"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T04",
+      "calldata": null,
+      "unresolved": [
+        "accounts.owner",
+        "privateRegistrationState.secret"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T05",
+      "calldata": null,
+      "unresolved": [
+        "encoded.initializeOwnerGrants",
+        "salts.R1"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T06",
+      "calldata": null,
+      "unresolved": [
+        "future.R1",
+        "receipts.rootTokenId"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T07",
+      "calldata": null,
+      "unresolved": [
+        "future.R1"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T08",
+      "calldata": null,
+      "unresolved": [
+        "accounts.owner",
+        "future.R1",
+        "inputs.lockExpiry"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T09",
+      "calldata": null,
+      "unresolved": [
+        "encoded.initializeOwnerGrants",
+        "salts.R2"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T10",
+      "calldata": null,
+      "unresolved": [
+        "future.R1",
+        "future.R2",
+        "receipts.lockTokenId"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T11",
+      "calldata": null,
+      "unresolved": [
+        "future.R1",
+        "future.R2"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T12",
+      "calldata": null,
+      "unresolved": [
+        "accounts.owner",
+        "future.R1",
+        "future.R2"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T13",
+      "calldata": null,
+      "unresolved": [
+        "future.CredentialRegistrar",
+        "future.R2"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T14",
+      "calldata": null,
+      "unresolved": [
+        "accounts.owner",
+        "future.R1",
+        "future.R2"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    },
+    {
+      "id": "T15",
+      "calldata": null,
+      "unresolved": [
+        "accounts.guest",
+        "future.CredentialRegistrar",
+        "inputs.guestExpiry"
+      ],
+      "forkSimulation": "NOT_RUN",
+      "liveExecution": "BLOCKED"
+    }
+  ]
+}

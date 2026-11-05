@@ -1,0 +1,88 @@
+# Stage 3E current file inventory after final corrections
+
+All **82** paths below are untracked Stage 3E artifacts. Previously tracked files modified: **0 / 211**. Index empty; no staging or commit.
+
+The original 44-file inventory is preserved in corrections/prior/docs/prep/stage3e/FILE_INVENTORY.md. Six initial preparation files were edited; the other initial files remain byte-identical. Original evidence and checksum files were not overwritten.
+
+- `contracts/scripts/stage3e/encoding_audit.py` — new correction artifact
+- `contracts/scripts/stage3e/prepare.py` — edited initial artifact; original archived
+- `contracts/scripts/stage3e/read_only_probe.py` — retained initial artifact
+- `contracts/scripts/stage3e/reproduce_sources.py` — retained initial artifact
+- `contracts/scripts/stage3e/test_encoding_audit.py` — new correction artifact
+- `contracts/scripts/stage3e/test_prepare.py` — edited initial artifact; original archived
+- `contracts/scripts/stage3e/verify_live_artifacts.py` — retained initial artifact
+- `contracts/test/stage3e/RegistrationRoleReadback.t.sol` — new correction artifact
+- `docs/prep/evidence/stage3e/.gitattributes` — retained initial artifact
+- `docs/prep/evidence/stage3e/SHA256SUMS` — retained initial artifact
+- `docs/prep/evidence/stage3e/corrections/.gitattributes` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/SHA256SUMS` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/final-validation.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/fork-role-readback-final.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/fork-role-readback.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/format-check-final.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/format-check.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/git-status.txt` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/initial-inventory.json` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/inspection-failure.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/local-tests-attempt1.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/local-tests-final-19.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/local-tests-final-constructors.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/local-tests-final.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/manifest-check-final-19.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/manifest-check-final.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/manifest-validation-final.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/manifest-validation.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/offline-encoding.json` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/prior/contracts/scripts/stage3e/prepare.py` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/prior/contracts/scripts/stage3e/test_prepare.py` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/prior/docs/prep/stage3e/ADMIN_ROLE_CHECKLIST.md` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/prior/docs/prep/stage3e/FILE_INVENTORY.md` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/prior/docs/prep/stage3e/READINESS_REPORT.md` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/prior/docs/prep/stage3e/deployment-manifest.json` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/python-indentation-check.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/run.json` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/solidity-format.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/source-review-before-whitespace-fix.json` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/source-review.txt` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/validation-attempt1.json` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/validation-attempt1.log` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/validation-attempt2.json` — new correction artifact
+- `docs/prep/evidence/stage3e/corrections/validation-attempt2.log` — new correction artifact
+- `docs/prep/evidence/stage3e/current-sepolia.json` — retained initial artifact
+- `docs/prep/evidence/stage3e/decoded-review.txt` — retained initial artifact
+- `docs/prep/evidence/stage3e/deployment-trace-probe.json` — retained initial artifact
+- `docs/prep/evidence/stage3e/ens-standard-input.json` — retained initial artifact
+- `docs/prep/evidence/stage3e/final-validation.log` — retained initial artifact
+- `docs/prep/evidence/stage3e/git-status.txt` — retained initial artifact
+- `docs/prep/evidence/stage3e/live-artifact-comparison.json` — retained initial artifact
+- `docs/prep/evidence/stage3e/live-artifact-comparison.log` — retained initial artifact
+- `docs/prep/evidence/stage3e/local-tests.log` — retained initial artifact
+- `docs/prep/evidence/stage3e/offline-build.log` — retained initial artifact
+- `docs/prep/evidence/stage3e/plan-validation.log` — retained initial artifact
+- `docs/prep/evidence/stage3e/read-only-query.log` — retained initial artifact
+- `docs/prep/evidence/stage3e/run.json` — retained initial artifact
+- `docs/prep/evidence/stage3e/source-reproduction.json` — retained initial artifact
+- `docs/prep/evidence/stage3e/source-reproduction.log` — retained initial artifact
+- `docs/prep/evidence/stage3e/upstream-artifact-index.json` — retained initial artifact
+- `docs/prep/stage3e/ADDRESS_ABI_INVENTORY.md` — retained initial artifact
+- `docs/prep/stage3e/ADMIN_ROLE_CHECKLIST.md` — edited initial artifact; original archived
+- `docs/prep/stage3e/CORRECTIONS_REVIEW.md` — new correction artifact
+- `docs/prep/stage3e/DEPLOYMENT_SEQUENCE.md` — retained initial artifact
+- `docs/prep/stage3e/FILE_INVENTORY.md` — edited initial artifact; original archived
+- `docs/prep/stage3e/METAMASK_REVIEW_SPEC.md` — retained initial artifact
+- `docs/prep/stage3e/READINESS_REPORT.md` — edited initial artifact; original archived
+- `docs/prep/stage3e/ROOT_REGISTRATION_FEASIBILITY.md` — retained initial artifact
+- `docs/prep/stage3e/SOURCE_BYTECODE_VERIFICATION.md` — retained initial artifact
+- `docs/prep/stage3e/STAGE3F_GO_NO_GO.md` — retained initial artifact
+- `docs/prep/stage3e/abis/CredentialRegistrar.json` — retained initial artifact
+- `docs/prep/stage3e/abis/DoorKeys.json` — retained initial artifact
+- `docs/prep/stage3e/abis/ETHRegistrar.json` — retained initial artifact
+- `docs/prep/stage3e/abis/ETHRegistry.json` — retained initial artifact
+- `docs/prep/stage3e/abis/MockDAI.json` — retained initial artifact
+- `docs/prep/stage3e/abis/MockUSDC.json` — retained initial artifact
+- `docs/prep/stage3e/abis/RootRegistry.json` — retained initial artifact
+- `docs/prep/stage3e/abis/StandardRentPriceOracle.json` — retained initial artifact
+- `docs/prep/stage3e/abis/UserRegistryImpl.json` — retained initial artifact
+- `docs/prep/stage3e/abis/VerifiableFactory.json` — retained initial artifact
+- `docs/prep/stage3e/address-abi-inventory.json` — retained initial artifact
+- `docs/prep/stage3e/deployment-manifest.json` — edited initial artifact; original archived

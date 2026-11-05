@@ -1,0 +1,140 @@
+project/lib/verifiable-factory/src/UUPSProxyLogic.sol
+32:
+33:     address public immutable verifiableProxyFactory;
+34:
+35:     constructor() {
+36:         verifiableProxyFactory = msg.sender;
+37:     }
+38:
+39:     function initialize(address implementation, bytes calldata data) external payable {
+40:         assembly {
+41:             if eq(implementation, 0) {
+42:                 mstore(0, _IMPLEMENTATION_CANNOT_BE_ZERO_ADDRESS_ERROR_SELECTOR)
+43:                 revert(0x1c, 0x04)
+44:             }
+45:             if iszero(eq(sload(_IMPLEMENTATION_SLOT), 0)) {
+46:                 mstore(0, _ALREADY_INITIALIZED_ERROR_SELECTOR)
+47:                 revert(0x1c, 0x04)
+48:             }
+49:             if iszero(extcodesize(implementation)) {
+50:                 mstore(0, _ERC1967_INVALID_IMPLEMENTATION_ERROR_SELECTOR)
+51:                 mstore(0x20, implementation)
+52:                 revert(0x1c, 0x24)
+53:             }
+54:             sstore(_IMPLEMENTATION_SLOT, implementation)
+55:             log2(0, 0, _UPGRADED_EVENT_SELECTOR, implementation)
+56:
+57:             let dlength := data.length
+58:             switch dlength
+59:             case 0 {
+60:                 if callvalue() {
+61:                     mstore(0, _ERC1967_NON_PAYABLE_ERROR_SELECTOR)
+62:                     revert(0x1c, 0x04)
+63:                 }
+64:             }
+65:             default {
+project/src/registry/UserRegistry.sol
+54:         URI_RENDERER = uriRenderer;
+55:     }
+56:
+57:     /// @inheritdoc IEACGrantInitializable
+58:     function initialize(Grant[] calldata grants) public initializer {
+59:         __UUPSUpgradeable_init();
+60:         emit RegistryCreated();
+61:         for (uint256 i; i < grants.length; ++i) {
+62:             _grantRoles(ROOT_RESOURCE, grants[i].roleBitmap, grants[i].account, false);
+63:         }
+64:         if (roleCount(ROOT_RESOURCE) == 0) {
+65:             revert InvalidOwner();
+66:         }
+67:         _uriRenderer = URI_RENDERER;
+68:         emit URIUpdated("", address(URI_RENDERER), address(0));
+69:     }
+70:
+71:     /// @inheritdoc IERC165
+72:     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+73:         return
+project/src/registry/PermissionedRegistry.sol
+480:             }
+481:             if (expiry == 0) {
+482:                 expiry = entry.expiry; // use RESERVED expiry
+483:             }
+484:             roleBitmap |= RegistryRolesLib.ROLE_WAS_RESERVED; // remember
+485:         }
+486:         if (owner == address(0) ? expiry == 0 : _isExpired(expiry)) {
+487:             revert CannotSetPastExpiry(expiry);
+488:         }
+489:         if (prevOwner != address(0)) {
+490:             _burn(prevOwner, tokenId, 1);
+491:             ++entry.eacVersionId;
+492:             ++entry.tokenVersionId;
+493:             tokenId = _constructTokenId(tokenId, entry);
+494:         }
+495:         entry.expiry = expiry;
+496:         entry.subregistry = registry;
+497:         entry.resolver = resolver;
+498:         if (owner == address(0)) {
+499:             emit LabelReserved(tokenId, bytes32(labelId), label, expiry, msg.sender);
+500:         } else {
+501:             emit LabelRegistered(tokenId, bytes32(labelId), label, owner, expiry, msg.sender);
+502:             _mint(owner, tokenId, 1, "");
+503:             uint256 resource = _constructResource(tokenId, entry);
+504:             assert(resource != ROOT_RESOURCE);
+505:             emit TokenResource(tokenId, resource);
+506:             _grantRoles(resource, roleBitmap, owner, false);
+507:         }
+508:         if (address(registry) != address(0)) {
+509:             emit SubregistryUpdated(tokenId, registry, msg.sender);
+510:         }
+511:         if (address(resolver) != address(0)) {
+512:             emit ResolverUpdated(tokenId, resolver, msg.sender);
+513:         }
+514:     }
+515:
+516:     /// @dev Override `ERC1155Singleton._update()` to transfer the roles to the new owner if the token is transferred.
+517:     function _update(
+518:         address from,
+519:         address to,
+520:         uint256[] memory tokenIds,
+project/src/access-control/EnhancedAccessControl.sol
+250:             _grantRoles(resource, srcRoles, dstAccount, executeCallbacks);
+251:         }
+252:     }
+253:
+254:     /// @dev Grants multiple roles to `account`.
+255:     /// @param resource The resource to grant roles within.
+256:     /// @param roleBitmap The roles bitmap to grant.
+257:     /// @param account The account to grant roles to.
+258:     /// @param executeCallbacks Whether to execute the callbacks.
+259:     /// @return `true` if the roles were granted, `false` otherwise.
+260:     function _grantRoles(
+261:         uint256 resource,
+262:         uint256 roleBitmap,
+263:         address account,
+264:         bool executeCallbacks
+265:     )
+266:         internal
+267:         virtual
+268:         returns (bool)
+269:     {
+270:         if (roleBitmap == 0) {
+271:             return false;
+272:         }
+273:         _checkRoleBitmap(roleBitmap);
+274:         if (account == address(0)) {
+275:             revert EACInvalidAccount();
+276:         }
+277:         uint256 currentRoles = _roles[resource][account];
+278:         uint256 updatedRoles = currentRoles | roleBitmap;
+279:
+280:         if (currentRoles != updatedRoles) {
+281:             _roles[resource][account] = updatedRoles;
+282:             uint256 newlyAddedRoles = roleBitmap & ~currentRoles;
+283:             _updateRoleCounts(resource, newlyAddedRoles, true);
+284:             emit EACRolesChanged(resource, account, currentRoles, updatedRoles);
+285:             if (executeCallbacks) {
+286:                 _onRolesGranted(resource, account, currentRoles, updatedRoles, roleBitmap);
+287:             }
+288:             return true;
+289:         } else {
+290:             return false;

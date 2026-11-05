@@ -1,0 +1,399 @@
+{
+  "chainId": 11155111,
+  "block": 12071722,
+  "blockHash": "0xc04ccaa3bca48c67ad47a72f7d94b3c44202413f5d548f44cb0cf1a1a139011d",
+  "blockTimestamp": 1793909016,
+  "observedUTC": "2026-11-05T20:10:04.232470+00:00",
+  "methodsAllowed": [
+    "eth_blockNumber",
+    "eth_call",
+    "eth_chainId",
+    "eth_gasPrice",
+    "eth_getBlockByNumber",
+    "eth_getCode"
+  ],
+  "contracts": {
+    "ETHRegistry": {
+      "address": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 16000,
+      "runtimeKeccak256": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98",
+      "trailingMetadataHex": "a26469706673582212208bfefc60b2e6500d04ffb23678d7fbfc73c7634a4f82b005cba095b645fe7f9964736f6c63430008190033"
+    },
+    "ETHRegistrar": {
+      "address": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 8037,
+      "runtimeKeccak256": "0xb025a7edb8e81862c2d28857211a7a91c1fb2b17c5bcf28b983987067f083c2a",
+      "trailingMetadataHex": "a2646970667358221220c497406a365ecb0573c50a049d40404f7a930161cd9b7c333c755f39940cdbd964736f6c63430008190033"
+    },
+    "RootRegistry": {
+      "address": "0xb458d6a3a77919449d03e7a6903c26827c1ec43f",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 16000,
+      "runtimeKeccak256": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98",
+      "trailingMetadataHex": "a26469706673582212208bfefc60b2e6500d04ffb23678d7fbfc73c7634a4f82b005cba095b645fe7f9964736f6c63430008190033"
+    },
+    "UpgradableUniversalResolverProxy": {
+      "address": "0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 2491,
+      "runtimeKeccak256": "0xf7ead24f8e5e731683ed38f7cd5052db9e3e8150fb2b5bc76c1a1bb450af74c5",
+      "trailingMetadataHex": "a2646970667358221220f2efbee937954e44c18c73bc5ab353d4bcb9fc3d8bcb4e01d175e0c9f719dcaa64736f6c63430008190033"
+    },
+    "ManagedUniversalResolverProxy": {
+      "address": "0x6d80F2172CFdEc5730fE683860C33d26fC42e6F1",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 2612,
+      "runtimeKeccak256": "0xba6ae56546e53515a294152a398155a1094ef337abdb76bc541f2d78744b4b12",
+      "trailingMetadataHex": "a2646970667358221220279d9d6797af016644e3ccab38510ac50a266b554e0ccfc76c6215c485dcca4264736f6c634300081b0033"
+    },
+    "UniversalResolverV2": {
+      "address": "0x24e1d8e068620b647ca097f961a61055f4f42d72",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 18792,
+      "runtimeKeccak256": "0xba000662dd1e21589f13962b7d6c23638d040698cb74006e1f9d78fd10a74753",
+      "trailingMetadataHex": "a2646970667358221220ba35617fc648d85e3c37a5f584208e3768223d8ae4e58034ffb453f1ad81a84164736f6c63430008190033"
+    },
+    "VerifiableFactory": {
+      "address": "0xda70306c98e97ece36f997a21368e53298572991",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 1524,
+      "runtimeKeccak256": "0x141dc0d5ee8c60ae9b9cce12c870d3babc28719602238ee0f77016a9f1916265",
+      "trailingMetadataHex": "a26469706673582212200ab47e9fbaab46e5aff231db90bbe9f2f40e832e41f0bfbea12b3e75f34ebfc064736f6c63430008190033"
+    },
+    "UserRegistryImpl": {
+      "address": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 18982,
+      "runtimeKeccak256": "0xed6d71bc90b0882fa63ef78a8dddabff2730b4c1cab9eab2ad91fa2aacd269f7",
+      "trailingMetadataHex": "a264697066735822122096e34a28a6e22e4bb8d4bc96a19c887864f7b00635de93ff48c792b08064ea5d64736f6c63430008190033"
+    },
+    "PermissionedResolverImpl": {
+      "address": "0x115eb53f0c60696633855f90b138178fb40b2b2c",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 15608,
+      "runtimeKeccak256": "0x02d6c15c6443251e5d3c5acbd971d66057c8e13ee0d0f046d5c65cd27a20b007",
+      "trailingMetadataHex": "a2646970667358221220982844d5badc1edbfeb40a741f42dac1fb12ddcf6edebf6b37c0a1e93e58928e64736f6c63430008190033"
+    },
+    "PublicResolverV2": {
+      "address": "0xdc4a563d00f5c3012b699794eb9e13a561be386f",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 14327,
+      "runtimeKeccak256": "0x04359a1efd638740104492646990972a028c2f74da718798545b9a5c4f4ff860",
+      "trailingMetadataHex": "a264697066735822122074be8b41c455ba39b021be7be1e744992963543d51f58b0ed6eb880d9d490a8164736f6c63430008190033"
+    },
+    "StandardRentPriceOracle": {
+      "address": "0x8196665d4ca7488b6474a9ec8e7d2719fb42263a",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 8355,
+      "runtimeKeccak256": "0x69ea77f5ed37a8fd60ee59d82fbaad59dbd02995d59b462139c02f0cc0009f88",
+      "trailingMetadataHex": "a26469706673582212205d01301978e047c61209b60f5301bfc4a5606d9d3f58e4dd149dc7645d6bba3a64736f6c63430008190033"
+    },
+    "MockUSDC": {
+      "address": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 4309,
+      "runtimeKeccak256": "0xa9a4749f886f5035336f6e16dce5ca6f339ae73f76e94ad4b8f46a447dc335f3",
+      "trailingMetadataHex": "a2646970667358221220a98bf71413b937609fc9292af169dd4082d89c90cd526dd794697b01fb1d5ac164736f6c63430008190033"
+    },
+    "MockDAI": {
+      "address": "0xf6fac8a58a0be13b9197f27c41b73162fe32572b",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 4309,
+      "runtimeKeccak256": "0x951cd0a95008826dc60d6ac8fd817ede568a8b482fa171aa0c9f71430b3cddef",
+      "trailingMetadataHex": "a2646970667358221220a98bf71413b937609fc9292af169dd4082d89c90cd526dd794697b01fb1d5ac164736f6c63430008190033"
+    },
+    "LabelStore": {
+      "address": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 1930,
+      "runtimeKeccak256": "0x4ae0bd010e15f87a091e364daf14c40acd8453587f72db75823ee69b72d51c0c",
+      "trailingMetadataHex": "a26469706673582212203388b7de4202116f8d71533b5837c0a3e06d3d9b1bf7faf72554db85e8c9261564736f6c63430008190033"
+    },
+    "WrapperRegistryImpl": {
+      "address": "0xbe768b63e5fbbfbb0ae97e9064e0002df8001880",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 24118,
+      "runtimeKeccak256": "0xffc3aba1241b66c4fd5f5a83848ee7897bc7cd7ec30421812338c31bee6dc40b",
+      "trailingMetadataHex": "a26469706673582212204b85dabf9e24342259ee3508df96fa4036dcf2e1dac1e791f45e09448057f8a964736f6c63430008190033"
+    },
+    "BatchRegistrar": {
+      "address": "0x4a4c8b7cdab6b19dc2cdb417cdb53a2ccbaf5322",
+      "block": 12071722,
+      "status": "VERIFIED",
+      "runtimeBytes": 2196,
+      "runtimeKeccak256": "0x8061eea4f4e297d177c472285786923d69874d849ba37bce0088db99c6422596",
+      "trailingMetadataHex": "a2646970667358221220f3ef6204771f83e3a99ad607dfb403016e9414a59970f3216557adf71efd373064736f6c63430008190033"
+    }
+  },
+  "queries": [
+    {
+      "target": "ETHRegistrar",
+      "signature": "isAvailable(string)",
+      "arguments": [
+        "nak-lokesh-20261105"
+      ],
+      "data": "0x965306aa000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000001"
+      }
+    },
+    {
+      "target": "ETHRegistry",
+      "signature": "getState(uint256)",
+      "arguments": [
+        "0xb209bc5e6b3cb4d3a79480e13cdab664ee4aefabc4904c8514b83141de15219d"
+      ],
+      "data": "0x44c9af28b209bc5e6b3cb4d3a79480e13cdab664ee4aefabc4904c8514b83141de15219d",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b209bc5e6b3cb4d3a79480e13cdab664ee4aefabc4904c8514b8314100000000b209bc5e6b3cb4d3a79480e13cdab664ee4aefabc4904c8514b8314100000001"
+      }
+    },
+    {
+      "target": "ETHRegistry",
+      "signature": "getOwner(uint256)",
+      "arguments": [
+        "0xb209bc5e6b3cb4d3a79480e13cdab664ee4aefabc4904c8514b83141de15219d"
+      ],
+      "data": "0xc41a360ab209bc5e6b3cb4d3a79480e13cdab664ee4aefabc4904c8514b83141de15219d",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "getRegisterPrice(string,uint64,address)",
+      "arguments": [
+        "nak-lokesh-20261105",
+        31536000,
+        "0x240b0316df57887dbbe58b586508b19e633a14aa"
+      ],
+      "data": "0x61907b1200000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000001e13380000000000000000000000000240b0316df57887dbbe58b586508b19e633a14aa00000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x00000000000000000000000000000000000000000000000000000000007a12150000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "target": "MockUSDC",
+      "signature": "decimals()",
+      "arguments": [],
+      "data": "0x313ce567",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000006"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "getRegisterPrice(string,uint64,address)",
+      "arguments": [
+        "nak-lokesh-20261105",
+        31536000,
+        "0xf6fac8a58a0be13b9197f27c41b73162fe32572b"
+      ],
+      "data": "0x61907b1200000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000001e13380000000000000000000000000f6fac8a58a0be13b9197f27c41b73162fe32572b00000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x0000000000000000000000000000000000000000000000006f05c8a9a2ce20000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "target": "MockDAI",
+      "signature": "decimals()",
+      "arguments": [],
+      "data": "0x313ce567",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000012"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "MIN_COMMITMENT_AGE()",
+      "arguments": [],
+      "data": "0x2e4f692a",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x000000000000000000000000000000000000000000000000000000000000003c"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "MAX_COMMITMENT_AGE()",
+      "arguments": [],
+      "data": "0x8ccb9ea6",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x0000000000000000000000000000000000000000000000000000000000015180"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "MIN_REGISTER_DURATION()",
+      "arguments": [],
+      "data": "0xa40938bd",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x000000000000000000000000000000000000000000000000000000000024ea00"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "GRACE_PERIOD()",
+      "arguments": [],
+      "data": "0xc1a287e2",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x000000000000000000000000000000000000000000000000000000000024ea00"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "ETH_REGISTRY()",
+      "arguments": [],
+      "data": "0x47500708",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "BENEFICIARY()",
+      "arguments": [],
+      "data": "0x2f99c6cc",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "rentPriceOracle()",
+      "arguments": [],
+      "data": "0x7b39ba16",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x0000000000000000000000008196665d4ca7488b6474a9ec8e7d2719fb42263a"
+      }
+    },
+    {
+      "target": "ETHRegistrar",
+      "signature": "owner()",
+      "arguments": [],
+      "data": "0x8da5cb5b",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3"
+      }
+    },
+    {
+      "target": "RootRegistry",
+      "signature": "getSubregistry(string)",
+      "arguments": [
+        "eth"
+      ],
+      "data": "0x35af6216000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000036574680000000000000000000000000000000000000000000000000000000000",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4"
+      }
+    },
+    {
+      "target": "UpgradableUniversalResolverProxy",
+      "signature": "isENSv2()",
+      "arguments": [],
+      "data": "0x1a6cc9f0",
+      "response": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000001"
+      }
+    }
+  ],
+  "noSigningOrBroadcast": true,
+  "root": {
+    "label": "nak-lokesh-20261105",
+    "durationSeconds": 31536000,
+    "prices": {
+      "MockUSDC": {
+        "rawBasePremium": [
+          8000021,
+          0
+        ],
+        "decimals": 6
+      },
+      "MockDAI": {
+        "rawBasePremium": [
+          8000020944000000000,
+          0
+        ],
+        "decimals": 18
+      }
+    },
+    "labelHash": "0xb209bc5e6b3cb4d3a79480e13cdab664ee4aefabc4904c8514b83141de15219d",
+    "available": true,
+    "stateWords": [
+      0,
+      0,
+      0,
+      80528888745245994281891050364927917536355893854608130930097487246952469889024,
+      80528888745245994281891050364927917536355893854608130930097487246952469889025
+    ],
+    "owner": "0x0000000000000000000000000000000000000000"
+  },
+  "registrarConfiguration": {
+    "MIN_COMMITMENT_AGE()": "0x000000000000000000000000000000000000000000000000000000000000003c",
+    "MAX_COMMITMENT_AGE()": "0x0000000000000000000000000000000000000000000000000000000000015180",
+    "MIN_REGISTER_DURATION()": "0x000000000000000000000000000000000000000000000000000000000024ea00",
+    "GRACE_PERIOD()": "0x000000000000000000000000000000000000000000000000000000000024ea00",
+    "ETH_REGISTRY()": "0x000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+    "BENEFICIARY()": "0x00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3",
+    "rentPriceOracle()": "0x0000000000000000000000008196665d4ca7488b6474a9ec8e7d2719fb42263a",
+    "owner()": "0x00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3"
+  },
+  "ethAttachment": "0x000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+  "resolverReportsENSv2": "0x0000000000000000000000000000000000000000000000000000000000000001",
+  "gasPriceObservation": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": "0x13"
+  },
+  "sourceSHA256": "7bd6d81bcbd7f9da67bd23b8c755a67d2668bd9e3abb13b064f8de2c4d0b04cc"
+}

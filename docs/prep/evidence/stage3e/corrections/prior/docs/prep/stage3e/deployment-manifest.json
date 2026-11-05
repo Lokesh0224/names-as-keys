@@ -1,0 +1,994 @@
+{
+  "stage": "3E preparation only",
+  "chainId": 11155111,
+  "approvedCheckpoint": "d3fd2cce7ac75a76810202a7a83de40fe5c2fe32",
+  "broadcastEnabled": false,
+  "walletRequestsEnabled": false,
+  "stage3FDecision": "NO_GO",
+  "blockingGates": [
+    "reproducible source-to-live-runtime equivalence review",
+    "owner/guest public accounts and balances",
+    "complete ENS administrator/role inventory",
+    "future addresses, salts and constructor calldata",
+    "fresh gas/fee simulations and explicit transaction authorization"
+  ],
+  "root": "nak-lokesh-20261105.eth",
+  "observationBlock": 12071722,
+  "verifiedAddresses": {
+    "ETHRegistry": {
+      "reference": "verified.ETHRegistry",
+      "value": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "ETHRegistrar": {
+      "reference": "verified.ETHRegistrar",
+      "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "RootRegistry": {
+      "reference": "verified.RootRegistry",
+      "value": "0xb458d6a3a77919449d03e7a6903c26827c1ec43f",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "UpgradableUniversalResolverProxy": {
+      "reference": "verified.UpgradableUniversalResolverProxy",
+      "value": "0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "ManagedUniversalResolverProxy": {
+      "reference": "verified.ManagedUniversalResolverProxy",
+      "value": "0x6d80F2172CFdEc5730fE683860C33d26fC42e6F1",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "UniversalResolverV2": {
+      "reference": "verified.UniversalResolverV2",
+      "value": "0x24e1d8e068620b647ca097f961a61055f4f42d72",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "VerifiableFactory": {
+      "reference": "verified.VerifiableFactory",
+      "value": "0xda70306c98e97ece36f997a21368e53298572991",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "UserRegistryImpl": {
+      "reference": "verified.UserRegistryImpl",
+      "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "PermissionedResolverImpl": {
+      "reference": "verified.PermissionedResolverImpl",
+      "value": "0x115eb53f0c60696633855f90b138178fb40b2b2c",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "PublicResolverV2": {
+      "reference": "verified.PublicResolverV2",
+      "value": "0xdc4a563d00f5c3012b699794eb9e13a561be386f",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "StandardRentPriceOracle": {
+      "reference": "verified.StandardRentPriceOracle",
+      "value": "0x8196665d4ca7488b6474a9ec8e7d2719fb42263a",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "MockUSDC": {
+      "reference": "verified.MockUSDC",
+      "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "MockDAI": {
+      "reference": "verified.MockDAI",
+      "value": "0xf6fac8a58a0be13b9197f27c41b73162fe32572b",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "LabelStore": {
+      "reference": "verified.LabelStore",
+      "value": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "WrapperRegistryImpl": {
+      "reference": "verified.WrapperRegistryImpl",
+      "value": "0xbe768b63e5fbbfbb0ae97e9064e0002df8001880",
+      "classification": "VERIFIED",
+      "block": 12071722
+    },
+    "BatchRegistrar": {
+      "reference": "verified.BatchRegistrar",
+      "value": "0x4a4c8b7cdab6b19dc2cdb417cdb53a2ccbaf5322",
+      "classification": "VERIFIED",
+      "block": 12071722
+    }
+  },
+  "futureAddresses": {
+    "R1": {
+      "address": null,
+      "status": "UNVERIFIED",
+      "resolveFrom": "future successful receipt plus independent code/config verification"
+    },
+    "R2": {
+      "address": null,
+      "status": "UNVERIFIED",
+      "resolveFrom": "future successful receipt plus independent code/config verification"
+    },
+    "CredentialRegistrar": {
+      "address": null,
+      "status": "UNVERIFIED",
+      "resolveFrom": "future successful receipt plus independent code/config verification"
+    },
+    "DoorKeys": {
+      "address": null,
+      "status": "UNVERIFIED",
+      "resolveFrom": "future successful receipt plus independent code/config verification"
+    }
+  },
+  "accounts": {
+    "owner": null,
+    "guest": null
+  },
+  "roles": {
+    "OWNER_OPERATIONS": "1118465",
+    "OWNER_OPERATIONS_AND_ADMINS": "380593917518227438537563280301172632627253505",
+    "LOCK_OWNER_TOKEN_ROLES": "91700664256357922357994873537130062512592519168",
+    "REGISTRAR_ROOT_ROLES": 4097,
+    "GUEST_TOKEN_ROLES": 0,
+    "DOOR_KEYS_ROLES": 0
+  },
+  "registration": {
+    "durationSeconds": 31536000,
+    "secret": null,
+    "secretStoragePolicy": "future private local ephemeral registration state only; never commit or include plaintext in shared manifest",
+    "subregistry": "0x0000000000000000000000000000000000000000",
+    "resolver": "0x0000000000000000000000000000000000000000",
+    "referrer": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "transactions": [
+    {
+      "id": "T01",
+      "label": "Obtain mock rent tokens if needed",
+      "target": {
+        "reference": "verified.MockUSDC",
+        "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "contractCreation": false,
+      "abi": "MockUSDC",
+      "signature": "mint(address,uint256)",
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "quote.basePlusPremium",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "No mint role in linked MockERC20; conditional on reviewed implementation",
+      "dependsOn": [],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Owner mock token balance increases",
+      "expectedEvents": [
+        {
+          "name": "Transfer"
+        }
+      ],
+      "preValidation": "Current price; owner and token identity; balance deficit; sufficient gas ETH",
+      "postVerification": "balanceOf(owner) increases by reviewed amount; Transfer from zero",
+      "conditionalSkip": "Skip only if verified balance already sufficient; record skip evidence",
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T02",
+      "label": "Approve bounded registrar rent spend",
+      "target": {
+        "reference": "verified.MockUSDC",
+        "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "contractCreation": false,
+      "abi": "MockUSDC",
+      "signature": "approve(address,uint256)",
+      "arguments": [
+        {
+          "reference": "verified.ETHRegistrar",
+          "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "quote.basePlusPremium",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Token holder owner",
+      "dependsOn": [
+        "T01"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Allowance to ETHRegistrar set to reviewed bounded spend",
+      "expectedEvents": [
+        {
+          "name": "Approval"
+        }
+      ],
+      "preValidation": "Read balance/allowance; reject unlimited spend; refresh quote",
+      "postVerification": "allowance(owner,ETHRegistrar) equals approved limit",
+      "conditionalSkip": "Skip only if verified existing bounded allowance is sufficient and owner accepts it",
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T03",
+      "label": "Commit root registration intent",
+      "target": {
+        "reference": "verified.ETHRegistrar",
+        "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "contractCreation": false,
+      "abi": "ETHRegistrar",
+      "signature": "commit(bytes32)",
+      "arguments": [
+        {
+          "binding": "registration.commitment",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Any caller; owner account pays gas",
+      "dependsOn": [
+        "T02"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Commitment timestamp recorded",
+      "expectedEvents": [
+        {
+          "name": "CommitmentMade"
+        }
+      ],
+      "preValidation": "isAvailable true; exact approved root and commitment parameters; fresh CSPRNG secret kept outside shared artifacts",
+      "postVerification": "commitmentAt(commitment) and receipt block/time match; wait min age, strictly less than max age",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T04",
+      "label": "Reveal/register the approved Sepolia root",
+      "target": {
+        "reference": "verified.ETHRegistrar",
+        "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "contractCreation": false,
+      "abi": "ETHRegistrar",
+      "signature": "register(string,address,bytes32,address,address,uint64,address,bytes32)",
+      "arguments": [
+        "nak-lokesh-20261105",
+        {
+          "binding": "accounts.owner",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "privateRegistrationState.secret",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+        31536000,
+        {
+          "reference": "verified.MockUSDC",
+          "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Payer owner has rent balance/allowance; registrar owns global REGISTRAR permission",
+      "dependsOn": [
+        "T03"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Root token owned by owner; actual expiry and token ID read from receipt/state",
+      "expectedEvents": [
+        {
+          "name": "NameRegistered"
+        },
+        {
+          "name": "LabelRegistered",
+          "abi": "ETHRegistry"
+        }
+      ],
+      "preValidation": "All source/account/role gates; commitment bounds; availability/quote/allowance; no mainnet prerequisite in ordinary available-label path",
+      "postVerification": "ETHRegistry getState/getOwner/getExpiry; record actual root token/resource; root owner SET_SUBREGISTRY confirmed",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T05",
+      "label": "Create R1 and initialize owner grants atomically",
+      "target": {
+        "reference": "verified.VerifiableFactory",
+        "value": "0xda70306c98e97ece36f997a21368e53298572991",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "contractCreation": false,
+      "abi": "VerifiableFactory",
+      "signature": "deployProxy(address,uint256,bytes)",
+      "arguments": [
+        {
+          "reference": "verified.UserRegistryImpl",
+          "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "salts.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "encoded.initializeOwnerGrants",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Factory permissionless; explicit owner granted root roles by initialize",
+      "dependsOn": [
+        "T04"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "New R1 proxy; OWNER_OPERATIONS_AND_ADMINS initialized",
+      "expectedEvents": [
+        {
+          "name": "ProxyDeployed"
+        },
+        {
+          "name": "RegistryCreated",
+          "abi": "UserRegistryImpl"
+        },
+        {
+          "name": "EACRolesChanged",
+          "abi": "UserRegistryImpl"
+        }
+      ],
+      "preValidation": "Owner grants exactly policy bitmap; validate initialize((address,uint256)[]) ABI; predictProxyAddress(owner,salt); unused salt/address; code identities",
+      "postVerification": "Receipt ProxyDeployed address equals predicted; verifyContract(R1) expected implementation; exact owner root bitmap and aggregate role counts",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T06",
+      "label": "Attach R1 to root",
+      "target": {
+        "reference": "verified.ETHRegistry",
+        "value": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "contractCreation": false,
+      "abi": "ETHRegistry",
+      "signature": "setSubregistry(uint256,address)",
+      "arguments": [
+        {
+          "binding": "receipts.rootTokenId",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Owner SET_SUBREGISTRY on current root resource",
+      "dependsOn": [
+        "T05"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Root forward attachment becomes R1",
+      "expectedEvents": [
+        {
+          "name": "SubregistryUpdated"
+        }
+      ],
+      "preValidation": "Active root owner/token generation and attachment permission",
+      "postVerification": "ETHRegistry.getSubregistry(rootLabel)==R1; root token unchanged",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T07",
+      "label": "Set R1 canonical parent metadata",
+      "target": {
+        "binding": "future.R1",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "contractCreation": false,
+      "abi": "UserRegistryImpl",
+      "signature": "setParent(address,string)",
+      "arguments": [
+        {
+          "reference": "verified.ETHRegistry",
+          "value": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        "nak-lokesh-20261105"
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Owner R1 root SET_PARENT",
+      "dependsOn": [
+        "T06"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Canonical R1 parent recorded; no forward grant implied",
+      "expectedEvents": [
+        {
+          "name": "ParentUpdated"
+        }
+      ],
+      "preValidation": "Owner has SET_PARENT; R1 factory verified",
+      "postVerification": "R1.getParent() equals ETHRegistry/root label; root forward link still correct",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T08",
+      "label": "Register owner-controlled lock with no child attached yet",
+      "target": {
+        "binding": "future.R1",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "contractCreation": false,
+      "abi": "UserRegistryImpl",
+      "signature": "register(string,address,address,address,uint256,uint64)",
+      "arguments": [
+        "lock",
+        {
+          "binding": "accounts.owner",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+        "91700664256357922357994873537130062512592519168",
+        {
+          "binding": "inputs.lockExpiry",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Owner R1 root REGISTRAR",
+      "dependsOn": [
+        "T07"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Lock token owned by same owner; roles mirror Stage 3B fixture; expiry <= root",
+      "expectedEvents": [
+        {
+          "name": "LabelRegistered"
+        },
+        {
+          "name": "TokenResource"
+        }
+      ],
+      "preValidation": "Lock unused/available; root owner active; planned 90-day lock expiry within root; owner accepts transfer-admin role on owner token",
+      "postVerification": "R1.getState/getOwner/getExpiry(lock); lock role bitmap; capture actual token/resource; no R2 attachment yet",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T09",
+      "label": "Create R2 and initialize owner grants atomically",
+      "target": {
+        "reference": "verified.VerifiableFactory",
+        "value": "0xda70306c98e97ece36f997a21368e53298572991",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "contractCreation": false,
+      "abi": "VerifiableFactory",
+      "signature": "deployProxy(address,uint256,bytes)",
+      "arguments": [
+        {
+          "reference": "verified.UserRegistryImpl",
+          "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "salts.R2",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "encoded.initializeOwnerGrants",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Explicit owner initial grants, factory permissionless",
+      "dependsOn": [
+        "T08"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "New R2 proxy; same reviewed owner root grants",
+      "expectedEvents": [
+        {
+          "name": "ProxyDeployed"
+        },
+        {
+          "name": "RegistryCreated",
+          "abi": "UserRegistryImpl"
+        },
+        {
+          "name": "EACRolesChanged",
+          "abi": "UserRegistryImpl"
+        }
+      ],
+      "preValidation": "Distinct unused salt; predicted address; exact owner grants and implementation",
+      "postVerification": "Factory verifyContract(R2); owner bitmap/counts; unemancipated; no guest root privileges",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T10",
+      "label": "Attach R2 under lock",
+      "target": {
+        "binding": "future.R1",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "contractCreation": false,
+      "abi": "UserRegistryImpl",
+      "signature": "setSubregistry(uint256,address)",
+      "arguments": [
+        {
+          "binding": "receipts.lockTokenId",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R2",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Owner SET_SUBREGISTRY on lock resource or R1 root",
+      "dependsOn": [
+        "T09"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Lock forward attachment becomes R2",
+      "expectedEvents": [
+        {
+          "name": "SubregistryUpdated"
+        }
+      ],
+      "preValidation": "Lock/root current owner/expiry/token generations; R2 verified",
+      "postVerification": "R1.getSubregistry(lock)==R2; lock token generation unchanged",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T11",
+      "label": "Set R2 canonical parent metadata",
+      "target": {
+        "binding": "future.R2",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "contractCreation": false,
+      "abi": "UserRegistryImpl",
+      "signature": "setParent(address,string)",
+      "arguments": [
+        {
+          "binding": "future.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        "lock"
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Owner R2 root SET_PARENT",
+      "dependsOn": [
+        "T10"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Canonical R2 parent recorded",
+      "expectedEvents": [
+        {
+          "name": "ParentUpdated"
+        }
+      ],
+      "preValidation": "R2 verified; owner SET_PARENT",
+      "postVerification": "R2.getParent()==(R1,lock); both forward links still correct",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T12",
+      "label": "Deploy CredentialRegistrar",
+      "target": null,
+      "contractCreation": true,
+      "abi": "CredentialRegistrar",
+      "signature": "constructor(address,string,address,address)",
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        "nak-lokesh-20261105",
+        {
+          "binding": "future.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R2",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Owner EOA pays gas; constructor validates full active hierarchy",
+      "dependsOn": [
+        "T11"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "New immutable owner/R1/R2 and ancestor token bindings",
+      "expectedEvents": [],
+      "preValidation": "Stable ancestor generations; full hierarchy, roles/runtime/source gates; fresh local creation artifact hash",
+      "postVerification": "Receipt contractAddress; code; owner/rootLabel/parentRegistry/guestRegistry/rootTokenId/lockTokenId getters; no roles assumed from deployment",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T13",
+      "label": "Grant only minimal registrar permissions",
+      "target": {
+        "binding": "future.R2",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "contractCreation": false,
+      "abi": "UserRegistryImpl",
+      "signature": "grantRootRoles(uint256,address)",
+      "arguments": [
+        4097,
+        {
+          "binding": "future.CredentialRegistrar",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Owner R2 REGISTRAR_ADMIN and UNREGISTER_ADMIN",
+      "dependsOn": [
+        "T12"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Registrar root bitmap exactly 4097; no admin/RENEW/UPGRADE",
+      "expectedEvents": [
+        {
+          "name": "EACRolesChanged"
+        }
+      ],
+      "preValidation": "Registrar config verified; root inventory trusted; existing registrar bitmap zero",
+      "postVerification": "R2.roles(ROOT_RESOURCE,registrar)==4097; hasRootRoles(1/4096); registry unemancipated",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T14",
+      "label": "Deploy DoorKeys",
+      "target": null,
+      "contractCreation": true,
+      "abi": "DoorKeys",
+      "signature": "constructor(address,string,address,address,uint256)",
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        "nak-lokesh-20261105",
+        {
+          "binding": "future.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R2",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        1
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Owner EOA pays gas; constructor validates hierarchy",
+      "dependsOn": [
+        "T13"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Door contract snapshots same owner, registries and ancestor generations; epoch 1",
+      "expectedEvents": [],
+      "preValidation": "Complete current path; stable generation IDs; approved bytecode/constructor arguments",
+      "postVerification": "Receipt contractAddress; administrator/registries/rootLabelHash/token snapshots/epoch/doorId; requestNonce zero; no ENS roles granted to DoorKeys",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    },
+    {
+      "id": "T15",
+      "label": "Issue Mira temporary credential",
+      "target": {
+        "binding": "future.CredentialRegistrar",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "contractCreation": false,
+      "abi": "CredentialRegistrar",
+      "signature": "issue(string,address,uint64)",
+      "arguments": [
+        "mira",
+        {
+          "binding": "accounts.guest",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "inputs.guestExpiry",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "binding": "accounts.owner",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "requiredRoles": "Configured owner only; registrar 4097 on R2",
+      "dependsOn": [
+        "T14"
+      ],
+      "valueWei": "0",
+      "status": "BLOCKED",
+      "calldata": null,
+      "gasEstimate": null,
+      "transactionHash": null,
+      "receipt": null,
+      "expectedState": "Mira token owned by guest; zero roles/child registry/resolver; fresh one-day expiry proposal",
+      "expectedEvents": [
+        {
+          "name": "CredentialIssued"
+        },
+        {
+          "name": "LabelRegistered",
+          "abi": "UserRegistryImpl"
+        }
+      ],
+      "preValidation": "Guest nonzero, not owner/registrar, no root roles; complete initial R2 label state; expiry 60s..30d and <=lock/root; planned one day must fit without silent truncation",
+      "postVerification": "R2 getState/getOwner/getExpiry; roleCount(resource)==0 and guest root roles==0; getResolver/getSubregistry zero; full DoorKeys authorization reads; no unlock/signature request",
+      "conditionalSkip": null,
+      "estimationMethod": "After every blocking input/gate is resolved: eth_estimateGas with exact from, target (omit for creation), value=0 and full calldata/creation bytecode at identified current state; inspect gas/fee limits and simulation; no numeric estimate is asserted here.",
+      "recovery": "Never auto-retry or advance. If pending, inspect hash/receipt and account nonce; if reverted, preserve receipt/reason and re-read all affected ENS state. Re-prepare with a new explicit review. If successful but app interrupted, reconcile receipt/events/state before resuming; never resubmit solely because local status is missing."
+    }
+  ],
+  "receiptReviewPolicy": "Every write user-initiated only in a separately authorized future workflow. This exporter cannot connect to a wallet or submit transactions. No automatic retries. Confirm receipt success AND expected state before advancing.",
+  "expectedOwnerConfirmations": {
+    "maximumPlanned": 15,
+    "conditionalSkips": [
+      "T01",
+      "T02"
+    ],
+    "guestUnlockIncluded": false
+  },
+  "inputs": {
+    "lockExpiry": null,
+    "guestExpiry": null,
+    "salts": {
+      "R1": null,
+      "R2": null
+    },
+    "deploymentEpoch": 1
+  },
+  "encodingRecipes": {
+    "initializeOwnerGrants": {
+      "abi": "UserRegistryImpl",
+      "signature": "initialize((address,uint256)[])",
+      "arguments": [
+        [
+          {
+            "account": {
+              "binding": "accounts.owner",
+              "value": null,
+              "classification": "UNVERIFIED"
+            },
+            "roleBitmap": "380593917518227438537563280301172632627253505"
+          }
+        ]
+      ],
+      "encodedBytes": null
+    },
+    "commitment": {
+      "abi": "ETHRegistrar",
+      "signature": "makeCommitment(string,address,bytes32,address,address,uint64,bytes32)",
+      "output": null,
+      "secretPolicy": "CSPRNG secret generated only in separately authorized future workflow; absent from public artifacts"
+    }
+  }
+}

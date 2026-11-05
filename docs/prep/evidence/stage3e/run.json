@@ -1,0 +1,82 @@
+{
+  "stage": "3E preparation only",
+  "dateIST": "2026-11-06",
+  "startingCheckpoint": "d3fd2cce7ac75a76810202a7a83de40fe5c2fe32",
+  "branch": "master",
+  "initialWorkingTreeClean": true,
+  "sources": {
+    "contracts/scripts/stage3e/reproduce_sources.py": "1b241a4d6e76859b8cb62dd862a2daf26605ee0162957b8ac9dda0276fe8c4b8",
+    "contracts/scripts/stage3e/prepare.py": "ca71cfa22f4f133448c8017f1511e3167413d2a55d10b6ec4068415d4881df87",
+    "contracts/scripts/stage3e/test_prepare.py": "1d65b2016907f954ca83dbe64449db7c16717800d8f0156c85fd8b90ec26c88b",
+    "contracts/scripts/stage3e/read_only_probe.py": "7bd6d81bcbd7f9da67bd23b8c755a67d2668bd9e3abb13b064f8de2c4d0b04cc",
+    "contracts/scripts/stage3e/verify_live_artifacts.py": "bf48519383c306c46d08c27161a8a2933311f3d619af31cecf9f14b06be8041a",
+    "contracts/src/CredentialRegistrar.sol": "6a789bef3e0c5f61b108188aa67497f06bd816d43a3e161c76df294eb4caf7bd",
+    "contracts/src/DoorKeys.sol": "3df714f7c4b95e137f9cc9740b8339d321d859075934070e8cfc1d4c547d59dc",
+    "contracts/foundry.toml": "11d8385bfd2b28992e0a18f9d5c7bd5dd62d7ac039437a5a2a1a391df879b6f4"
+  },
+  "commands": [
+    {
+      "command": "python3 contracts/scripts/stage3e/read_only_probe.py",
+      "exitCode": 0,
+      "evidence": "current-sepolia.json"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3e/reproduce_sources.py /tmp/nak-stage3e-upstream --solc /home/l/.local/share/svm/0.8.25/solc-0.8.25",
+      "exitCode": 0,
+      "evidence": "source-reproduction.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3e/verify_live_artifacts.py /tmp/nak-stage3e-upstream",
+      "exitCode": 0,
+      "evidence": "live-artifact-comparison.json"
+    },
+    {
+      "command": "forge build --root contracts --offline",
+      "exitCode": 0,
+      "evidence": "offline-build.log",
+      "notes": "Existing naming lints and read-only signature-cache warning; no production changes or runtime test rerun."
+    },
+    {
+      "command": "python3 contracts/scripts/stage3e/prepare.py --build /tmp/nak-stage3e-upstream --check",
+      "exitCode": 0,
+      "evidence": "plan-validation.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3e/prepare.py --review",
+      "exitCode": 0,
+      "evidence": "decoded-review.txt"
+    },
+    {
+      "command": "python3 -m unittest discover -s contracts/scripts/stage3e -p 'test_*.py' -v",
+      "exitCode": 0,
+      "passed": 9,
+      "failed": 0,
+      "evidence": "local-tests.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3e/prepare.py --check",
+      "exitCode": 0,
+      "evidence": "final-validation.log",
+      "notes": "Final validator checks both nested initializer and commitment recipes in addition to all 15 transaction calls/events."
+    }
+  ],
+  "observedChainId": 11155111,
+  "observedBlock": 12071722,
+  "observedBlockHash": "0xc04ccaa3bca48c67ad47a72f7d94b3c44202413f5d548f44cb0cf1a1a139011d",
+  "failureHistory": [
+    {
+      "evidence": "deployment-trace-probe.json",
+      "kind": "Historical debug_traceTransaction probe returned HTTPError; no constructor replay output obtained."
+    }
+  ],
+  "stage3E": "PARTIAL",
+  "stage3F": "NO_GO",
+  "sourceCompilation": "VERIFIED: eight exact published creation/runtime templates and ABIs",
+  "completeSourceToLiveRuntime": "BLOCKED: independent immutable/deployment-context attestation still required",
+  "productionContractsModified": false,
+  "historicalEvidenceModified": false,
+  "walletRequests": false,
+  "liveWrites": false,
+  "commits": false,
+  "formattingNote": "Raw offline-build.log preserved with Stage 3E-only blank-at-eof diagnostic override; no historical files changed."
+}

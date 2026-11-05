@@ -1,0 +1,206 @@
+{
+  "stage": "3E final corrections only",
+  "utc": "2026-11-05T20:40:14.088306+00:00",
+  "branch": "master",
+  "head": "d3fd2cce7ac75a76810202a7a83de40fe5c2fe32",
+  "trackedFiles": 211,
+  "untrackedFiles": 79,
+  "stage3F": "NO_GO",
+  "sourceHashes": {
+    "contracts/scripts/stage3e/reproduce_sources.py": "1b241a4d6e76859b8cb62dd862a2daf26605ee0162957b8ac9dda0276fe8c4b8",
+    "contracts/scripts/stage3e/encoding_audit.py": "2dc9078b4ae5ca2376e2a3eb6cfc069d214950a2e527e39dcab5c050dbe8d76e",
+    "contracts/scripts/stage3e/test_encoding_audit.py": "b07201c354405603ef3b13082687fb9c2d481adb7286cd5b7d5442de2940d726",
+    "contracts/scripts/stage3e/prepare.py": "37bceb0b02c99de30fcf38708e20373f7b639f4defee39c7ef58ab71fd6d01ae",
+    "contracts/scripts/stage3e/test_prepare.py": "1eb4956f5379c748c97505ae22707c1ac1bf653f79b1d61e4ce2cc7c3f6ea20a",
+    "contracts/scripts/stage3e/read_only_probe.py": "7bd6d81bcbd7f9da67bd23b8c755a67d2668bd9e3abb13b064f8de2c4d0b04cc",
+    "contracts/scripts/stage3e/verify_live_artifacts.py": "bf48519383c306c46d08c27161a8a2933311f3d619af31cecf9f14b06be8041a",
+    "contracts/test/stage3e/RegistrationRoleReadback.t.sol": "b831894e40a228a620e6da2b0d393f7663b0582a8ae9373e28fc951d781efa13",
+    "contracts/src/CredentialRegistrar.sol": "6a789bef3e0c5f61b108188aa67497f06bd816d43a3e161c76df294eb4caf7bd",
+    "contracts/src/DoorKeys.sol": "3df714f7c4b95e137f9cc9740b8339d321d859075934070e8cfc1d4c547d59dc"
+  },
+  "commands": [
+    {
+      "command": "python3 -m unittest discover -s contracts/scripts/stage3e -p 'test*.py' -v",
+      "exitCode": 0,
+      "evidence": "local-tests-final-constructors.log",
+      "result": "19 passed"
+    },
+    {
+      "command": "forge test --root contracts --fork-url https://sepolia.gateway.tenderly.co --fork-block-number 12071220 --match-test testStage3ERegistrationAndInitializationRoleReadback -vv",
+      "exitCode": 0,
+      "evidence": "fork-role-readback-final.log",
+      "result": "1 passed; no broadcast"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3e/prepare.py --check",
+      "exitCode": 0,
+      "evidence": "manifest-check-final-19.log"
+    },
+    {
+      "command": "forge fmt --check contracts/test/stage3e/RegistrationRoleReadback.t.sol",
+      "exitCode": 0,
+      "evidence": "format-check-final.log"
+    },
+    {
+      "command": "python3 -m tabnanny contracts/scripts/stage3e",
+      "exitCode": 0,
+      "evidence": "python-indentation-check.log"
+    }
+  ],
+  "encodingEvidence": "offline-encoding.json",
+  "checks": [
+    {
+      "check": "approved Stage 3D checkpoint",
+      "result": "PASS",
+      "detail": "d3fd2cce7ac75a76810202a7a83de40fe5c2fe32"
+    },
+    {
+      "check": "211 tracked files unchanged",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "index empty",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "git diff --check",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "git diff --cached --check",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "all untracked paths within Stage 3E scope",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "untracked-file git whitespace checks",
+      "result": "FAIL",
+      "detail": "[{\"file\": \"docs/prep/evidence/stage3e/corrections/final-validation.log\", \"output\": \"docs/prep/evidence/stage3e/corrections/final-validation.log:2: trailing whitespace.\\n+PASS: 211 tracked files unchanged \\ndocs/prep/evidence/stage3e/corrections/final-validation.log:3: trailing whitespace.\\n+PASS: index empty \\ndocs/prep/evidence/stage3e/corrections/final-validation.log:4: trailing whitespace.\\n+PASS: git diff --check \\ndocs/prep/evidence/stage3e/corrections/final-validation.log:5: trailing whitespace.\\n+PASS: git diff --cached --check \\ndocs/prep/evidence/stage3e/corrections/final-validation.log:6: trailing whitespace.\\n+PASS: all untracked paths within Stage 3E scope \\ndocs/prep/evidence/stage3e/corrections/final-validation.log:10: trailing whitespace.\\n+PASS: Solidity formatting check \\ndocs/prep/evidence/stage3e/corrections/final-validation.log:14: trailing whitespace.\\n+PASS: offline manifest check \\n\", \"exit\": 3}, {\"file\": \"docs/prep/evidence/stage3e/corrections/validation-attempt1.log\", \"output\": \"docs/prep/evidence/stage3e/corrections/validation-attempt1.log:2: trailing whitespace.\\n+PASS: 211 tracked files unchanged \\ndocs/prep/evidence/stage3e/corrections/validation-attempt1.log:3: trailing whitespace.\\n+PASS: index empty \\ndocs/prep/evidence/stage3e/corrections/validation-attempt1.log:4: trailing whitespace.\\n+PASS: git diff --check \\ndocs/prep/evidence/stage3e/corrections/validation-attempt1.log:5: trailing whitespace.\\n+PASS: git diff --cached --check \\ndocs/prep/evidence/stage3e/corrections/validation-attempt1.log:6: trailing whitespace.\\n+PASS: all untracked paths within Stage 3E scope \\ndocs/prep/evidence/stage3e/corrections/validation-attempt1.log:10: trailing whitespace.\\n+PASS: Solidity formatting check \\ndocs/prep/evidence/stage3e/corrections/validation-attempt1.log:14: trailing whitespace.\\n+PASS: offline manifest check \\n\", \"exit\": 3}]"
+    },
+    {
+      "check": "secret-pattern scan of every untracked file",
+      "result": "PASS",
+      "detail": "{\"patterns\": {\"private_key_literal\": \"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase)\\\\s*[=:]\\\\s*[\\\\\\\"\\\\'](?:0x)?[a-zA-Z0-9 ]{32,}[\\\\\\\"\\\\']\", \"credentialed_url\": \"https?://[^\\\\s/\\\\\\\"<>]+:[^\\\\s/@\\\\\\\"<>]+@\", \"rpc_api_key_url\": \"https?://[^\\\\s\\\\\\\"<>]*(?:alchemy\\\\.com/v2/|infura\\\\.io/v3/|[?&](?:api[_-]?key|token|key)=)[a-zA-Z0-9_-]{12,}\", \"pem_private_key\": \"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----\"}, \"findings\": [], \"limits\": \"Pattern scan, not a mathematical absence-of-secrets proof; hashes, addresses and public compiled artifacts are expected.\"}"
+    },
+    {
+      "check": "Python syntax/AST and indentation checks",
+      "result": "PASS",
+      "detail": "No Python formatter configured; syntax, indentation and Git whitespace checked. No formatter result inferred."
+    },
+    {
+      "check": "Solidity formatting check",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "original Stage 3E checksum preservation",
+      "result": "PASS",
+      "detail": "{\"entries\": 43, \"archived_versions_used\": [\"contracts/scripts/stage3e/prepare.py\", \"contracts/scripts/stage3e/test_prepare.py\", \"docs/prep/stage3e/ADMIN_ROLE_CHECKLIST.md\", \"docs/prep/stage3e/FILE_INVENTORY.md\", \"docs/prep/stage3e/READINESS_REPORT.md\", \"docs/prep/stage3e/deployment-manifest.json\"], \"mismatches\": []}"
+    },
+    {
+      "check": "final offline tests",
+      "result": "PASS",
+      "detail": "19 passed, 0 failed"
+    },
+    {
+      "check": "focused pinned-fork role readback",
+      "result": "PASS",
+      "detail": "1 passed, 0 failed; pinned block 12071220; synthetic fork only"
+    },
+    {
+      "check": "offline manifest check",
+      "result": "PASS",
+      "detail": ""
+    }
+  ],
+  "fullProductionSuiteRerun": false,
+  "writes": "Local Stage 3E preparation files only; no live registration, deployment, signing, RPC write, staging, commit or push",
+  "inventory": [
+    "contracts/scripts/stage3e/encoding_audit.py",
+    "contracts/scripts/stage3e/prepare.py",
+    "contracts/scripts/stage3e/read_only_probe.py",
+    "contracts/scripts/stage3e/reproduce_sources.py",
+    "contracts/scripts/stage3e/test_encoding_audit.py",
+    "contracts/scripts/stage3e/test_prepare.py",
+    "contracts/scripts/stage3e/verify_live_artifacts.py",
+    "contracts/test/stage3e/RegistrationRoleReadback.t.sol",
+    "docs/prep/evidence/stage3e/.gitattributes",
+    "docs/prep/evidence/stage3e/SHA256SUMS",
+    "docs/prep/evidence/stage3e/corrections/SHA256SUMS",
+    "docs/prep/evidence/stage3e/corrections/final-validation.log",
+    "docs/prep/evidence/stage3e/corrections/fork-role-readback-final.log",
+    "docs/prep/evidence/stage3e/corrections/fork-role-readback.log",
+    "docs/prep/evidence/stage3e/corrections/format-check-final.log",
+    "docs/prep/evidence/stage3e/corrections/format-check.log",
+    "docs/prep/evidence/stage3e/corrections/git-status.txt",
+    "docs/prep/evidence/stage3e/corrections/initial-inventory.json",
+    "docs/prep/evidence/stage3e/corrections/inspection-failure.log",
+    "docs/prep/evidence/stage3e/corrections/local-tests-attempt1.log",
+    "docs/prep/evidence/stage3e/corrections/local-tests-final-19.log",
+    "docs/prep/evidence/stage3e/corrections/local-tests-final-constructors.log",
+    "docs/prep/evidence/stage3e/corrections/local-tests-final.log",
+    "docs/prep/evidence/stage3e/corrections/manifest-check-final-19.log",
+    "docs/prep/evidence/stage3e/corrections/manifest-check-final.log",
+    "docs/prep/evidence/stage3e/corrections/manifest-validation-final.log",
+    "docs/prep/evidence/stage3e/corrections/manifest-validation.log",
+    "docs/prep/evidence/stage3e/corrections/offline-encoding.json",
+    "docs/prep/evidence/stage3e/corrections/prior/contracts/scripts/stage3e/prepare.py",
+    "docs/prep/evidence/stage3e/corrections/prior/contracts/scripts/stage3e/test_prepare.py",
+    "docs/prep/evidence/stage3e/corrections/prior/docs/prep/stage3e/ADMIN_ROLE_CHECKLIST.md",
+    "docs/prep/evidence/stage3e/corrections/prior/docs/prep/stage3e/FILE_INVENTORY.md",
+    "docs/prep/evidence/stage3e/corrections/prior/docs/prep/stage3e/READINESS_REPORT.md",
+    "docs/prep/evidence/stage3e/corrections/prior/docs/prep/stage3e/deployment-manifest.json",
+    "docs/prep/evidence/stage3e/corrections/python-indentation-check.log",
+    "docs/prep/evidence/stage3e/corrections/run.json",
+    "docs/prep/evidence/stage3e/corrections/solidity-format.log",
+    "docs/prep/evidence/stage3e/corrections/source-review-before-whitespace-fix.json",
+    "docs/prep/evidence/stage3e/corrections/source-review.txt",
+    "docs/prep/evidence/stage3e/corrections/validation-attempt1.json",
+    "docs/prep/evidence/stage3e/corrections/validation-attempt1.log",
+    "docs/prep/evidence/stage3e/current-sepolia.json",
+    "docs/prep/evidence/stage3e/decoded-review.txt",
+    "docs/prep/evidence/stage3e/deployment-trace-probe.json",
+    "docs/prep/evidence/stage3e/ens-standard-input.json",
+    "docs/prep/evidence/stage3e/final-validation.log",
+    "docs/prep/evidence/stage3e/git-status.txt",
+    "docs/prep/evidence/stage3e/live-artifact-comparison.json",
+    "docs/prep/evidence/stage3e/live-artifact-comparison.log",
+    "docs/prep/evidence/stage3e/local-tests.log",
+    "docs/prep/evidence/stage3e/offline-build.log",
+    "docs/prep/evidence/stage3e/plan-validation.log",
+    "docs/prep/evidence/stage3e/read-only-query.log",
+    "docs/prep/evidence/stage3e/run.json",
+    "docs/prep/evidence/stage3e/source-reproduction.json",
+    "docs/prep/evidence/stage3e/source-reproduction.log",
+    "docs/prep/evidence/stage3e/upstream-artifact-index.json",
+    "docs/prep/stage3e/ADDRESS_ABI_INVENTORY.md",
+    "docs/prep/stage3e/ADMIN_ROLE_CHECKLIST.md",
+    "docs/prep/stage3e/CORRECTIONS_REVIEW.md",
+    "docs/prep/stage3e/DEPLOYMENT_SEQUENCE.md",
+    "docs/prep/stage3e/FILE_INVENTORY.md",
+    "docs/prep/stage3e/METAMASK_REVIEW_SPEC.md",
+    "docs/prep/stage3e/READINESS_REPORT.md",
+    "docs/prep/stage3e/ROOT_REGISTRATION_FEASIBILITY.md",
+    "docs/prep/stage3e/SOURCE_BYTECODE_VERIFICATION.md",
+    "docs/prep/stage3e/STAGE3F_GO_NO_GO.md",
+    "docs/prep/stage3e/abis/CredentialRegistrar.json",
+    "docs/prep/stage3e/abis/DoorKeys.json",
+    "docs/prep/stage3e/abis/ETHRegistrar.json",
+    "docs/prep/stage3e/abis/ETHRegistry.json",
+    "docs/prep/stage3e/abis/MockDAI.json",
+    "docs/prep/stage3e/abis/MockUSDC.json",
+    "docs/prep/stage3e/abis/RootRegistry.json",
+    "docs/prep/stage3e/abis/StandardRentPriceOracle.json",
+    "docs/prep/stage3e/abis/UserRegistryImpl.json",
+    "docs/prep/stage3e/abis/VerifiableFactory.json",
+    "docs/prep/stage3e/address-abi-inventory.json",
+    "docs/prep/stage3e/deployment-manifest.json"
+  ]
+}

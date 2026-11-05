@@ -1,0 +1,23 @@
+test_all_steps_distinguish_four_verification_layers_and_stay_blocked (test_encoding_audit.EncodingAuditTests.test_all_steps_distinguish_four_verification_layers_and_stay_blocked) ... ok
+test_constructor_types_encode_without_function_selector_test_only (test_encoding_audit.EncodingAuditTests.test_constructor_types_encode_without_function_selector_test_only) ... ok
+test_every_known_manifest_argument_encodes_against_independent_reference (test_encoding_audit.EncodingAuditTests.test_every_known_manifest_argument_encodes_against_independent_reference) ... ok
+test_integer_width_bytes_length_address_and_binding_mismatches_rejected (test_encoding_audit.EncodingAuditTests.test_integer_width_bytes_length_address_and_binding_mismatches_rejected) ... ok
+test_known_set_parent_arguments_match_independent_dynamic_encoding (test_encoding_audit.EncodingAuditTests.test_known_set_parent_arguments_match_independent_dynamic_encoding) ... ok
+test_nested_initializer_and_factory_dynamic_bytes_round_trip_reference (test_encoding_audit.EncodingAuditTests.test_nested_initializer_and_factory_dynamic_bytes_round_trip_reference) ... ok
+test_nested_tuple_and_event_layout_tampering_rejected (test_encoding_audit.EncodingAuditTests.test_nested_tuple_and_event_layout_tampering_rejected) ... ok
+test_registration_bitmap_source_document_manifest_and_fork_assertion_agree (test_encoding_audit.EncodingAuditTests.test_registration_bitmap_source_document_manifest_and_fork_assertion_agree) ... ok
+test_same_type_wrong_door_binding_and_event_emitter_rejected (test_encoding_audit.EncodingAuditTests.test_same_type_wrong_door_binding_and_event_emitter_rejected) ... ok
+test_all_fifteen_calls_and_events_match_exported_abis (test_prepare.PreparationTests.test_all_fifteen_calls_and_events_match_exported_abis) ... ok
+test_initializer_tuple_and_role_policy (test_prepare.PreparationTests.test_initializer_tuple_and_role_policy) ... ok
+test_missing_future_addresses_and_gas_never_fabricated (test_prepare.PreparationTests.test_missing_future_addresses_and_gas_never_fabricated) ... ok
+test_offline_exporter_has_no_network_or_wallet_imports (test_prepare.PreparationTests.test_offline_exporter_has_no_network_or_wallet_imports) ... ok
+test_own_exported_abis_equal_current_compiler_output (test_prepare.PreparationTests.test_own_exported_abis_equal_current_compiler_output) ... ok
+test_rpc_clients_refuse_every_write_or_sign_method_before_transport (test_prepare.PreparationTests.test_rpc_clients_refuse_every_write_or_sign_method_before_transport) ... ok
+test_target_tampering_and_out_of_order_dependencies_fail (test_prepare.PreparationTests.test_target_tampering_and_out_of_order_dependencies_fail) ... ok
+test_unknown_abi_or_argument_count_fails (test_prepare.PreparationTests.test_unknown_abi_or_argument_count_fails) ... ok
+test_vendored_consumed_signatures_outputs_and_mutability (test_prepare.PreparationTests.test_vendored_consumed_signatures_outputs_and_mutability) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.263s
+
+OK

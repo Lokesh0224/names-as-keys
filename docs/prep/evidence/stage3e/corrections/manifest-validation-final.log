@@ -1,0 +1,2 @@
+PASS: 15 ABI-checked planned transactions; nested initializer verified; no executable payloads or wallet/RPC capabilities
+PASS: offline manifest validation
