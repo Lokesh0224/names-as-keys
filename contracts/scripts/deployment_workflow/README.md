@@ -37,10 +37,19 @@ This starts an ephemeral loopback Anvil fork and enforces a read-only upstream. 
 
 Use the same browser profile and loopback origin for recovery. A recorded hash is offered after reload. If MetaMask returned no hash, inspect the wallet's transaction history and enter the exact hash for verification. Keep the same tab open across T03 and T04. Reload or wallet-context changes discard the unrevealed preimage. Browser storage and Web Locks coordinate one origin and profile.
 
+## T01 intent approval
+
+1. Obtain independent acceptance of the intent authorization code and a separate T01-only GO decision. In the disabled dashboard, prepare T01 and select **Revalidate T01 confirmation**. Review the fixed transaction fields, nonce and fee policy. Have the owner approve the displayed `intentDigest` and its fee ceilings. The earlier exact-packet approval does not authorize this new record or its ceilings.
+2. After separate activation authorization, serve the reviewed build and configure one record in `step-authorization.json` with `stage: "GO"`, `step: "T01"`, `kind: "T01_INTENT_V1"`, and the approved `intentDigest`. The legacy exact-packet authorization remains supported. Keep its static export null when using the intent record.
+3. In the approved wallet profile, prepare T01 again to display its latest unsigned envelope. Check the confirmation box and select **Revalidate T01 confirmation**. The dashboard checks live RPC state before offering the request. If two blocks or 120 seconds pass, or the estimate or fee changes, prepare and revalidate again. A matching intent digest needs no new durable approval, but every refreshed envelope still needs the owner's explicit dashboard confirmation.
+4. Click **Request T01 in MetaMask** only after reviewing the refreshed envelope. The runner repeats revalidation and locks the attempt before calling the wallet. Compare the exact envelope in MetaMask and approve it there. Reconcile the receipt with 12 confirmations and finalized coverage, then stop after T01.
+
+The intent digest excludes block identifiers, observation timestamps, informational latest headers, and the RPC-derived gas limit and maximum fee. It binds the rest of the candidate bundle and packet, including chain, signer, recipient, destination, calldata, nonce, ETH value, priority fee, contract identities, and the approved fee and gas policy. Changes outside the observation fields require a new intent approval. The wallet request, journal and receipt checks still bind the exact refreshed packet, including its gas limit and fees.
+
 ## Before live activation
 
 - Obtain a fresh reviewed candidate, with current owner/Mira identities, canonical state and runtime checks, funding, quote, nonce prefix and fees.
-- Obtain independent acceptance of the integrated runner and the Stage 3F GO decision, then authorize each exact packet separately. The global live flag, the legacy T01 authorization, and the sequential authorization file are closed in this checkout.
+- Obtain independent acceptance of the integrated runner and the Stage 3F GO decision, then authorize each exact packet separately or use the reviewed T01 intent procedure. The global live flag, the legacy T01 authorization, and the sequential authorization file are closed in this checkout.
 - Validate the selected MetaMask version and Sepolia RPC setup with the reviewed envelope format, including contract creation.
 - Resolve the T04 wallet privacy block before starting a live T03 commitment.
 - Verify every real receipt and deployed runtime before using dependent steps or configuring the Stage 3G frontend.
