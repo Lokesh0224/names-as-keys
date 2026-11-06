@@ -67,10 +67,23 @@ probe.onclick = async event => {
   const checkedEpoch = epoch;
   busy = true;
   render();
-  let failure = 'Could not read the disposable account nonce.';
+  let failure = 'Disposable RPC nonce request failed.';
   try {
-    const nonce = await wallet.request({ method: 'eth_getTransactionCount', params: [from, 'pending'] });
-    if (!/^0x(?:0|[1-9a-f][0-9a-f]*)$/i.test(nonce ?? '')) throw new Error();
+    const response = await fetch('/rpc', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_getTransactionCount', params: [from, 'pending'] }),
+      redirect: 'error', signal: AbortSignal.timeout(6000),
+    });
+    if (!response.ok) throw new Error();
+    failure = 'Disposable RPC returned an invalid nonce response.';
+    const reply = await response.json();
+    if (reply?.error) {
+      failure = 'Disposable RPC returned an error reading the nonce.';
+      throw new Error();
+    }
+    const nonce = reply?.result;
+    if (reply?.jsonrpc !== '2.0' || reply.id !== 1 || typeof nonce !== 'string' ||
+        !/^0x(?:0|[1-9a-f][0-9a-f]*)$/i.test(nonce)) throw new Error();
     failure = 'Could not verify the disposable account and network. Connect again.';
     const [selected] = await accounts();
     if (await network() !== chainId || selected?.toLowerCase() !== from.toLowerCase() || checkedEpoch !== epoch) {

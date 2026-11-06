@@ -44,7 +44,7 @@ if (import.meta.main) {
   createServer(async (req, res) => {
     if (req.headers.host !== '127.0.0.1:18545') return res.writeHead(403).end();
     res.setHeader('Cache-Control', 'no-store');
-    res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'; base-uri 'none'; frame-ancestors 'none'");
+    res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'");
     if (req.method === 'GET' && req.url === '/') {
       return res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }).end(
         '<title>Disposable wallet probe</title><h1>Public marker · local chain 31338</h1>' +

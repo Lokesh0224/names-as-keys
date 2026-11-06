@@ -40,9 +40,20 @@ test('probe reaches the injected wallet request and handles owner rejection', as
   const button = {}, connect = {}, status = {}, connection = {}, methods = [], events = {};
   const elements = { '#probe': button, '#connect': connect, '#status': status, '#connection': connection };
   let chain = '0x7a6a', rejectConnection = false;
-  const address = '0x' + '12'.repeat(20);
+  const address = '0x' + 'aB'.repeat(20);
+  const zeroNonce = { jsonrpc: '2.0', id: 1, result: '0x0' };
+  let rpcReply = zeroNonce;
   runInNewContext(script, {
-    TextEncoder, document: { querySelector: selector => elements[selector] },
+    TextEncoder, AbortSignal,
+    async fetch(url, options) {
+      assert.equal(url, '/rpc');
+      assert.equal(options.redirect, 'error');
+      assert.deepEqual(JSON.parse(options.body), {
+        jsonrpc: '2.0', id: 1, method: 'eth_getTransactionCount', params: [address, 'pending'],
+      });
+      return { ok: true, json: async () => rpcReply };
+    },
+    document: { querySelector: selector => elements[selector] },
     window: { ethereum: { isMetaMask: true, on: (name, handler) => { events[name] = handler; }, async request({ method, params }) {
       methods.push(method);
       if (method === 'eth_chainId') return chain;
@@ -52,11 +63,12 @@ test('probe reaches the injected wallet request and handles owner rejection', as
         return [address];
       }
       if (method === 'eth_accounts') return [address];
-      if (method === 'eth_getTransactionCount') return '0x0';
+      if (method === 'eth_getTransactionCount') throw new Error('Injected provider nonce read failed');
       assert.equal(method, 'eth_sendTransaction');
       assert.equal(status.textContent, 'Wallet request started. Reject the prompt.');
       assert.equal(params[0].data, '0x' + MARKER);
       assert.equal(params[0].chainId, '0x7a6a');
+      assert.equal(params[0].nonce, '0x0');
       throw Object.assign(new Error(), { code: 4001 });
     } } },
   });
@@ -77,9 +89,17 @@ test('probe reaches the injected wallet request and handles owner rejection', as
   await connect.onclick({ isTrusted: true });
   assert.match(connection.textContent, new RegExp(address + '.*31338'));
   assert.equal(button.disabled, false);
+  rpcReply = { jsonrpc: '2.0', id: 1, error: { code: -32603, message: 'fixture failure' } };
+  await button.onclick({ isTrusted: true });
+  assert.match(status.textContent, /RPC returned an error reading the nonce/);
+  rpcReply = { ...zeroNonce, result: '0x00' };
+  await button.onclick({ isTrusted: true });
+  assert.match(status.textContent, /invalid nonce response/);
   assert.ok(!methods.includes('eth_sendTransaction'));
+  rpcReply = zeroNonce;
   await button.onclick({ isTrusted: true });
   assert.equal(methods.at(-1), 'eth_sendTransaction');
+  assert.ok(!methods.includes('eth_getTransactionCount'));
   assert.equal(status.textContent, 'Rejected by owner.');
   events.accountsChanged();
   assert.equal(button.disabled, true);
