@@ -5,7 +5,7 @@ export const need = (condition, message) => { if (!condition) throw new Error(me
 export const same = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
 const zero = '0x' + '00'.repeat(20);
 
-export async function candidateStep(ctx, step, header, privateArgs, entries) {
+export async function candidateStep(ctx, step, header, privateArgs, entries, reviewedExpiry) {
   const { plan, inputs, observation, runtimeHashes, logicSha256, proofs } = ctx.bundle;
   const { addresses: a, interfaces: i, abis, owner } = ctx;
   const block = header.number;
@@ -139,8 +139,8 @@ export async function candidateStep(ctx, step, header, privateArgs, entries) {
   if (stage === 7) receipt = staticResult([event('R1','ParentUpdated',[a.ETHRegistry,label,owner])],
     [expect('R1','getParent',[],[a.ETHRegistry,label])]);
   if (stage === 8) {
-    const expiry = now + BigInt(inputs.expiry.lockDurationSeconds);
-    need(expiry <= BigInt(root.expiry) && expiry < 2n ** 64n, 'Lock expiry outside ancestor bounds');
+    const expiry = reviewedExpiry ?? now + BigInt(inputs.expiry.lockDurationSeconds);
+    need(expiry > now && expiry <= BigInt(root.expiry) && expiry < 2n ** 64n, 'Lock expiry outside ancestor bounds');
     args[5] = expiry;
     receipt = await registration('R1','lock',owner,owner,lockGrant,() => expiry);
   }
@@ -188,7 +188,7 @@ export async function candidateStep(ctx, step, header, privateArgs, entries) {
     await empty('Mira');
     await requireValue('R2','isEmancipated',[],[false]);
     for (const account of [inputs.mira,a.DoorKeys]) await requireCheck(roles('R2',0,account,0));
-    const expiry = now + BigInt(inputs.expiry.guestDurationSeconds);
+    const expiry = reviewedExpiry ?? now + BigInt(inputs.expiry.guestDurationSeconds);
     minimumRemaining = BigInt(inputs.expiry.guestMinimumRemainingSeconds);
     need(expiry <= BigInt(lock.expiry) && expiry < 2n ** 64n && expiry - now >= minimumRemaining, 'Guest expiry outside approved bounds');
     args[2] = expiry;

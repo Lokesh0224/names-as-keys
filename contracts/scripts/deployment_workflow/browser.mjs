@@ -99,7 +99,7 @@ async function load() {
     const review = displayed;
     if (candidate.canSubmitT01(review)) {
       if (!isConfirmationClick(event, element('t01-validate'))) throw new Error('Use the T01 confirmation button directly');
-      const hash = await candidate.submitT01(review, confirmation);
+      const hash = await candidate.submitT01(review, confirmation, event);
       element('hash').value = hash;
       displayed = undefined;
       resetConfirmation();

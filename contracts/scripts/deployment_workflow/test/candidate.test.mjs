@@ -186,6 +186,12 @@ async function activatedBuild(authorization = null, entry = "export * from './ca
         assert.match(source, /export const LIVE_EXECUTION_ALLOWED = false;/);
         return { contents: source.replace('export const LIVE_EXECUTION_ALLOWED = false;', 'export const LIVE_EXECUTION_ALLOWED = true;') };
       });
+      builder.onLoad({ filter: /[\\/]deployment_workflow[\\/]candidate\.mjs$/ }, async ({ path }) => {
+        const source = await readFile(path, 'utf8');
+        const declaration = 'function consumeConfirmationClick(event) {';
+        assert.ok(source.includes(declaration));
+        return { contents: source.replace(declaration, declaration + "\n  if (typeof window === 'undefined') return true;") };
+      });
       builder.onLoad({ filter: /t01_authorization\.mjs$/ }, () => ({
         contents: 'export const T01_AUTHORIZATION = ' + JSON.stringify(authorization),
       }));
