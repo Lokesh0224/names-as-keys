@@ -3,3 +3,5 @@ import './connection.test.mjs';
 
 import './candidate.test.mjs';
 import './private.test.mjs';
+
+import './privacy-probe.test.mjs';
