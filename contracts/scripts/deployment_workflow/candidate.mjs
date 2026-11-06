@@ -1,6 +1,7 @@
 import { AbiCoder, Interface, getCreateAddress, formatUnits, keccak256, toQuantity } from 'ethers';
 import { BrowserJournal, DeploymentWorkflow, ReadOnlyWallet, decodePacket, digest, LIVE_EXECUTION_ALLOWED } from './workflow.mjs';
 import { candidateStep, need, same } from './candidate_steps.mjs';
+import { isT01IntentAuthorization, t01IntentDigest } from './t01_intent.mjs';
 import { T01_AUTHORIZATION } from './t01_authorization.mjs';
 
 export const labelABI = ['function getLabel(uint256) view returns(string)', 'event Label(bytes32 indexed labelHash,string label)'];
@@ -28,7 +29,7 @@ function consumeConfirmationClick(event) {
 export class CandidateReview {
   #wallet; #journal; #prepared = new Map(); #secret; #epoch = 0; #busy = false;
   #handlers; #update; #privateEstimate; #random; #state; #storage; #registrationKey;
-  #provider; #t01Authorization; #locks; #grant; #authorization; #lockKey;
+  #provider; #t01Authorization; #locks; #grant; #authorization; #lockKey; #validatedIntentReview;
   constructor({ provider, bundle, storage, update = () => {}, privateEstimate, random = bytes => crypto.getRandomValues(bytes), now = () => Date.now(),
     locks = globalThis.navigator?.locks }) {
     const { plan, inputs, observation, abis, addresses } = bundle;
@@ -174,6 +175,7 @@ export class CandidateReview {
     return latest;
   }
   async prepare(stepId) {
+    this.#validatedIntentReview = undefined;
     return this.#run(epoch => this.#exclusive(async () => {
       const { plan } = this.bundle;
       const step = plan.transactions.find(s => s.id === stepId);
@@ -287,13 +289,25 @@ export class CandidateReview {
     try {
       const response = await fetch('/step-authorization.json', { cache: 'no-store', redirect: 'error', mode: 'same-origin' });
       const auth = response.ok ? await response.json() : null;
-      if (auth?.stage === 'GO' && /^T(0[1-9]|1[0-5])$/.test(auth.step) &&
-          hash(auth.planDigest) && hash(auth.packetDigest)) this.#authorization = Object.freeze(auth);
+      if (isT01IntentAuthorization(auth) || (auth?.stage === 'GO' && /^T(0[1-9]|1[0-5])$/.test(auth.step) &&
+          Object.keys(auth).length === 4 && hash(auth.planDigest) && hash(auth.packetDigest))) this.#authorization = Object.freeze(auth);
     } catch { /* A missing authorization cannot open a gate. */ }
   }
   #auth(stepId) {
     return this.#authorization?.step === stepId ? this.#authorization
       : stepId === 'T01' ? this.#t01Authorization : undefined;
+  }
+  #matchesAuthorization(auth, stepId, packet, entry) {
+    if (auth?.stage !== 'GO' || auth.step !== stepId || !packet || !entry ||
+        entry.packetDigest !== digest(packet)) return false;
+    if (isT01IntentAuthorization(auth)) {
+      const age = this.now() / 1000 - Number(BigInt(this.#validatedIntentReview?.timestamp ?? '0x0'));
+      return this.#validatedIntentReview?.epoch === this.#epoch &&
+        this.#validatedIntentReview.reviewDigest === entry.reviewDigest &&
+        age >= -15 && age <= this.bundle.inputs.expiry.maxAgeSeconds &&
+        auth.intentDigest === t01IntentDigest(this.bundle, packet);
+    }
+    return auth.planDigest === this.#state.planDigest && auth.packetDigest === entry.packetDigest;
   }
   async #send() {
     const grant = this.#grant;
@@ -302,17 +316,18 @@ export class CandidateReview {
     const { stepId, packet, attempt, epoch } = grant;
     need(stepId !== 'T04', revealBlocked);
     const auth = this.#auth(stepId);
-    need(epoch === this.#epoch && LIVE_EXECUTION_ALLOWED && auth?.stage === 'GO' && auth.step === stepId &&
-      this.#provider.isMetaMask === true && auth.planDigest === this.#state.planDigest &&
-      auth.planDigest === digest(this.bundle) && auth.packetDigest === digest(packet), 'Trusted ' + stepId + ' authorization required');
+    need(epoch === this.#epoch && LIVE_EXECUTION_ALLOWED && this.#provider.isMetaMask === true &&
+      this.#state.planDigest === digest(this.bundle) &&
+      this.#matchesAuthorization(auth, stepId, packet, this.#state.entries[stepId]),
+    'Trusted ' + stepId + ' authorization required');
     if (stepId === 'T01') this.#assertT01Envelope(packet);
     const tx = structuredClone(packet.tx);
     const persisted = this.#journal.read();
     const entry = persisted?.entries[stepId];
     need(this.#storage.getItem(this.#attemptKey(stepId)) === JSON.stringify(attempt) &&
       attempt.transactionDigest === digest(tx) &&
-      persisted?.planDigest === auth.planDigest && entry?.status === 'REQUESTING' &&
-      entry.packetDigest === auth.packetDigest, 'Durable ' + stepId + ' attempt lock missing or changed');
+      persisted?.planDigest === attempt.planDigest && entry?.status === 'REQUESTING' &&
+      entry.packetDigest === attempt.packetDigest, 'Durable ' + stepId + ' attempt lock missing or changed');
     need(epoch === this.#epoch, 'Wallet context changed');
     if (packet.creation) delete tx.to;
     return this.#provider.request({ method: 'eth_sendTransaction', params: [tx] });
@@ -325,18 +340,24 @@ export class CandidateReview {
   }
   async #validate(stepId, displayed, confirmed) {
     return this.#run(epoch => this.#exclusive(async () => {
-      const { saved } = await this.#revalidate(stepId, displayed, confirmed, epoch);
-      return { execution: 'DISABLED', step: stepId, planDigest: this.#state.planDigest,
+      this.#validatedIntentReview = undefined;
+      const { saved, packet } = await this.#revalidate(stepId, displayed, confirmed, epoch);
+      const result = { execution: 'DISABLED', step: stepId, planDigest: this.#state.planDigest,
         reviewDigest: saved.reviewDigest, packetDigest: saved.packetDigest };
+      if (stepId === 'T01') {
+        this.#validatedIntentReview = { epoch, reviewDigest: saved.reviewDigest, timestamp: displayed.snapshot.timestamp };
+        result.intentDigest = t01IntentDigest(this.bundle, packet);
+        result.intentFeePolicy = { ...this.bundle.inputs.fees };
+      }
+      return result;
     }));
   }
   canSubmit(displayed) {
     const stepId = displayed?.step;
     const auth = this.#auth(stepId);
     const saved = this.#state.entries[stepId];
-    return Boolean(stepId !== 'T04' && LIVE_EXECUTION_ALLOWED && auth?.stage === 'GO' && auth.step === stepId &&
-      auth.planDigest === this.#state.planDigest && saved?.status === 'PREPARED' &&
-      auth.packetDigest === saved.packetDigest &&
+    return Boolean(stepId !== 'T04' && LIVE_EXECUTION_ALLOWED && saved?.status === 'PREPARED' &&
+      this.#matchesAuthorization(auth, stepId, this.#prepared.get(stepId)?.packet, saved) &&
       digest(displayed) === saved.reviewDigest && !this.#storage.getItem(this.#attemptKey(stepId)));
   }
   canSubmitT01(displayed) { return displayed?.step === 'T01' && this.canSubmit(displayed); }

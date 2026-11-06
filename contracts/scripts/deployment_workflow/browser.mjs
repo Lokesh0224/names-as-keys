@@ -123,8 +123,8 @@ async function load() {
       show('status', review.step + ' pending. Verify the returned hash in Receipt review.');
       return;
     }
-    const result = await candidate.validateConfirmation(review, confirmation);
     await candidate.refreshAuthorization();
+    const result = await candidate.validateConfirmation(review, confirmation);
     confirmationLabel();
     if (displayed === review) {
       show('status', review.step === 'T04' ? 'T04 confirmation revalidated. Wallet execution remains blocked.' :

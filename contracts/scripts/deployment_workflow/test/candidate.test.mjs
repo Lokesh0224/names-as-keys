@@ -7,6 +7,7 @@ import { build } from 'esbuild';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { digest } from '../workflow.mjs';
+import { isT01IntentAuthorization, t01IntentDigest } from '../t01_intent.mjs';
 
 const bundle = await loadCandidateBundle();
 const { inputs, addresses, abis } = bundle;
@@ -616,4 +617,103 @@ test('T04 privacy block applies even in the activated wallet build', async t => 
   await assert.rejects(active.submitStep({ step: 'T04' }, true), /T04 execution blocked.*reveal boundary/);
   assert.deepEqual(f.calls, []);
   assert.equal(f.records.size, 0);
+});
+
+test('T01 intent retains every fixed transaction field and fee policy across observation changes', () => {
+  const { data } = fixture();
+  const step = data.plan.transactions[0];
+  const packet = { tx: { from: inputs.owner, to: step.candidateDestination, chainId: '0xaa36a7',
+    data: step.candidateCalldata, value: '0x0', nonce: '0x32', gas: '0x100', maxFeePerGas: '0x10',
+    maxPriorityFeePerGas: '0x1' }, arguments: step.candidateArguments };
+  const approved = t01IntentDigest(data, packet);
+  const refreshed = structuredClone(data);
+  refreshed.plan.snapshot.hash = txHash;
+  refreshed.plan.snapshot.number = '0x65';
+  refreshed.observation.blockHash = txHash;
+  refreshed.observation.reviewContext = { latest: { hash: txHash }, observedAtSeconds: 20 };
+  assert.notEqual(digest(refreshed), digest(data));
+  assert.equal(t01IntentDigest(refreshed, { ...packet,
+    tx: { ...packet.tx, gas: '0x120', maxFeePerGas: '0x20' } }), approved);
+  for (const field of ['from', 'to', 'chainId', 'data', 'value', 'nonce', 'maxPriorityFeePerGas']) {
+    assert.notEqual(t01IntentDigest(data, { ...packet, tx: { ...packet.tx, [field]: '0x99' } }), approved, field);
+  }
+  for (const field of ['maxFeePerGasWei', 'maxPriorityFeePerGasWei', 'maxGasPerStep',
+    'maxTotalWei', 'gasLimitMultiplierPercent']) {
+    const changed = structuredClone(data);
+    changed.inputs.fees[field] = '999';
+    assert.notEqual(t01IntentDigest(changed, packet), approved, field);
+  }
+  const changed = structuredClone(data);
+  changed.plan.snapshot.nonce = '0x33';
+  assert.notEqual(t01IntentDigest(changed, packet), approved);
+  changed.plan.snapshot.nonce = data.plan.snapshot.nonce;
+  changed.plan.transactions[1].candidateCalldata = '0xab';
+  assert.notEqual(t01IntentDigest(changed, packet), approved);
+  const auth = { stage: 'GO', step: 'T01', kind: 'T01_INTENT_V1', intentDigest: approved };
+  assert.equal(isT01IntentAuthorization(auth), true);
+  assert.equal(isT01IntentAuthorization({ ...auth, step: 'T02' }), false);
+});
+
+test('durable T01 intent requires fresh local confirmation and permits one request after observation refresh', async t => {
+  const f = fixture();
+  const draft = open(f);
+  const initial = await draft.prepare('T01');
+  const approved = await draft.validateT01Confirmation(initial, true);
+  draft.close();
+
+  const auth = { stage: 'GO', step: 'T01', kind: 'T01_INTENT_V1', intentDigest: approved.intentDigest };
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, json: async () => auth });
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const { CandidateReview: ActiveCandidate } = await activatedBuild();
+  f.data.plan.snapshot.hash = txHash;
+  f.data.observation.blockHash = txHash;
+
+  let head = { ...block, baseFeePerGas: '0x14' };
+  let sends = 0;
+  const request = f.provider.request.bind(f.provider);
+  f.provider.request = async input => {
+    if (input.method === 'eth_getBlockByNumber') {
+      return input.params[0] === 'latest' || input.params[0] === head.number ? head : block;
+    }
+    if (input.method === 'eth_sendTransaction') {
+      sends++;
+      assert.equal(input.params[0].maxFeePerGas, '0x29');
+      return txHash;
+    }
+    return request(input);
+  };
+  const args = { provider: f.provider, bundle: f.data, storage: f.storage, now: f.now,
+    locks: { request: (_key, _options, callback) => callback({}) } };
+  const active = new ActiveCandidate(args);
+  t.after(() => active.close());
+  await active.refreshAuthorization();
+  let review = await active.prepare('T01');
+  assert.equal(active.canSubmit(review), false);
+  const refreshed = await active.validateT01Confirmation(review, true);
+  assert.notEqual(refreshed.planDigest, approved.planDigest);
+  assert.notEqual(refreshed.packetDigest, approved.packetDigest);
+  assert.equal(refreshed.intentDigest, approved.intentDigest);
+  assert.equal(active.canSubmit(review), true);
+
+  f.setAccounts([inputs.mira]);
+  await assert.rejects(active.submitT01(review, true), /Selected owner and Sepolia/);
+  f.setAccounts([inputs.owner]);
+  f.setChain('0x1');
+  await assert.rejects(active.submitT01(review, true), /Selected owner and Sepolia/);
+  f.setChain('0xaa36a7');
+  head = { ...head, number: '0x67', hash: txHash };
+  await assert.rejects(active.submitT01(review, true), /snapshot expired/);
+  assert.equal(sends, 0);
+
+  review = await active.prepare('T01');
+  assert.equal(active.canSubmit(review), false);
+  await active.validateT01Confirmation(review, true);
+  assert.equal(active.canSubmit(review), true);
+  assert.equal(await active.submitT01(review, true), txHash);
+  await assert.rejects(active.submitT01(review, true), /execution disabled/);
+  const reload = new ActiveCandidate(args);
+  t.after(() => reload.close());
+  await assert.rejects(reload.prepare('T01'), /Prior T01 attempt/);
+  assert.equal(sends, 1);
 });

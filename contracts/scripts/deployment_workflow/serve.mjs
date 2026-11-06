@@ -1,5 +1,6 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { isT01IntentAuthorization } from './t01_intent.mjs';
 import { privateEstimateHandler, estimateOnOwnedFork } from './private_server.mjs';
 
 const root = '/tmp/nak-local-deployment-review';
@@ -15,9 +16,9 @@ createServer(async (req, res) => {
     let auth = null;
     try {
       const record = JSON.parse(await readFile(new URL('./step-authorization.json', import.meta.url), 'utf8'));
-      if (record?.stage === 'GO' && /^T(0[1-9]|1[0-5])$/.test(record.step) &&
+      if (isT01IntentAuthorization(record) || (record?.stage === 'GO' && /^T(0[1-9]|1[0-5])$/.test(record.step) &&
           Object.keys(record).length === 4 &&
-          [record.planDigest, record.packetDigest].every(value => typeof value === 'string' && /^0x[\da-f]{64}$/i.test(value))) {
+          [record.planDigest, record.packetDigest].every(value => typeof value === 'string' && /^0x[\da-f]{64}$/i.test(value)))) {
         auth = record;
       }
     } catch { /* Invalid configuration leaves authorization closed. */ }
