@@ -683,32 +683,62 @@ test('durable T01 intent requires fresh local confirmation and permits one reque
     }
     return request(input);
   };
-  const args = { provider: f.provider, bundle: f.data, storage: f.storage, now: f.now,
+  let now = f.now();
+  const args = { provider: f.provider, bundle: f.data, storage: f.storage, now: () => now,
     locks: { request: (_key, _options, callback) => callback({}) } };
   const active = new ActiveCandidate(args);
   t.after(() => active.close());
   await active.refreshAuthorization();
-  let review = await active.prepare('T01');
+  const review = await active.prepare('T01');
+  const savedReview = active.journal().entries.T01;
+  const originalHead = head;
+  const advanceHead = number => {
+    now += 121_000;
+    head = { ...head, number, hash: txHash, timestamp: '0x' + (now / 1000).toString(16) };
+  };
+  // Keep the original recovery anchor available while moving both freshness limits.
+  const readHead = f.provider.request;
+  f.provider.request = input => input.method === 'eth_getBlockByNumber' && input.params[0] === originalHead.number
+    ? Promise.resolve(originalHead) : readHead(input);
+  advanceHead('0x67');
   assert.equal(active.canSubmit(review), false);
+  f.answers.allowance = [1];
+  await assert.rejects(active.validateT01Confirmation(review, true), /state, estimate or fee changed/);
+  assert.equal(active.canSubmit(review), false);
+  f.answers.allowance = [0];
   const refreshed = await active.validateT01Confirmation(review, true);
   assert.notEqual(refreshed.planDigest, approved.planDigest);
   assert.notEqual(refreshed.packetDigest, approved.packetDigest);
   assert.equal(refreshed.intentDigest, approved.intentDigest);
+  assert.deepEqual(active.journal().entries.T01, savedReview);
   assert.equal(active.canSubmit(review), true);
 
-  f.setAccounts([inputs.mira]);
-  await assert.rejects(active.submitT01(review, true), /Selected owner and Sepolia/);
-  f.setAccounts([inputs.owner]);
-  f.setChain('0x1');
-  await assert.rejects(active.submitT01(review, true), /Selected owner and Sepolia/);
-  f.setChain('0xaa36a7');
-  head = { ...head, number: '0x67', hash: txHash };
-  await assert.rejects(active.submitT01(review, true), /snapshot expired/);
+  for (const [change, restore, error] of [
+    [() => f.setAccounts([inputs.mira]), () => f.setAccounts([inputs.owner]), /Selected owner and Sepolia/],
+    [() => f.setChain('0x1'), () => f.setChain('0xaa36a7'), /Selected owner and Sepolia/],
+    [() => f.setNonce('0x33'), () => f.setNonce('0x32'), /nonce/],
+    [() => f.setEstimate('0xc351'), () => f.setEstimate('0xc350'), /state, estimate or fee changed/],
+    [() => { head.baseFeePerGas = '0x15'; }, () => { head.baseFeePerGas = '0x14'; }, /state, estimate or fee changed/],
+    [() => { f.answers.allowance = [1]; }, () => { f.answers.allowance = [0]; }, /state, estimate or fee changed/],
+  ]) {
+    change();
+    await assert.rejects(active.submitT01(review, true), error);
+    assert.equal(active.canSubmit(review), false);
+    assert.equal([...f.records.keys()].some(key => key.startsWith('nak-t01-attempt:')), false);
+    restore();
+    await active.validateT01Confirmation(review, true);
+  }
+  const modified = structuredClone(review);
+  modified.unsignedTransaction.data += '00';
+  await assert.rejects(active.validateT01Confirmation(modified, true), /review was modified/);
   assert.equal(sends, 0);
 
-  review = await active.prepare('T01');
-  assert.equal(active.canSubmit(review), false);
+  const beforeSendReload = new ActiveCandidate(args);
+  t.after(() => beforeSendReload.close());
+  await beforeSendReload.refreshAuthorization();
+  assert.equal(beforeSendReload.canSubmit(review), false);
   await active.validateT01Confirmation(review, true);
+  advanceHead('0x6a');
   assert.equal(active.canSubmit(review), true);
   assert.equal(await active.submitT01(review, true), txHash);
   await assert.rejects(active.submitT01(review, true), /execution disabled/);
@@ -721,8 +751,10 @@ test('durable T01 intent requires fresh local confirmation and permits one reque
 for (const { change, expectedError } of [
   { change: 'head advances', expectedError: /Review snapshot expired/ },
   { change: 'anchor reorgs', expectedError: /Review block lost canonicality/ },
+  { change: 'time expires during nonce reads', expectedError: /Review snapshot expired/ },
+  { change: 'head advances during recovery anchor read', expectedError: /Review snapshot expired/ },
 ]) {
-  test('T01 blocks wallet handoff when the ' + change + ' during final account verification', async t => {
+  test('T01 blocks wallet handoff when ' + change + ' at final verification', async t => {
     const f = fixture();
     const draft = open(f);
     const initial = await draft.prepare('T01');
@@ -735,7 +767,8 @@ for (const { change, expectedError } of [
     }) });
     t.after(() => { globalThis.fetch = originalFetch; });
     const { CandidateReview: ActiveCandidate } = await activatedBuild();
-    const active = new ActiveCandidate({ provider: f.provider, bundle: f.data, storage: f.storage, now: f.now,
+    let now = f.now();
+    const active = new ActiveCandidate({ provider: f.provider, bundle: f.data, storage: f.storage, now: () => now,
       locks: { request: (_key, _options, callback) => callback({}) } });
     t.after(() => active.close());
     await active.refreshAuthorization();
@@ -744,17 +777,25 @@ for (const { change, expectedError } of [
     assert.equal(review.snapshot.number, '0x64');
     assert.equal(active.canSubmit(review), true);
 
-    let head = '0x66', anchorHash = block.hash, accountReads = 0, sends = 0;
+    let head = '0x66', anchorHash = block.hash, accountReads = 0, nonceReads = 0, sends = 0;
     const request = f.provider.request.bind(f.provider);
     f.provider.request = async input => {
       if (input.method === 'eth_getBlockByNumber') {
         if (input.params[0] === 'latest') return { ...block, number: head };
-        if (input.params[0] === block.number) return { ...block, hash: anchorHash };
+        if (input.params[0] === '0x66') return { ...block, number: '0x66', hash: anchorHash };
+        if (input.params[0] === block.number && change === 'head advances during recovery anchor read') {
+          await Promise.resolve();
+          head = '0x69';
+        }
       }
-      if (input.method === 'eth_accounts' && ++accountReads === 3) {
+      if (input.method === 'eth_accounts' && ++accountReads === 2) {
         await Promise.resolve();
-        if (change === 'head advances') head = '0x67';
-        else anchorHash = txHash;
+        if (change === 'head advances') head = '0x69';
+        if (change === 'anchor reorgs') anchorHash = txHash;
+      }
+      if (input.method === 'eth_getTransactionCount' && ++nonceReads === 8 && change === 'time expires during nonce reads') {
+        await Promise.resolve();
+        now += 121_000;
       }
       if (input.method === 'eth_sendTransaction') {
         sends++;
@@ -763,7 +804,7 @@ for (const { change, expectedError } of [
       return request(input);
     };
     await assert.rejects(active.submitT01(review, true), expectedError);
-    assert.equal(accountReads, 3);
+    assert.equal(accountReads, 2);
     assert.equal(sends, 0);
     assert.equal(active.journal().entries.T01.status, 'PREPARED');
     assert.equal([...f.records.keys()].some(key => key.startsWith('nak-t01-attempt:')), false);

@@ -253,13 +253,23 @@ export class CandidateReview {
     need(saved.reviewDigest === digest(displayed) && saved.packetDigest === digest(prepared.packet), stepId + ' review was modified');
     const { review, packet } = prepared;
     if (stepId === 'T01') this.#assertT01Envelope(packet);
-    await this.#fresh(review.snapshot, epoch);
+    const auth = this.#auth(stepId);
+    const durable = LIVE_EXECUTION_ALLOWED && stepId === 'T01' && isT01IntentAuthorization(auth) &&
+      auth.intentDigest === t01IntentDigest(this.bundle, packet);
+    if (!durable) await this.#fresh(review.snapshot, epoch);
     await this.#prerequisites(step);
     const fresh = await this.#evaluate(step, epoch,
       () => stepId === 'T03' || stepId === 'T04' ? packet.arguments : undefined,
-      stepId === 'T08' || stepId === 'T15' ? packet.arguments.at(-1) : undefined, review.snapshot);
+      stepId === 'T08' || stepId === 'T15' ? packet.arguments.at(-1) : undefined, durable ? undefined : review.snapshot);
     need(digest(fresh.packet) === saved.packetDigest && fresh.review.estimate === review.estimate,
       stepId + ' state, estimate or fee changed. Prepare a new review.');
+    if (durable && fresh.header.number !== review.snapshot.number) {
+      // The displayed block still anchors receipt recovery, even after it ages out.
+      const anchor = await this.read('eth_getBlockByNumber', [review.snapshot.number, false]);
+      need(anchor?.hash === review.snapshot.hash, 'Review block lost canonicality');
+    } else if (durable) {
+      need(fresh.header.hash === review.snapshot.hash, 'Review block lost canonicality');
+    }
     const [, latestNonce, pendingNonce] = await Promise.all([
       this.identity(),
       this.read('eth_getTransactionCount', [this.owner, 'latest']),
@@ -269,10 +279,10 @@ export class CandidateReview {
       'Wallet context or owner nonce changed during confirmation');
     // Finish wallet and nonce reads before the last chain snapshot check.
     // Submission persists the attempt and calls the wallet without another RPC read.
-    const latest = await this.#checkSnapshotFreshness(review.snapshot, epoch);
+    const latest = await this.#checkSnapshotFreshness(durable ? fresh.header : review.snapshot, epoch);
     need(BigInt(packet.tx.maxFeePerGas) >= BigInt(latest.baseFeePerGas) + BigInt(packet.tx.maxPriorityFeePerGas),
       'Base fee moved outside reviewed envelope');
-    return { saved, packet };
+    return { saved, packet, durable };
   }
   #assertT01Envelope(packet) {
     const { tx } = packet;
@@ -307,10 +317,9 @@ export class CandidateReview {
     if (auth?.stage !== 'GO' || auth.step !== stepId || !packet || !entry ||
         entry.packetDigest !== digest(packet)) return false;
     if (isT01IntentAuthorization(auth)) {
-      const age = this.now() / 1000 - Number(BigInt(this.#validatedIntentReview?.timestamp ?? '0x0'));
-      return this.#validatedIntentReview?.epoch === this.#epoch &&
+      return this.#validatedIntentReview?.durable === true &&
+        this.#validatedIntentReview.epoch === this.#epoch &&
         this.#validatedIntentReview.reviewDigest === entry.reviewDigest &&
-        age >= -15 && age <= this.bundle.inputs.expiry.maxAgeSeconds &&
         auth.intentDigest === t01IntentDigest(this.bundle, packet);
     }
     return auth.planDigest === this.#state.planDigest && auth.packetDigest === entry.packetDigest;
@@ -347,11 +356,11 @@ export class CandidateReview {
   async #validate(stepId, displayed, confirmed) {
     return this.#run(epoch => this.#exclusive(async () => {
       this.#validatedIntentReview = undefined;
-      const { saved, packet } = await this.#revalidate(stepId, displayed, confirmed, epoch);
+      const { saved, packet, durable } = await this.#revalidate(stepId, displayed, confirmed, epoch);
       const result = { execution: 'DISABLED', step: stepId, planDigest: this.#state.planDigest,
         reviewDigest: saved.reviewDigest, packetDigest: saved.packetDigest };
       if (stepId === 'T01') {
-        this.#validatedIntentReview = { epoch, reviewDigest: saved.reviewDigest, timestamp: displayed.snapshot.timestamp };
+        this.#validatedIntentReview = { epoch, reviewDigest: saved.reviewDigest, durable };
         result.intentDigest = t01IntentDigest(this.bundle, packet);
         result.intentFeePolicy = { ...this.bundle.inputs.fees };
       }
@@ -383,7 +392,10 @@ export class CandidateReview {
       return this.#exclusive(async () => {
         await this.refreshAuthorization();
         authorized();
-        const { saved, packet } = await this.#revalidate(stepId, displayed, confirmed, epoch);
+        const { saved, packet } = await this.#revalidate(stepId, displayed, confirmed, epoch).catch(error => {
+          if (stepId === 'T01') this.#validatedIntentReview = undefined;
+          throw error;
+        });
         authorized();
         for (const prior of this.bundle.plan.transactions) {
           const outstanding = this.#attempt(prior.id);
