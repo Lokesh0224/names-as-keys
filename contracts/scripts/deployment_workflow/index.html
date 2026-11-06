@@ -17,6 +17,11 @@
     <label>Step <select id="step"></select></label>
     <button id="prepare" disabled>Prepare unsigned review</button>
     <pre id="review"></pre>
+    <fieldset id="t01-confirmation" hidden>
+      <legend>T01 unsigned handoff</legend>
+      <label><input id="t01-confirmed" type="checkbox"> I confirm the displayed recipient, destination, mint of 8.000021 MockUSDC and maximum network fee (reservedWei).</label>
+      <button id="t01-validate" type="button" disabled>Revalidate T01 confirmation</button>
+    </fieldset>
   </section>
   <section>
     <h2>Receipt review</h2>

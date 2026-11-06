@@ -14,17 +14,18 @@ const hasNull = (x) => x === null || x === undefined || (typeof x === 'object' &
 const READS = new Set(['eth_accounts', 'eth_chainId', 'eth_getBlockByNumber', 'eth_getTransactionCount',
   'eth_getTransactionByHash', 'eth_getTransactionReceipt', 'eth_getCode', 'eth_call', 'eth_getBalance', 'eth_estimateGas']);
 
-/** Shipped adapter never exposes signing, account-permission prompts or submission. */
+/** The exported wallet adapter exposes only read methods. */
 export class ReadOnlyWallet {
+  #provider;
   testOnly = false;
-  constructor(provider) { this.provider = provider; }
-  request(args) { need(READS.has(args.method), 'Live execution and permission/signature requests disabled'); return this.provider.request(args); }
-  async submitReviewed(tx, authorization) {
-    need(LIVE_EXECUTION_ALLOWED && authorization?.stage === 'GO' && hash(authorization.planDigest) && hash(authorization.packetDigest), 'Live execution disabled; independent approval required');
-    return this.provider.request({ method: 'eth_sendTransaction', params: [tx] });
+  constructor(provider) { this.#provider = provider; }
+  request({ method, params }) {
+    need(READS.has(method), 'Live execution and permission/signature requests disabled');
+    return this.#provider.request({ method, params });
   }
-  on(name, handler) { this.provider.on?.(name, handler); }
-  removeListener(name, handler) { this.provider.removeListener?.(name, handler); }
+  async submitReviewed() { throw new Error('Direct wallet submission disabled'); }
+  on(name, handler) { this.#provider.on?.(name, handler); }
+  removeListener(name, handler) { this.#provider.removeListener?.(name, handler); }
 }
 
 export function decodePacket(packet) {
@@ -100,11 +101,11 @@ export class BrowserJournal {
 }
 
 export class DeploymentWorkflow {
-  constructor({ provider, owner, policy, steps, journal, testSubmission = false, executionEnabled = false, now = () => Date.now() }) {
+  constructor({ provider, owner, policy, steps, journal, testSubmission = false, now = () => Date.now() }) {
     this.provider = provider; this.owner = getAddress(owner); this.policy = freeze(clone(policy)); this.steps = freeze(clone(steps));
     need(Number.isInteger(policy.confirmations) && policy.confirmations > 0 && policy.finalityTag === 'finalized', 'Invalid finality policy');
     this.planDigest = digest({ owner: this.owner, policy, steps }); this.journal = journal; this.now = now;
-    this.testSubmission = testSubmission && provider.testOnly === true; this.executionEnabled = executionEnabled === true; this.epoch = 0; this.busy = false;
+    this.testSubmission = testSubmission && provider.testOnly === true; this.epoch = 0; this.busy = false;
     this.packets = new Map(); this.reviewed = new Map(); this.history = [];
     this.entries = Object.fromEntries(steps.map(s => [s.id, { status: 'BLOCKED', attempts: [] }]));
     const restored = journal.read();
@@ -222,8 +223,7 @@ export class DeploymentWorkflow {
   }
   async submitTestOnly(id) { need(this.testSubmission, 'Execution disabled: test transport required'); return this.submitReviewed(id); }
   async submitReviewed(id) {
-    const live = this.executionEnabled && LIVE_EXECUTION_ALLOWED && this.policy.liveAuthorization?.stage === 'GO' && this.policy.liveAuthorization?.transactionPlanDigest === digest(this.steps);
-    need(this.testSubmission || live, 'Execution disabled; no live request authorized');
+    need(this.testSubmission, 'Execution disabled; test transport required');
     need(!this.busy && !this.storageBroken, 'Workflow busy/storage unavailable');
     const current = this.packets.get(id); need(current && this.entry(id).status === 'REVIEWED' && this.reviewed.has(id), 'Explicit review acknowledgement required');
     this.busy = true;
@@ -240,8 +240,7 @@ export class DeploymentWorkflow {
       this.save(); // Durable nonce lock BEFORE any provider request.
       const tx = { ...current.packet.tx }; if (current.packet.creation) delete tx.to;
       try {
-        const result = this.testSubmission ? await this.provider.request({ method: 'eth_sendTransaction', params: [tx] }) :
-          await this.provider.submitReviewed(tx, { stage: 'GO', planDigest: this.planDigest, packetDigest: digest(current.packet) });
+        const result = await this.provider.request({ method: 'eth_sendTransaction', params: [tx] });
         need(hash(result), 'Provider returned no valid hash');
         attempt.hash = result; attempt.status = 'PENDING'; entry.status = 'PENDING'; entry.receiptHash = result; this.save();
         return result;
