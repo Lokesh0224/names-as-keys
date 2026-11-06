@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1115">
+  <title>Names as Keys</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="importmap">{"imports":{"ethers":"/ethers.js"}}</script>
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/owner"><span class="brandmark" aria-hidden="true">⬡</span> Names as Keys</a>
+    <nav aria-label="Views">
+      <a id="owner-link" href="/owner">Owner</a>
+      <a id="guest-link" hidden>Guest</a>
+      <a id="door-link" href="/door">Door display</a>
+    </nav>
+    <span id="mode" class="badge">CONNECTING</span>
+  </header>
+  <main id="content" aria-busy="true"><p class="muted">Loading door state…</p></main>
+  <p id="announcement" class="sr-only" role="status"></p>
+</body>
+</html>
