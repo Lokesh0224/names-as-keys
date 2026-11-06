@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 
 export const MARKER = Buffer.from('NAK PUBLIC WALLET TRACE FIXTURE').toString('hex');
 const chain = '0x7a6a'; // 31338
+const networkId = '31338';
 const upstream = 'http://127.0.0.1:18546';
 const allowed = new Set([
   'eth_chainId', 'net_version', 'eth_blockNumber', 'eth_getBlockByNumber', 'eth_getBlockByHash',
@@ -13,14 +14,18 @@ const allowed = new Set([
 
 export async function traceRpc(call, forward, record) {
   const { method, params, id } = call ?? {};
-  const valid = call?.jsonrpc === '2.0' && Array.isArray(params) && allowed.has(method);
+  // MetaMask can omit params on this parameterless network read.
+  const netVersion = method === 'net_version';
+  const validParams = netVersion ? params === undefined || (Array.isArray(params) && params.length === 0)
+    : Array.isArray(params);
+  const valid = call?.jsonrpc === '2.0' && validParams && allowed.has(method);
   record({
     method: typeof method === 'string' && /^(eth|net|wallet|anvil|debug)_[A-Za-z]{1,50}$/.test(method) ? method : 'other',
     marker: JSON.stringify(params ?? []).toLowerCase().includes(MARKER),
     disposition: valid ? 'forwarded-to-local-node' : 'blocked',
   });
   if (!valid) return { jsonrpc: '2.0', id: id ?? null, error: { code: -32601, message: 'Probe permits local reads only' } };
-  return forward(call);
+  return forward(netVersion ? { jsonrpc: '2.0', id, method, params: [] } : call);
 }
 
 async function forward(payload) {
@@ -33,7 +38,8 @@ async function forward(payload) {
 
 if (import.meta.main) {
   const check = await forward({ jsonrpc: '2.0', id: 1, method: 'eth_chainId', params: [] });
-  if (check.result !== chain) throw new Error('Start the disposable Anvil chain 31338 on port 18546 first.');
+  const network = await forward({ jsonrpc: '2.0', id: 2, method: 'net_version', params: [] });
+  if (check.result !== chain || network.result !== networkId) throw new Error('Start the disposable Anvil chain 31338 on port 18546 first.');
   const script = await readFile(new URL('./wallet.mjs', import.meta.url));
   createServer(async (req, res) => {
     if (req.headers.host !== '127.0.0.1:18545') return res.writeHead(403).end();
