@@ -160,13 +160,19 @@ export class CandidateReview {
       await this.#verify(prior.id, receiptHash);
     }
   }
-  async #checkSnapshotFreshness(header, epoch) {
+  async #checkSnapshotFreshness(header, epoch, requireStableHead = false) {
     const { expiry } = this.bundle.inputs;
-    const [latest, canonical] = await Promise.all([
-      this.read('eth_getBlockByNumber', ['latest', false]),
-      this.read('eth_getBlockByNumber', [header.number, false]),
-    ]);
+    const readLatest = () => this.read('eth_getBlockByNumber', ['latest', false]);
+    const readAnchor = () => this.read('eth_getBlockByNumber', [header.number, false]);
+    const before = requireStableHead ? await readLatest() : undefined;
+    const anchor = requireStableHead ? await readAnchor() : undefined;
+    const [latest, canonical] = await Promise.all([readLatest(), requireStableHead ? anchor : readAnchor()]);
     need(headerOK(latest) && canonical?.hash === header.hash, 'Review block lost canonicality');
+    // A head change during the canonical lookup invalidates this handoff observation.
+    if (requireStableHead) {
+      need(before?.hash === latest.hash && before.number === latest.number, 'Head changed during final verification. Revalidate T01.');
+      need(latest.number !== header.number || latest.hash === header.hash, 'Review block lost canonicality');
+    }
     const lag = BigInt(latest.number) - BigInt(header.number);
     const age = this.now() / 1000 - Number(BigInt(header.timestamp));
     need(lag >= 0n && lag <= BigInt(expiry.maxAgeBlocks) && age >= -15 && age <= expiry.maxAgeSeconds, 'Review snapshot expired');
@@ -206,7 +212,7 @@ export class CandidateReview {
       return structuredClone(review);
     }));
   }
-  async #evaluate(step, epoch, resolvePrivateArgs = () => undefined, reviewedExpiry, previewHeader) {
+  async #evaluate(step, epoch, resolvePrivateArgs = () => undefined, reviewedExpiry, previewHeader, reviewedTx) {
     const { inputs } = this.bundle;
     const stepId = step.id;
     const header = await this.read('eth_getBlockByNumber', ['latest', false]);
@@ -220,15 +226,20 @@ export class CandidateReview {
     const privateArgs = resolvePrivateArgs();
     const spec = await candidateStep(this, step, header, privateArgs, this.#state.entries, reviewedExpiry);
     const { args } = spec;
-    const { tx, creation } = this.#envelope(step, header, args);
+    const { tx, creation } = this.#envelope(step, header, args, reviewedTx);
     const fee = BigInt(tx.maxFeePerGas), tip = BigInt(tx.maxPriorityFeePerGas);
+    if (reviewedTx) {
+      need(fee >= BigInt(header.baseFeePerGas) + tip, 'Base fee moved outside reviewed envelope');
+      tx.gas = reviewedTx.gas;
+    }
     const estimateTx = { ...tx };
     if (creation) delete estimateTx.to;
     let estimate;
     try {
       estimate = BigInt(await (stepId === 'T04' ? this.#privateEstimate(estimateTx, header) : this.read('eth_estimateGas', [estimateTx, header.number])));
     } catch { throw new Error('Exact gas estimate unavailable'); }
-    const gas = (estimate * BigInt(inputs.fees.gasLimitMultiplierPercent) + 99n) / 100n;
+    const gas = reviewedTx ? BigInt(reviewedTx.gas) :
+      (estimate * BigInt(inputs.fees.gasLimitMultiplierPercent) + 99n) / 100n;
     const reserve = gas * fee;
     const spent = this.bundle.plan.transactions.slice(0, this.bundle.plan.transactions.indexOf(step))
       .reduce((sum, prior) => sum + BigInt(this.#state.entries[prior.id]?.costWei ?? 0), 0n);
@@ -260,7 +271,8 @@ export class CandidateReview {
     await this.#prerequisites(step);
     const fresh = await this.#evaluate(step, epoch,
       () => stepId === 'T03' || stepId === 'T04' ? packet.arguments : undefined,
-      stepId === 'T08' || stepId === 'T15' ? packet.arguments.at(-1) : undefined, durable ? undefined : review.snapshot);
+      stepId === 'T08' || stepId === 'T15' ? packet.arguments.at(-1) : undefined,
+      durable ? undefined : review.snapshot, durable ? packet.tx : undefined);
     need(digest(fresh.packet) === saved.packetDigest && fresh.review.estimate === review.estimate,
       stepId + ' state, estimate or fee changed. Prepare a new review.');
     if (durable && fresh.header.number !== review.snapshot.number) {
@@ -279,7 +291,7 @@ export class CandidateReview {
       'Wallet context or owner nonce changed during confirmation');
     // Finish wallet and nonce reads before the last chain snapshot check.
     // Submission persists the attempt and calls the wallet without another RPC read.
-    const latest = await this.#checkSnapshotFreshness(durable ? fresh.header : review.snapshot, epoch);
+    const latest = await this.#checkSnapshotFreshness(durable ? fresh.header : review.snapshot, epoch, durable);
     need(BigInt(packet.tx.maxFeePerGas) >= BigInt(latest.baseFeePerGas) + BigInt(packet.tx.maxPriorityFeePerGas),
       'Base fee moved outside reviewed envelope');
     return { saved, packet, durable };
@@ -459,15 +471,15 @@ export class CandidateReview {
     need(at > 0n && at === BigInt(commitBlock.timestamp) && BigInt(header.timestamp) >= at + max &&
       (await this.read('eth_getBlockByNumber', [header.number, false]))?.hash === header.hash, blocked);
   }
-  #envelope(step, header, args) {
+  #envelope(step, header, args, reviewedTx) {
     const { inputs } = this.bundle;
     const iface = this.interfaces[step.abi];
     const creation = step.signature.startsWith('constructor(');
     const data = creation ? this.bundle.creation[step.abi] + iface.encodeDeploy(args).slice(2) : iface.encodeFunctionData(step.signature, args);
     need(same(step.signer.address, this.owner) && (!step.candidateCalldata || same(step.candidateCalldata, data)), 'Reviewed sender/calldata changed');
     if (creation) need(same(getCreateAddress({ from: this.owner, nonce: BigInt(step.candidateNonce) }), step.candidateCreationAddress), 'Reviewed CREATE prediction changed');
-    const tip = 1n;
-    const fee = 2n * BigInt(header.baseFeePerGas) + tip;
+    const tip = reviewedTx ? BigInt(reviewedTx.maxPriorityFeePerGas) : 1n;
+    const fee = reviewedTx ? BigInt(reviewedTx.maxFeePerGas) : 2n * BigInt(header.baseFeePerGas) + tip;
     need(fee <= BigInt(inputs.fees.maxFeePerGasWei) && tip <= BigInt(inputs.fees.maxPriorityFeePerGasWei), 'Fee exceeds approved ceiling');
     const tx = { from: this.owner, to: step.candidateDestination ?? '', data, value: '0x0', chainId: '0xaa36a7',
       nonce: step.candidateNonce, maxFeePerGas: toQuantity(fee), maxPriorityFeePerGas: toQuantity(tip) };

@@ -669,7 +669,7 @@ test('durable T01 intent requires fresh local confirmation and permits one reque
   f.data.plan.snapshot.hash = txHash;
   f.data.observation.blockHash = txHash;
 
-  let head = { ...block, baseFeePerGas: '0x14' };
+  let head = { ...block, baseFeePerGas: '0x11' };
   let sends = 0;
   const request = f.provider.request.bind(f.provider);
   f.provider.request = async input => {
@@ -678,7 +678,7 @@ test('durable T01 intent requires fresh local confirmation and permits one reque
     }
     if (input.method === 'eth_sendTransaction') {
       sends++;
-      assert.equal(input.params[0].maxFeePerGas, '0x29');
+      assert.deepEqual(input.params[0], review.unsignedTransaction);
       return txHash;
     }
     return request(input);
@@ -701,24 +701,35 @@ test('durable T01 intent requires fresh local confirmation and permits one reque
   f.provider.request = input => input.method === 'eth_getBlockByNumber' && input.params[0] === originalHead.number
     ? Promise.resolve(originalHead) : readHead(input);
   advanceHead('0x67');
+  head.baseFeePerGas = '0x12';
   assert.equal(active.canSubmit(review), false);
   f.answers.allowance = [1];
   await assert.rejects(active.validateT01Confirmation(review, true), /state, estimate or fee changed/);
   assert.equal(active.canSubmit(review), false);
   f.answers.allowance = [0];
   const refreshed = await active.validateT01Confirmation(review, true);
+  const simulation = f.calls.filter(call => call.method === 'eth_estimateGas').at(-1);
+  assert.deepEqual(simulation.params, [review.unsignedTransaction, '0x67']);
+  assert.equal(review.unsignedTransaction.maxFeePerGas, '0x23');
   assert.notEqual(refreshed.planDigest, approved.planDigest);
   assert.notEqual(refreshed.packetDigest, approved.packetDigest);
   assert.equal(refreshed.intentDigest, approved.intentDigest);
   assert.deepEqual(active.journal().entries.T01, savedReview);
   assert.equal(active.canSubmit(review), true);
+  head.baseFeePerGas = '0x22';
+  assert.equal((await active.validateT01Confirmation(review, true)).packetDigest, refreshed.packetDigest);
+  head.baseFeePerGas = '0x23';
+  await assert.rejects(active.validateT01Confirmation(review, true), /Base fee moved outside reviewed envelope/);
+  assert.equal(active.canSubmit(review), false);
+  head.baseFeePerGas = '0x22';
+  await active.validateT01Confirmation(review, true);
 
   for (const [change, restore, error] of [
     [() => f.setAccounts([inputs.mira]), () => f.setAccounts([inputs.owner]), /Selected owner and Sepolia/],
     [() => f.setChain('0x1'), () => f.setChain('0xaa36a7'), /Selected owner and Sepolia/],
     [() => f.setNonce('0x33'), () => f.setNonce('0x32'), /nonce/],
     [() => f.setEstimate('0xc351'), () => f.setEstimate('0xc350'), /state, estimate or fee changed/],
-    [() => { head.baseFeePerGas = '0x15'; }, () => { head.baseFeePerGas = '0x14'; }, /state, estimate or fee changed/],
+    [() => { head.baseFeePerGas = '0x23'; }, () => { head.baseFeePerGas = '0x22'; }, /Base fee moved outside reviewed envelope/],
     [() => { f.answers.allowance = [1]; }, () => { f.answers.allowance = [0]; }, /state, estimate or fee changed/],
   ]) {
     change();
@@ -731,6 +742,8 @@ test('durable T01 intent requires fresh local confirmation and permits one reque
   const modified = structuredClone(review);
   modified.unsignedTransaction.data += '00';
   await assert.rejects(active.validateT01Confirmation(modified, true), /review was modified/);
+  modified.unsignedTransaction = { ...review.unsignedTransaction, maxFeePerGas: '0x25' };
+  await assert.rejects(active.validateT01Confirmation(modified, true), /review was modified/);
   assert.equal(sends, 0);
 
   const beforeSendReload = new ActiveCandidate(args);
@@ -740,7 +753,9 @@ test('durable T01 intent requires fresh local confirmation and permits one reque
   await active.validateT01Confirmation(review, true);
   advanceHead('0x6a');
   assert.equal(active.canSubmit(review), true);
-  assert.equal(await active.submitT01(review, true), txHash);
+  const submission = active.submitT01(review, true);
+  await assert.rejects(active.submitT01(review, true), /Review already in progress/);
+  assert.equal(await submission, txHash);
   await assert.rejects(active.submitT01(review, true), /execution disabled/);
   const reload = new ActiveCandidate(args);
   t.after(() => reload.close());
@@ -753,6 +768,9 @@ for (const { change, expectedError } of [
   { change: 'anchor reorgs', expectedError: /Review block lost canonicality/ },
   { change: 'time expires during nonce reads', expectedError: /Review snapshot expired/ },
   { change: 'head advances during recovery anchor read', expectedError: /Review snapshot expired/ },
+  { change: 'base fee rises during wallet reads', expectedError: /Base fee moved outside reviewed envelope/ },
+  { change: 'base fee rises during nonce reads', expectedError: /Base fee moved outside reviewed envelope/ },
+  { change: 'base fee rises during final canonical lookup', expectedError: /Head changed during final verification/ },
 ]) {
   test('T01 blocks wallet handoff when ' + change + ' at final verification', async t => {
     const f = fixture();
@@ -778,11 +796,20 @@ for (const { change, expectedError } of [
     assert.equal(active.canSubmit(review), true);
 
     let head = '0x66', anchorHash = block.hash, accountReads = 0, nonceReads = 0, sends = 0;
+    let canonicalReads = 0;
+    let latestBaseFee = block.baseFeePerGas;
     const request = f.provider.request.bind(f.provider);
     f.provider.request = async input => {
       if (input.method === 'eth_getBlockByNumber') {
-        if (input.params[0] === 'latest') return { ...block, number: head };
-        if (input.params[0] === '0x66') return { ...block, number: '0x66', hash: anchorHash };
+        if (input.params[0] === 'latest') return { ...block, number: head, baseFeePerGas: latestBaseFee };
+        if (input.params[0] === '0x66') {
+          if (++canonicalReads === 2 && change === 'base fee rises during final canonical lookup') {
+            await Promise.resolve();
+            head = '0x67';
+            latestBaseFee = '0x21';
+          }
+          return { ...block, number: '0x66', hash: anchorHash };
+        }
         if (input.params[0] === block.number && change === 'head advances during recovery anchor read') {
           await Promise.resolve();
           head = '0x69';
@@ -792,10 +819,18 @@ for (const { change, expectedError } of [
         await Promise.resolve();
         if (change === 'head advances') head = '0x69';
         if (change === 'anchor reorgs') anchorHash = txHash;
+        if (change === 'base fee rises during wallet reads') {
+          head = '0x67';
+          latestBaseFee = '0x21';
+        }
       }
-      if (input.method === 'eth_getTransactionCount' && ++nonceReads === 8 && change === 'time expires during nonce reads') {
+      if (input.method === 'eth_getTransactionCount' && ++nonceReads === 8) {
         await Promise.resolve();
-        now += 121_000;
+        if (change === 'time expires during nonce reads') now += 121_000;
+        if (change === 'base fee rises during nonce reads') {
+          head = '0x67';
+          latestBaseFee = '0x21';
+        }
       }
       if (input.method === 'eth_sendTransaction') {
         sends++;
