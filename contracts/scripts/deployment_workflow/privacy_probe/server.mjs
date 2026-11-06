@@ -49,7 +49,9 @@ if (import.meta.main) {
       return res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }).end(
         '<title>Disposable wallet probe</title><h1>Public marker · local chain 31338</h1>' +
         '<p>Use a disposable MetaMask profile. Reject the wallet prompt.</p>' +
-        '<button id="probe">Open disposable wallet prompt</button><p id="status" role="status"></p>' +
+        '<button id="connect">Connect disposable wallet</button>' +
+        '<p id="connection">Wallet disconnected.</p>' +
+        '<button id="probe" disabled>Open disposable wallet prompt</button><p id="status" role="status"></p>' +
         '<script type="module" src="/wallet.mjs"></script>');
     }
     if (req.method === 'GET' && req.url === '/wallet.mjs') return res.writeHead(200, { 'content-type': 'text/javascript' }).end(script);

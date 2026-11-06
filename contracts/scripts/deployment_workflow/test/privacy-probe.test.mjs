@@ -37,13 +37,20 @@ test('net_version accepts omitted or empty params and broadcasts stay blocked', 
 
 test('probe reaches the injected wallet request and handles owner rejection', async () => {
   const script = await readFile(new URL('../privacy_probe/wallet.mjs', import.meta.url), 'utf8');
-  const button = {}, status = {}, methods = [];
+  const button = {}, connect = {}, status = {}, connection = {}, methods = [], events = {};
+  const elements = { '#probe': button, '#connect': connect, '#status': status, '#connection': connection };
+  let chain = '0x7a6a', rejectConnection = false;
   const address = '0x' + '12'.repeat(20);
   runInNewContext(script, {
-    TextEncoder, document: { querySelector: selector => selector === '#probe' ? button : status },
-    window: { ethereum: { isMetaMask: true, async request({ method, params }) {
+    TextEncoder, document: { querySelector: selector => elements[selector] },
+    window: { ethereum: { isMetaMask: true, on: (name, handler) => { events[name] = handler; }, async request({ method, params }) {
       methods.push(method);
-      if (method === 'eth_chainId') return '0x7a6a';
+      if (method === 'eth_chainId') return chain;
+      if (method === 'eth_requestAccounts') {
+        if (rejectConnection) throw Object.assign(new Error(), { code: 4001 });
+        events.accountsChanged();
+        return [address];
+      }
       if (method === 'eth_accounts') return [address];
       if (method === 'eth_getTransactionCount') return '0x0';
       assert.equal(method, 'eth_sendTransaction');
@@ -53,7 +60,34 @@ test('probe reaches the injected wallet request and handles owner rejection', as
       throw Object.assign(new Error(), { code: 4001 });
     } } },
   });
+  assert.equal(button.disabled, true);
+  await button.onclick({ isTrusted: true });
+  await connect.onclick({ isTrusted: false });
+  assert.deepEqual(methods, []);
+  chain = '0xaa36a7';
+  await connect.onclick({ isTrusted: true });
+  assert.deepEqual(methods, ['eth_chainId']);
+  assert.equal(button.disabled, true);
+  chain = '0x7a6a';
+  rejectConnection = true;
+  await connect.onclick({ isTrusted: true });
+  assert.equal(status.textContent, 'Wallet connection rejected.');
+  assert.equal(button.disabled, true);
+  rejectConnection = false;
+  await connect.onclick({ isTrusted: true });
+  assert.match(connection.textContent, new RegExp(address + '.*31338'));
+  assert.equal(button.disabled, false);
+  assert.ok(!methods.includes('eth_sendTransaction'));
   await button.onclick({ isTrusted: true });
   assert.equal(methods.at(-1), 'eth_sendTransaction');
   assert.equal(status.textContent, 'Rejected by owner.');
+  events.accountsChanged();
+  assert.equal(button.disabled, true);
+  assert.match(status.textContent, /account changed/);
+  await connect.onclick({ isTrusted: true });
+  events.chainChanged();
+  assert.equal(button.disabled, true);
+  assert.match(status.textContent, /network changed/);
+  await button.onclick({ isTrusted: true });
+  assert.equal(methods.filter(method => method === 'eth_sendTransaction').length, 1);
 });
