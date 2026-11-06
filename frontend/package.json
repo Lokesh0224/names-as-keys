@@ -1,0 +1,10 @@
+{
+  "name": "names-as-keys-frontend",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "ethers": "6.17.0",
+    "qrcode": "1.5.3"
+  },
+  "version": "0.1.0"
+}
