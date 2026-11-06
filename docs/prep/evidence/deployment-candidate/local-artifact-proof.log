@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/l/EthMumbai2026/names-as-keys/contracts/scripts/deployment_candidate/compile_local.py", line 16, in <module>
+    assert value['abi']==artifact['abi']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: constructor/page-load equivalent never requests accounts
+ok 1 - constructor/page-load equivalent never requests accounts
+  ---
+  duration_ms: 1.610757
+  type: 'test'
+  ...
+# Subtest: no user click or untrusted synthetic DOM click cannot request permission
+ok 2 - no user click or untrusted synthetic DOM click cannot request permission
+  ---
+  duration_ms: 0.951345
+  type: 'test'
+  ...
+# Subtest: test click marker cannot be used with a non-test provider
+ok 3 - test click marker cannot be used with a non-test provider
+  ---
+  duration_ms: 0.436098
+  type: 'test'
+  ...
+# Subtest: connection accepts selected owner/Sepolia without signing or sending
+ok 4 - connection accepts selected owner/Sepolia without signing or sending
+  ---
+  duration_ms: 1.401858
+  type: 'test'
+  ...
+# Subtest: wrong selected owner fails connection verification
+ok 5 - wrong selected owner fails connection verification
+  ---
+  duration_ms: 0.682988
+  type: 'test'
+  ...
+# Subtest: wrong network fails without requesting a network switch
+ok 6 - wrong network fails without requesting a network switch
+  ---
+  duration_ms: 0.723342
+  type: 'test'
+  ...
+# Subtest: permission rejection is recorded without retry
+ok 7 - permission rejection is recorded without retry
+  ---
+  duration_ms: 0.437552
+  type: 'test'
+  ...
+# Subtest: context changes invalidate previously verified connection without more RPC
+ok 8 - context changes invalidate previously verified connection without more RPC
+  ---
+  duration_ms: 0.680188
+  type: 'test'
+  ...
+# Subtest: chain change during identity reads cannot verify stale context
+ok 9 - chain change during identity reads cannot verify stale context
+  ---
+  duration_ms: 0.576532
+  type: 'test'
+  ...
+# Subtest: concurrent connect clicks produce one permission request
+ok 10 - concurrent connect clicks produce one permission request
+  ---
+  duration_ms: 1.77649
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22.965716

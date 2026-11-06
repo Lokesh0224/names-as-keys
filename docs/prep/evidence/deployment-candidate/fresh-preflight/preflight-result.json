@@ -1,0 +1,165 @@
+{
+  "classification": "FRESH_READ_ONLY_PREFLIGHT_AT_PREPARATION_NOT_LIVE_AUTHORIZATION",
+  "preparedUTC": "2026-11-06T02:24:16.486Z",
+  "snapshot": {
+    "number": "0xb83a77",
+    "hash": "0xa769c26b9f46fb3705fd61a53ca431f9769a3b5708dd62ddb84e2ab5ff08b766",
+    "timestamp": "0x6aed3a40"
+  },
+  "latestAtPreparation": {
+    "number": "0xb83a78",
+    "hash": "0x0d3ab41ed23c9d83e6712d54dddfccb32048cf829068a2eda45b7e57f48f4e7a",
+    "timestamp": "0x6aed3a4c",
+    "baseFeePerGas": "0xf"
+  },
+  "freshness": {
+    "wallAgeSeconds": 16.486000061035156,
+    "blockAge": "1",
+    "maxAgeSeconds": 120,
+    "maxAgeBlocks": 2,
+    "passedAtPreparation": true
+  },
+  "nonces": {
+    "snapshot": "0x32",
+    "latest": "0x32",
+    "pending": "0x32",
+    "agreement": true
+  },
+  "reviewedCodeIdentities": [
+    {
+      "name": "ETHRegistry",
+      "address": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+      "codeHash": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98",
+      "match": true
+    },
+    {
+      "name": "ETHRegistrar",
+      "address": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+      "codeHash": "0xb025a7edb8e81862c2d28857211a7a91c1fb2b17c5bcf28b983987067f083c2a",
+      "match": true
+    },
+    {
+      "name": "RootRegistry",
+      "address": "0xb458d6a3a77919449d03e7a6903c26827c1ec43f",
+      "codeHash": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98",
+      "match": true
+    },
+    {
+      "name": "UpgradableUniversalResolverProxy",
+      "address": "0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe",
+      "codeHash": "0xf7ead24f8e5e731683ed38f7cd5052db9e3e8150fb2b5bc76c1a1bb450af74c5",
+      "match": true
+    },
+    {
+      "name": "ManagedUniversalResolverProxy",
+      "address": "0x6d80F2172CFdEc5730fE683860C33d26fC42e6F1",
+      "codeHash": "0xba6ae56546e53515a294152a398155a1094ef337abdb76bc541f2d78744b4b12",
+      "match": true
+    },
+    {
+      "name": "UniversalResolverV2",
+      "address": "0x24e1d8e068620b647ca097f961a61055f4f42d72",
+      "codeHash": "0xba000662dd1e21589f13962b7d6c23638d040698cb74006e1f9d78fd10a74753",
+      "match": true
+    },
+    {
+      "name": "VerifiableFactory",
+      "address": "0xda70306c98e97ece36f997a21368e53298572991",
+      "codeHash": "0x141dc0d5ee8c60ae9b9cce12c870d3babc28719602238ee0f77016a9f1916265",
+      "match": true
+    },
+    {
+      "name": "UserRegistryImpl",
+      "address": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+      "codeHash": "0xed6d71bc90b0882fa63ef78a8dddabff2730b4c1cab9eab2ad91fa2aacd269f7",
+      "match": true
+    },
+    {
+      "name": "PermissionedResolverImpl",
+      "address": "0x115eb53f0c60696633855f90b138178fb40b2b2c",
+      "codeHash": "0x02d6c15c6443251e5d3c5acbd971d66057c8e13ee0d0f046d5c65cd27a20b007",
+      "match": true
+    },
+    {
+      "name": "PublicResolverV2",
+      "address": "0xdc4a563d00f5c3012b699794eb9e13a561be386f",
+      "codeHash": "0x04359a1efd638740104492646990972a028c2f74da718798545b9a5c4f4ff860",
+      "match": true
+    },
+    {
+      "name": "StandardRentPriceOracle",
+      "address": "0x8196665d4ca7488b6474a9ec8e7d2719fb42263a",
+      "codeHash": "0x69ea77f5ed37a8fd60ee59d82fbaad59dbd02995d59b462139c02f0cc0009f88",
+      "match": true
+    },
+    {
+      "name": "MockUSDC",
+      "address": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+      "codeHash": "0xa9a4749f886f5035336f6e16dce5ca6f339ae73f76e94ad4b8f46a447dc335f3",
+      "match": true
+    },
+    {
+      "name": "MockDAI",
+      "address": "0xf6fac8a58a0be13b9197f27c41b73162fe32572b",
+      "codeHash": "0x951cd0a95008826dc60d6ac8fd817ede568a8b482fa171aa0c9f71430b3cddef",
+      "match": true
+    },
+    {
+      "name": "LabelStore",
+      "address": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+      "codeHash": "0x4ae0bd010e15f87a091e364daf14c40acd8453587f72db75823ee69b72d51c0c",
+      "match": true
+    },
+    {
+      "name": "WrapperRegistryImpl",
+      "address": "0xbe768b63e5fbbfbb0ae97e9064e0002df8001880",
+      "codeHash": "0xffc3aba1241b66c4fd5f5a83848ee7897bc7cd7ec30421812338c31bee6dc40b",
+      "match": true
+    },
+    {
+      "name": "BatchRegistrar",
+      "address": "0x4a4c8b7cdab6b19dc2cdb417cdb53a2ccbaf5322",
+      "codeHash": "0x8061eea4f4e297d177c472285786923d69874d849ba37bce0088db99c6422596",
+      "match": true
+    }
+  ],
+  "proxyLogic": {
+    "address": "0xC41576B4B809B99CF0fF2e5B41b4F147cd9b6BDd",
+    "sourceReconciledHashMatch": true
+  },
+  "collisionChecks": {
+    "R1": {
+      "address": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+      "code": "0x",
+      "empty": true
+    },
+    "R2": {
+      "address": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+      "code": "0x",
+      "empty": true
+    },
+    "CredentialRegistrar": {
+      "address": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+      "code": "0x",
+      "empty": true
+    },
+    "DoorKeys": {
+      "address": "0x93ac7E046AcdE7BBFb3F5086775bcA5032c6c7e6",
+      "code": "0x",
+      "empty": true
+    }
+  },
+  "ownerBudget": {
+    "balanceWei": "0xc4b4334f8400dec",
+    "approvedTotalCeilingWei": "30000000000000000",
+    "sufficient": true
+  },
+  "caps": {
+    "rentPassed": true,
+    "baseFeeBelowMaxFee": true,
+    "liveGasEstimates": {},
+    "exactPerStepFeeAndGasPackets": "DEFERRED; no estimate requested in this preflight"
+  },
+  "liveExecutionAllowed": false,
+  "stage3F": "NO_GO"
+}

@@ -1,0 +1,1 @@
+PASS: fresh unsigned packet; 16 reviewed runtimes plus factory logic matched; no live writes, gas estimates or private-session input

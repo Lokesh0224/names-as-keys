@@ -1,0 +1,250 @@
+{
+  "stage": "Final candidate preparation only",
+  "stage3F": "NO_GO",
+  "utc": "2026-11-06T01:33:50.809755+00:00",
+  "displayTimezone": "Asia/Calcutta",
+  "head": "a23821d7fd8056c0ec473d67d18890e775a16f11",
+  "modified": [
+    "contracts/scripts/deployment_workflow/README.md",
+    "contracts/scripts/deployment_workflow/browser.mjs",
+    "contracts/scripts/deployment_workflow/build.mjs",
+    "contracts/scripts/deployment_workflow/index.html",
+    "contracts/scripts/deployment_workflow/package.json"
+  ],
+  "new": [
+    "contracts/scripts/deployment_candidate/common.mjs",
+    "contracts/scripts/deployment_candidate/compile_local.py",
+    "contracts/scripts/deployment_candidate/derive.mjs",
+    "contracts/scripts/deployment_candidate/inspect.mjs",
+    "contracts/scripts/deployment_candidate/prediction.mjs",
+    "contracts/scripts/deployment_candidate/prepare.mjs",
+    "contracts/scripts/deployment_candidate/simulate.mjs",
+    "contracts/scripts/deployment_candidate/test.mjs",
+    "contracts/scripts/deployment_candidate/upstream_proxy.mjs",
+    "contracts/scripts/deployment_workflow/connection.mjs",
+    "contracts/scripts/deployment_workflow/test/all.mjs",
+    "contracts/scripts/deployment_workflow/test/connection.test.mjs",
+    "docs/prep/deployment-candidate/APPROVED_INPUTS.json",
+    "docs/prep/deployment-candidate/CANDIDATE_REPORT.md",
+    "docs/prep/deployment-candidate/FILE_INVENTORY.md",
+    "docs/prep/deployment-candidate/review-plan.json",
+    "docs/prep/evidence/deployment-candidate/SHA256SUMS",
+    "docs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch",
+    "docs/prep/evidence/deployment-candidate/candidate-preparation-final.log",
+    "docs/prep/evidence/deployment-candidate/candidate-preparation.log",
+    "docs/prep/evidence/deployment-candidate/candidate-tests-final.log",
+    "docs/prep/evidence/deployment-candidate/candidate-tests.log",
+    "docs/prep/evidence/deployment-candidate/connection-tests.log",
+    "docs/prep/evidence/deployment-candidate/final-validation.log",
+    "docs/prep/evidence/deployment-candidate/independent-predictions.log",
+    "docs/prep/evidence/deployment-candidate/local-artifact-proof-attempt1.log",
+    "docs/prep/evidence/deployment-candidate/local-artifact-proof-attempt2.log",
+    "docs/prep/evidence/deployment-candidate/local-artifact-proof.json",
+    "docs/prep/evidence/deployment-candidate/local-artifact-proof.log",
+    "docs/prep/evidence/deployment-candidate/public-bindings-initial.json",
+    "docs/prep/evidence/deployment-candidate/public-bindings.json",
+    "docs/prep/evidence/deployment-candidate/public-inspection.log",
+    "docs/prep/evidence/deployment-candidate/run.json",
+    "docs/prep/evidence/deployment-candidate/simulation-attempt1.log",
+    "docs/prep/evidence/deployment-candidate/simulation-final.log",
+    "docs/prep/evidence/deployment-candidate/simulation-result-attempt1.json",
+    "docs/prep/evidence/deployment-candidate/simulation-result-proxy-pass.json",
+    "docs/prep/evidence/deployment-candidate/simulation-result.json",
+    "docs/prep/evidence/deployment-candidate/simulation-verified.log",
+    "docs/prep/evidence/deployment-candidate/ui-build-approved.log",
+    "docs/prep/evidence/deployment-candidate/ui-build-complete.log",
+    "docs/prep/evidence/deployment-candidate/ui-build-final.log",
+    "docs/prep/evidence/deployment-candidate/ui-build.log",
+    "docs/prep/evidence/deployment-candidate/workflow-tests-final.log",
+    "docs/prep/evidence/deployment-candidate/workflow-tests.log"
+  ],
+  "sourceHashes": {
+    "contracts/scripts/deployment_workflow/README.md": "c52190d401cffccbe022ac04c6314cb63284c845fcc82a9f7614ce2562658840",
+    "contracts/scripts/deployment_workflow/browser.mjs": "e5fe5b9f50955ca82538deaa51fb2c1d5dac5ec48ba57212fa59a1e62cb3778b",
+    "contracts/scripts/deployment_workflow/build.mjs": "1e9e132b04a6fd6e3a7487054b3349d0f160c310e9e04951ba331278db67fc20",
+    "contracts/scripts/deployment_workflow/index.html": "5d0506f2f9b2779442594ecb40cd1dedbee2ef3f895800bc578e2571d5854a1c",
+    "contracts/scripts/deployment_workflow/package.json": "ff4a581173b84dcb27fd063f3a6c21d35d586ca64193b34e46dad5a6fbb43a62",
+    "contracts/scripts/deployment_candidate/common.mjs": "d4a10df1276a9956894df9d153bdb27cb17f1b9db0beaa913bb3b0e4031b7e1d",
+    "contracts/scripts/deployment_candidate/compile_local.py": "ca1f250c89832eee55a389b460c63b71b659a9e24d565699ab29a9ef115b1873",
+    "contracts/scripts/deployment_candidate/derive.mjs": "d560b6a16a4785237e42f118344bc74985a25348805d794d16908be3111965d0",
+    "contracts/scripts/deployment_candidate/inspect.mjs": "f78d473d953d53bcee0321bafc1ca26a7dd8933473a3ea531d14c04e08917658",
+    "contracts/scripts/deployment_candidate/prediction.mjs": "9662f02b04ff28d11b27fd300fa29327edc28e1c0db0c6328a2d06ccc2b412f2",
+    "contracts/scripts/deployment_candidate/prepare.mjs": "3b353c564654c5795c4357fc4a1ffbf74a0d53d41f15bfa644f94d23e8dc8635",
+    "contracts/scripts/deployment_candidate/simulate.mjs": "cc1dab7224e425182067ad243ba3c26e830e1a8d123f209091770e12984dc2e1",
+    "contracts/scripts/deployment_candidate/test.mjs": "24a5b3092e2c25cb61072b35029b0ae0c4c1e59d8fdda1ddf191bbf08ba6fc4e",
+    "contracts/scripts/deployment_candidate/upstream_proxy.mjs": "a93495117486c1790c10a904fa342fe48983983b46dfd63883af3303f6543458",
+    "contracts/scripts/deployment_workflow/connection.mjs": "3c13a034bfc23256273eb6372aab59eec7c22ed7b6445645a68f6bc9b637325e",
+    "contracts/scripts/deployment_workflow/test/all.mjs": "de4b6b667f932165a8c09dab4399b90211a2306e9c5daf8cf988202bb13b9899",
+    "contracts/scripts/deployment_workflow/test/connection.test.mjs": "161d89d1d9aecc9a6426890c07990f8bafacadbc0fe5345b6aef1f46f665da66",
+    "docs/prep/deployment-candidate/APPROVED_INPUTS.json": "89bc15d3ce200bb1f2d6253b0156b3d2d5a0d5dba234936611c001d42833ab5e",
+    "docs/prep/deployment-candidate/CANDIDATE_REPORT.md": "70d4a766091a6458ca8aaa5de3b55ca11b8b85c77209f64ed3aa9de92fd061f3",
+    "docs/prep/deployment-candidate/FILE_INVENTORY.md": "df50182181d74e1766502f6c1d858690c8a7ecb0724c79e52f4b627dcac6cc1a",
+    "docs/prep/deployment-candidate/review-plan.json": "892b8d31b48012af36080c3ba2d017e32a756cf2b8dcb279b31ffc2616c65b8c"
+  },
+  "checks": [
+    {
+      "check": "approved HEAD unchanged",
+      "status": "PASS",
+      "detail": "a23821d7fd8056c0ec473d67d18890e775a16f11"
+    },
+    {
+      "check": "tracked changes limited to connection/UI/launch integration",
+      "status": "PASS",
+      "detail": "[\"contracts/scripts/deployment_workflow/README.md\", \"contracts/scripts/deployment_workflow/browser.mjs\", \"contracts/scripts/deployment_workflow/build.mjs\", \"contracts/scripts/deployment_workflow/index.html\", \"contracts/scripts/deployment_workflow/package.json\"]"
+    },
+    {
+      "check": "new files limited to candidate and connection work",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "index empty",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "production and historical evidence unchanged",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "live execution core unchanged and hard-disabled",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "workflow and connection tests",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "candidate guards tests",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "exact static candidate local simulation",
+      "status": "PASS",
+      "detail": "15 local-only receipts; all events, hierarchy, roles and full runtime bytes checked; no live receipt promoted"
+    },
+    {
+      "check": "upstream read-only proxy enforced",
+      "status": "PASS",
+      "detail": "No public eth_call/sign/send forwarding; known private bytes filtered before forwarding"
+    },
+    {
+      "check": "public candidate omits private/live fields",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_workflow/browser.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_workflow/build.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_candidate/common.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_candidate/derive.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_candidate/inspect.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_candidate/prediction.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_candidate/prepare.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_candidate/simulate.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_candidate/test.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_candidate/upstream_proxy.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_workflow/connection.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_workflow/test/all.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax contracts/scripts/deployment_workflow/test/connection.test.mjs",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Python syntax/indentation",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "credential-pattern scan",
+      "status": "PASS",
+      "detail": "{\"findings\": [], \"scope\": \"Changed/new textual files. Actual fork preimages intentionally never exported; script/transport schema is the primary privacy control.\"}"
+    },
+    {
+      "check": "git diff --check",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "new file whitespace",
+      "status": "FAIL",
+      "detail": "[{\"file\": \"docs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch\", \"output\": \"docs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:8: trailing whitespace.\\n+ \\ndocs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:11: trailing whitespace.\\n+ \\ndocs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:14: trailing whitespace.\\n+ \\ndocs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:22: trailing whitespace.\\n+ \\ndocs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:25: trailing whitespace.\\n+ \\ndocs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:28: trailing whitespace.\\n+ \\ndocs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:33: trailing whitespace.\\n+ \\ndocs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:43: trailing whitespace.\\n+ \\ndocs/prep/evidence/deployment-candidate/SOURCE_DIFF.patch:48: trailing whitespace.\\n+ \\n\"}]"
+    }
+  ],
+  "tests": {
+    "workflowAndConnection": {
+      "passed": 72,
+      "failed": 0,
+      "log": "workflow-tests-final.log"
+    },
+    "candidate": {
+      "passed": 8,
+      "failed": 0,
+      "log": "candidate-tests-final.log"
+    },
+    "localFork": {
+      "includedTransactions": 15,
+      "status": "PASS",
+      "log": "simulation-verified.log"
+    }
+  },
+  "liveWalletRequestsPerformed": false,
+  "liveTransactionsPerformed": false,
+  "registrationPreimagesExported": false,
+  "gitMutationsPerformed": false,
+  "actualMetaMaskOwnerConnect": "Pending owner click; no agent click or extension permission request",
+  "simulator": "Owned loopback-only Anvil, read-only upstream proxy, no state cache/dump, no native output persisted; private preimages RAM-only",
+  "failureHistory": "Initial compiler ABI ordering assertion failed; output preserved. Semantic ABI entries and exact code bytes matched on correction. Initial/proxy/final local simulation results preserved separately."
+}

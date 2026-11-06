@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node test/workflow.test.mjs",
+    "test": "node test/all.mjs",
     "build": "node build.mjs"
   },
   "dependencies": { "ethers": "6.17.0" },

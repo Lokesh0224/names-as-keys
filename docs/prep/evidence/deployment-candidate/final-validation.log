@@ -1,0 +1,28 @@
+PASS: approved HEAD unchanged a23821d7fd8056c0ec473d67d18890e775a16f11
+PASS: tracked changes limited to connection/UI/launch integration ["contracts/scripts/deployment_workflow/README.md", "contracts/scripts/deployment_workflow/browser.mjs", "contracts/scripts/deployment_workflow/build.mjs", "contracts/scripts/deployment_workflow/index.html", "contracts/scripts/deployment_workflow/package.json"]
+PASS: new files limited to candidate and connection work
+PASS: index empty
+PASS: production and historical evidence unchanged
+PASS: live execution core unchanged and hard-disabled
+PASS: workflow and connection tests
+PASS: candidate guards tests
+PASS: exact static candidate local simulation 15 local-only receipts; all events, hierarchy, roles and full runtime bytes checked; no live receipt promoted
+PASS: upstream read-only proxy enforced No public eth_call/sign/send forwarding; known private bytes filtered before forwarding
+PASS: public candidate omits private/live fields
+PASS: JS syntax contracts/scripts/deployment_workflow/browser.mjs
+PASS: JS syntax contracts/scripts/deployment_workflow/build.mjs
+PASS: JS syntax contracts/scripts/deployment_candidate/common.mjs
+PASS: JS syntax contracts/scripts/deployment_candidate/derive.mjs
+PASS: JS syntax contracts/scripts/deployment_candidate/inspect.mjs
+PASS: JS syntax contracts/scripts/deployment_candidate/prediction.mjs
+PASS: JS syntax contracts/scripts/deployment_candidate/prepare.mjs
+PASS: JS syntax contracts/scripts/deployment_candidate/simulate.mjs
+PASS: JS syntax contracts/scripts/deployment_candidate/test.mjs
+PASS: JS syntax contracts/scripts/deployment_candidate/upstream_proxy.mjs
+PASS: JS syntax contracts/scripts/deployment_workflow/connection.mjs
+PASS: JS syntax contracts/scripts/deployment_workflow/test/all.mjs
+PASS: JS syntax contracts/scripts/deployment_workflow/test/connection.test.mjs
+PASS: Python syntax/indentation
+PASS: credential-pattern scan {"findings": [], "scope": "Changed/new textual files. Actual fork preimages intentionally never exported; script/transport schema is the primary privacy control."}
+PASS: git diff --check
+PASS: new file whitespace []

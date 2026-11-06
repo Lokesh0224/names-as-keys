@@ -1,0 +1,931 @@
+--- a/contracts/scripts/deployment_workflow/README.md
++++ b/contracts/scripts/deployment_workflow/README.md
+@@ -1 +1 @@
+-# Local deployment review — connection only, execution disabled
++# Unsigned deployment review
+@@ -3 +3 @@
+-Stage3F remains NO-GO. `LIVE_EXECUTION_ALLOWED=false` is unchanged. No account, signature or transaction request runs on page load. Only your trusted **Connect MetaMask** click can request account permission; it then verifies the selected owner and Sepolia chain ID. There is no live transaction-enable switch.
++Stage 3F remains NO-GO. The main page uses existing MetaMask account access through a read-only adapter. Select the approved owner on Sepolia (11155111). The page has no permission, signature or transaction actions. It clears the displayed review on account, chain or connection changes.
+@@ -5 +5 @@
+-From the repository root, with the existing pinned dependencies:
++From the repository root:
+@@ -9 +8,0 @@
+-node contracts/scripts/deployment_candidate/test.mjs
+@@ -14 +13 @@
+-Open `http://127.0.0.1:8769/` in your MetaMask-enabled browser, using the **standard Ethereum Sepolia network**, not an Anvil/custom local RPC. Wait for the public candidate plan to load. Click Connect yourself and approve **account connection only**. Expected owner: `0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7`, chain11155111. Wrong account/network, rejection, disconnect or context change prevents a verified result. Select the proper account/network manually and click Connect again if needed. No automatic switching, signing, token approvals or transactions are implemented in the connection test. A request to sign/send would be unexpected: cancel and stop.
++Open `http://127.0.0.1:8769/` for the candidate. The build loads the recorded fresh-preflight candidate and approved limits. At review time, the app checks the current owner, network, applicable state, nonce and fee envelope. If the reviewed quote, prefix or other binding has changed, refresh the candidate. The synthetic lifecycle is a separate page at `http://127.0.0.1:8769/demo.html`.
+@@ -16 +15 @@
+-The connection result establishes only selected exposed account/chain consistency, not a cryptographic signing-control proof or deployment readiness. The app does not read seed phrases/private keys. The in-memory lifecycle demo remains clearly test-only, separate from the MetaMask provider. Stop the loopback server after use.
++Choose a step and prepare its unsigned review. Receipt review requires the original prepared packet in the same page session. It checks the supplied public hash against the reviewed envelope, receipt events, canonical headers and state. The journal retains public digests and receipt evidence. On page reload it retains the record and blocks progression where the original packet is unavailable.
+@@ -18 +17 @@
+-The build prefers `docs/prep/deployment-candidate/review-plan.json` when present; otherwise it shows the historical audit plan. Candidate limits are approved for preparation only. The historical gate list is not automatically upgraded to PASS. Every final/live transaction field stays blocked.
++T04 requires an isolated estimate transport because its calldata includes the registration preimage. The browser supplies no such transport. The guarded Anvil harness supplies its own loopback-only estimator, and the preimage stays in session memory.
+@@ -20 +19 @@
+-Reproduce candidate preparation without wallet interaction:
++Run the integrated fork using the reviewed historical candidate snapshot:
+@@ -23,5 +22 @@
+-python3 contracts/scripts/deployment_candidate/compile_local.py
+-node contracts/scripts/deployment_candidate/inspect.mjs
+-node contracts/scripts/deployment_candidate/derive.mjs
+-node contracts/scripts/deployment_candidate/prepare.mjs
+-node contracts/scripts/deployment_candidate/simulate.mjs
++node contracts/scripts/deployment_candidate/simulate.mjs --candidate-workflow
+@@ -30,5 +25 @@
+-`inspect`/`derive` use public read-only Sepolia RPC. `simulate` starts its own random loopback Anvil fork with zero generated accounts, no disk state/cache, an enforcing read-only upstream proxy and an ephemeral in-RAM registration preimage. It performs local-only simulated transactions using impersonated public addresses; no wallet request or live write is possible through those transports. It never logs raw private calldata, native traces or preimages. The owned node/proxy stop after completion. Anvil1.3.5 is a Prague model; its finality/gas behavior is not an attestation of the live consensus/fork rules.
+-
+-Inspect/derive must be refreshed before any future exact live preparation. If the root is unavailable, code drifts, the nonce changes, predictions collide or caps fail, stop rather than substitute names/inputs. Fresh candidate simulation receipt bindings are fork-only; never promote them to live receipt evidence.
+-
+-Details and remaining gates: `docs/prep/deployment-candidate/CANDIDATE_REPORT.md`. Earlier reviewed workflow/audit evidence is preserved under its original paths.
++This starts an ephemeral loopback Anvil fork and enforces a read-only upstream. The harness alone sends transactions to the owned local fork. Its results are written under `docs/prep/evidence/deployment-candidate/workflow-integration/`. The node uses in-memory history for ancestor receipt rechecks and stops after the run. Anvil models confirmations and finality locally.
+--- a/contracts/scripts/deployment_workflow/browser.mjs
++++ b/contracts/scripts/deployment_workflow/browser.mjs
+@@ -1,4 +1,2 @@
+-import { ConnectionOnlyMetaMask } from './connection.mjs';
+-import { Interface, formatUnits } from 'ethers';
+-import { digest } from './workflow.mjs';
+-import { fixture } from './test/fixture.mjs';
++import { CandidateReview } from './candidate.mjs';
++
+@@ -6,13 +4,68 @@
+-const show = (id, value) => { element(id).textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); };
+-let data, abis, demo, lastReview;
+-function render() {
+-  const step = data.transactions.find(s => s.id === element('step').value);
+-  const iface = new Interface(abis[step.abi]);
+-  const fragment = step.signature.startsWith('constructor(') ? iface.deploy : iface.getFunction(step.signature);
+-  const candidate = step.snapshotCandidate;
+-  const decoded = candidate ? iface.parseTransaction({ data: candidate.transaction.data }).args.toArray().map(x => typeof x === 'bigint' ? x.toString() : x) : null;
+-  show('review', { argumentTypes: fragment.inputs.map(x => x.format('sighash')), snapshotDecodedArguments: decoded, id: step.id, selectedAccount: data.owner, chainId: data.chainId, destination: step.target ?? '[CREATE address unresolved]',
+-    signature: step.signature, decodedArgumentBindings: step.arguments, inputStatus: data.candidateApproval ? 'CANDIDATE DEFAULTS APPROVED; LIVE PACKET UNAUTHORIZED; RECEIPT/STATE CHECKS REQUIRED' : 'UNRESOLVED / NOT_APPROVED',
+-    tokenAmountAndAllowance: candidate ? { token: 'MockUSDC', units: String(candidate.arguments[1]), amount: formatUnits(candidate.arguments[1],6), allowanceSnapshotUnits: '0', snapshotBlock: data.observationBlock, recipientOrSpender: candidate.arguments[0], classification: 'SNAPSHOT_ONLY_NOT_AN_APPROVED_SPEND' } : 'See exact step preconditions; unresolved future bindings',
+-    ethValueWei: '0', gasLimit: null, maxFeePerGasWei: null, maxPriorityFeePerGasWei: null,
+-    candidateDecisionStatus: data.candidateApproval ?? 'PROPOSED', candidateUnsignedCalldataKnown: Boolean(step.candidateCalldata), candidateNonce: step.candidateNonce ?? null, limits: { fees: data.workflowProposals.fees, spending: data.workflowProposals.spending, confirmations: data.workflowProposals.confirmations }, missingInputs: step.remainingBindings, expectedEvents: step.expectedEvents, execution: 'DISABLED' });
++const show = (id, value) => {
++  element(id).textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
++};
++
++async function load() {
++  const response = await fetch('./candidate-bundle.json');
++  if (!response.ok) throw new Error('Candidate bundle unavailable');
++  const bundle = await response.json();
++  const { plan } = bundle;
++  show('identity', { owner: plan.owner, mira: plan.mira, chainId: plan.chainId, execution: 'DISABLED',
++    snapshot: plan.snapshot, stage: 'NO_GO' });
++  for (const step of plan.transactions) {
++    const option = document.createElement('option');
++    option.value = step.id;
++    option.textContent = step.id + ' — ' + step.label + (step.conditionallyIncluded ? '' : ' (excluded)');
++    element('step').append(option);
++  }
++  if (!window.ethereum?.isMetaMask) {
++    show('status', 'MetaMask provider unavailable.');
++    return;
++  }
++  let displayed;
++  const candidate = new CandidateReview({ provider: window.ethereum, bundle, storage: localStorage, update: () => {
++    displayed = undefined;
++    show('review', 'Wallet context changed. Prepare a new review.');
++    show('journal', candidate.journal());
++  } });
++  function selected() {
++    displayed = undefined;
++    const step = plan.transactions.find(s => s.id === element('step').value);
++    show('review', { step: step.id, reviewedArguments: step.arguments, deferred: step.remainingBindings, execution: 'DISABLED' });
++  }
++  async function action(fn) {
++    element('prepare').disabled = true;
++    element('receipt').disabled = true;
++    try { await fn(); }
++    catch (error) {
++      // Provider errors can include raw input. Candidate errors are reported only as a generic block.
++      show('status', error instanceof Error && !('code' in error) && !/0x[\da-f]{64}/i.test(error.message)
++        ? error.message : 'Review blocked by provider or prerequisite checks.');
++    } finally {
++      element('prepare').disabled = false;
++      element('receipt').disabled = false;
++      show('journal', candidate.journal());
++    }
++  }
++  element('step').onchange = selected;
++  element('prepare').onclick = () => action(async () => {
++    displayed = undefined;
++    const step = element('step').value;
++    show('review', 'Checking current prerequisites…');
++    const review = await candidate.prepare(step);
++    if (step === element('step').value) {
++      displayed = review;
++      show('review', displayed);
++      show('status', 'Unsigned review prepared. Execution disabled.');
++    }
++  });
++  element('receipt').onclick = () => action(async () => {
++    await candidate.reconcile(element('step').value, element('hash').value.trim());
++    show('status', 'Receipt and current state verified.');
++  });
++  window.addEventListener('pagehide', () => candidate.close(), { once: true });
++  show('status', 'Uses existing account access only. Select the approved owner and Sepolia in MetaMask.');
++  show('journal', candidate.journal());
++  selected();
++  element('prepare').disabled = false;
++  element('receipt').disabled = false;
+@@ -20,28 +73,2 @@
+-function reset() { demo?.workflow.close(); demo = fixture(); lastReview = null; show('demo', 'Test-only provider idle.'); show('journal', 'No persisted test requests.'); for (const id of ['ack','submit','receipt']) element(id).disabled = true; }
+-async function action(fn) { try { await fn(); } catch { show('demo', 'Blocked or rejected. No live wallet request was made. Re-prepare/reconcile the test-only packet.'); } show('journal', demo.persisted() ?? {}); }
+-element('prepare').onclick = () => action(async () => { lastReview = await demo.workflow.prepare('T01', demo.packets[0]); show('demo', lastReview); element('ack').disabled = false; });
+-element('ack').onclick = () => action(async () => { demo.workflow.acknowledge('T01', digest(lastReview)); element('submit').disabled = false; element('ack').disabled = true; });
+-element('submit').onclick = () => action(async () => { element('submit').disabled = true; await demo.workflow.submitTestOnly('T01'); element('receipt').disabled = false; });
+-element('receipt').onclick = () => action(async () => { demo.provider.mine(demo.packets[0]); await demo.workflow.reconcile('T01'); show('demo', demo.workflow.state('T01')); element('receipt').disabled = true; });
+-element('reset').onclick = reset;
+-let connection;
+-element('connect').onclick = async event => {
+-  if (!event.isTrusted) return;
+-  if (!window.ethereum?.isMetaMask) { show('wallet','MetaMask provider not found. Open this local page in a MetaMask-enabled browser. No request made.'); return; }
+-  element('connect').disabled = true;
+-  try {
+-    connection ??= new ConnectionOnlyMetaMask(window.ethereum,data.owner,result=>show('wallet',result));
+-    await connection.connectFromClick(event);
+-  } catch { show('wallet','Connection test blocked. Execution remains disabled.'); }
+-  finally { element('connect').disabled = false; }
+-};
+-async function load() {
+-  data = await (await fetch('./review-plan.json')).json();
+-  abis = await (await fetch('./verified-abis.json')).json();
+-  const gates = await (await fetch('./gate-status.json')).json();
+-  show('identity', { owner: data.owner, mira: data.mira, chainId: data.chainId, checkpoint: data.approvedCheckpoint, stage: 'NO_GO', signingControl: 'NOT_VERIFIED', observationBlock: data.observationBlock });
+-  for (const gate of gates.gates) { const line = document.createElement('div'); line.className = 'gate'; line.textContent = `${gate.id} · ${gate.status} · ${gate.gate}`; element('gates').append(line); }
+-  for (const step of data.transactions) { const option = document.createElement('option'); option.value = step.id; option.textContent = `${step.id} — ${step.label}`; element('step').append(option); }
+-  element('step').onchange = render; render(); reset(); element('connect').disabled = false;
+-}
+-load().catch(() => show('identity', 'Plan load failed; execution disabled.'));
++
++load().catch(() => show('status', 'Candidate load blocked. Execution disabled.'));
+--- a/contracts/scripts/deployment_workflow/build.mjs
++++ b/contracts/scripts/deployment_workflow/build.mjs
+@@ -1 +0,0 @@
+-// Builds a local static review bundle only. Does not start a server or open a wallet.
+@@ -3 +2 @@
+-import { mkdir, copyFile, readFile, writeFile, access } from 'node:fs/promises';
++import { mkdir, copyFile, writeFile } from 'node:fs/promises';
+@@ -5,0 +5,2 @@
++import { loadCandidateBundle } from './candidate_bundle.mjs';
++
+@@ -7 +7,0 @@
+-const repo = path.resolve(here, '../../..');
+@@ -8,0 +9 @@
++const bundle = await loadCandidateBundle();
+@@ -10,13 +11,5 @@
+-await build({ entryPoints: [path.join(here,'browser.mjs')], bundle: true, format: 'esm', outfile: path.join(out,'app.js'), platform: 'browser', target: 'es2022' });
+-for (const name of ['index.html','style.css']) await copyFile(path.join(here,name),path.join(out,name));
+-const abiNames = ['ETHRegistrar','ETHRegistry','UserRegistryImpl','VerifiableFactory','MockUSDC','CredentialRegistrar','DoorKeys'];
+-const abis = {}; for (const name of abiNames) abis[name] = JSON.parse(await readFile(path.join(repo,'docs/prep/stage3e/abis',name+'.json'),'utf8'));
+-await writeFile(path.join(out,'verified-abis.json'), JSON.stringify(abis));
+-await copyFile(path.join(repo,'docs/prep/stage3f-audit/gate-status.json'),path.join(out,'gate-status.json'));
+-const candidate = path.join(repo,'docs/prep/deployment-candidate/review-plan.json');
+-let hasCandidate = false; try { await access(candidate); hasCandidate = true; } catch {}
+-await copyFile(hasCandidate ? candidate : path.join(repo,'docs/prep/stage3f-audit/review-plan.json'),path.join(out,'review-plan.json'));
+-const data = JSON.parse(await readFile(path.join(out,'review-plan.json'),'utf8'));
+-data.workflowProposals = JSON.parse(await readFile(path.join(repo,hasCandidate?'docs/prep/deployment-candidate/APPROVED_INPUTS.json':'docs/prep/workflow/PROPOSED_DEFAULTS.json'),'utf8'));
+-await writeFile(path.join(out,'review-plan.json'),JSON.stringify(data,null,2)+'\n');
+-console.log('PASS: local review-only bundle built at '+out+'; no server, wallet or network started');
++await build({ entryPoints: { app: path.join(here,'browser.mjs'), demo: path.join(here,'demo.mjs') },
++  bundle: true, format: 'esm', outdir: out, platform: 'browser', target: 'es2022' });
++for (const name of ['index.html','demo.html','style.css']) await copyFile(path.join(here,name),path.join(out,name));
++await writeFile(path.join(out,'candidate-bundle.json'), JSON.stringify(bundle));
++console.log('PASS: unsigned browser review and separate synthetic demo built at ' + out);
+--- a/contracts/scripts/deployment_workflow/index.html
++++ b/contracts/scripts/deployment_workflow/index.html
+@@ -2,2 +2,28 @@
+-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"><title>Names as Keys — Local Deployment Review</title><link rel="stylesheet" href="style.css"></head>
+-<body><main><h1>Local deployment review</h1><p class="warning">Stage 3F NO-GO · Execution disabled · No signing or transaction requests</p><p>This tool reviews deployment steps. It is separate from the guest unlock app. Test-only demonstrations cannot enable live execution.</p><section><h2>Selected identities</h2><pre id="identity">Loading public review plan…</pre><button id="connect" disabled>Connect MetaMask — account permission only</button><p>Only your click requests accounts. No signatures, transactions or automatic network switching. Select the supplied owner and Ethereum Sepolia manually.</p><p id="wallet" role="status">No wallet queried.</p></section><section><h2>Historical deployment-gate snapshot</h2><p>Retained audit status, not a fresh readiness certificate. Candidate tests and connection success never authorize transactions.</p><div id="gates"></div></section><section><h2>Ordered transaction packets</h2><label>Step <select id="step"></select></label><pre id="review"></pre><button disabled>Live requests unavailable — separate authorization required</button></section><section><h2>Test-only lifecycle demonstration</h2><p>Synthetic provider, wallet, token, calldata and receipts. No network requests. This is a workflow demonstration, not the ordered Sepolia fork fixture or final deployment simulation.</p><button id="prepare">Prepare test-only review</button><pre id="demo"></pre><button id="ack" disabled>Acknowledge displayed test-only review</button><button id="submit" disabled>Simulate request against in-memory provider</button><button id="receipt" disabled>Verify synthetic receipt and state</button><button id="reset">Reset demo</button><pre id="journal"></pre></section></main><script type="module" src="app.js"></script></body></html>
++<html lang="en">
++<head>
++  <meta charset="utf-8">
++  <meta name="viewport" content="width=device-width,initial-scale=1">
++  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'">
++  <title>Names as Keys — Unsigned Deployment Review</title>
++  <link rel="stylesheet" href="style.css">
++</head>
++<body><main>
++  <h1>Unsigned deployment review</h1>
++  <p class="warning">Stage 3F NO-GO · Execution disabled</p>
++  <pre id="identity">Loading reviewed candidate…</pre>
++  <p id="status" role="status">Loading…</p>
++  <section>
++    <h2>Current step</h2>
++    <label>Step <select id="step"></select></label>
++    <button id="prepare" disabled>Prepare unsigned review</button>
++    <pre id="review"></pre>
++  </section>
++  <section>
++    <h2>Receipt review</h2>
++    <label>Transaction hash <input id="hash" autocomplete="off"></label>
++    <button id="receipt" disabled>Verify against session review</button>
++    <pre id="journal"></pre>
++  </section>
++  <p><a href="demo.html">Synthetic workflow demonstration</a></p>
++</main><script type="module" src="app.js"></script></body>
++</html>
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/candidate.mjs
+@@ -0,0 +1,207 @@
++import { AbiCoder, Interface, getCreateAddress, formatUnits, keccak256, toQuantity } from 'ethers';
++import { BrowserJournal, DeploymentWorkflow, ReadOnlyWallet, decodePacket, digest, LIVE_EXECUTION_ALLOWED } from './workflow.mjs';
++import { candidateStep, need, same } from './candidate_steps.mjs';
++
++export const labelABI = ['function getLabel(uint256) view returns(string)', 'event Label(bytes32 indexed labelHash,string label)'];
++const events = ['accountsChanged', 'chainChanged', 'disconnect'];
++const hash = value => /^0x[\da-f]{64}$/i.test(value ?? '');
++const headerOK = h => h && hash(h.hash) && typeof h.number === 'string' && typeof h.timestamp === 'string';
++
++export class CandidateReview {
++  #wallet; #journal; #prepared = new Map(); #secret; #epoch = 0; #busy = false;
++  #handlers; #update; #privateEstimate; #random; #state;
++  constructor({ provider, bundle, storage, update = () => {}, privateEstimate, random = bytes => crypto.getRandomValues(bytes), now = () => Date.now() }) {
++    const { plan, inputs, observation, abis, addresses } = bundle;
++    need(!LIVE_EXECUTION_ALLOWED && plan.liveExecutionAllowed === false && plan.stage3F === 'NO_GO', 'Disabled candidate required');
++    need(plan.candidateApproval === inputs.classification && same(plan.owner, inputs.owner) && same(plan.mira, inputs.mira), 'Candidate identity mismatch');
++    need(plan.snapshot.hash === observation.blockHash && same(plan.snapshot.nonce, observation.nonce), 'Snapshot binding mismatch');
++    need(plan.transactions.map(s => s.id).join(',') === Array.from({ length: 15 }, (_, i) => 'T' + String(i + 1).padStart(2, '0')).join(','), 'Unexpected step inventory');
++    this.bundle = bundle;
++    this.addresses = { ...addresses, ...plan.futureAddresses, Mira: inputs.mira, Owner: inputs.owner };
++    this.abis = { ...abis, LabelStore: labelABI, R1: abis.UserRegistryImpl, R2: abis.UserRegistryImpl };
++    this.interfaces = Object.fromEntries(Object.entries(this.abis).map(([name, abi]) => [name, new Interface(abi)]));
++    this.owner = inputs.owner;
++    this.now = now;
++    this.#wallet = new ReadOnlyWallet(provider);
++    this.#update = update;
++    this.#privateEstimate = privateEstimate;
++    this.#random = random;
++    const planDigest = digest(bundle);
++    this.#journal = new BrowserJournal(storage, 'nak-candidate:' + planDigest);
++    this.#state = this.#journal.read() ?? { schema: 1, planDigest, entries: {}, history: [] };
++    need(this.#state.planDigest === planDigest, 'Journal plan mismatch');
++    this.#handlers = Object.fromEntries(events.map(name => [name, () => {
++      this.#epoch++;
++      this.#clearSecret();
++      for (const [id, entry] of Object.entries(this.#state.entries)) {
++        entry.status = 'RECHECK_REQUIRED';
++        if (!entry.receiptHash) this.#prepared.delete(id);
++      }
++      try { this.#journal.write(this.#state); } catch { this.#prepared.clear(); }
++      this.#update(name);
++    }]));
++    for (const name of events) this.#wallet.on(name, this.#handlers[name]);
++  }
++  close() {
++    this.#epoch++;
++    this.#clearSecret();
++    this.#prepared.clear();
++    for (const name of events) this.#wallet.removeListener(name, this.#handlers[name]);
++  }
++  #clearSecret() { this.#secret?.fill(0); this.#secret = undefined; }
++  journal() { return structuredClone(this.#state); }
++  async read(method, params) {
++    try { return await this.#wallet.request({ method, params }); }
++    catch { throw new Error('Read unavailable: ' + method); }
++  }
++  async identity() {
++    const [accounts, chain] = await Promise.all([this.read('eth_accounts', []), this.read('eth_chainId', [])]);
++    need(same(accounts[0], this.owner) && BigInt(chain) === 11155111n, 'Selected owner and Sepolia required');
++  }
++  async #run(fn) {
++    need(!this.#busy, 'Review already in progress');
++    this.#busy = true;
++    try { return await fn(this.#epoch); } finally { this.#busy = false; }
++  }
++  #save(id, entry) {
++    const next = { ...this.#state, entries: { ...this.#state.entries, [id]: entry } };
++    this.#journal.write(next);
++    this.#state = next;
++  }
++  #revealArgs() {
++    need(this.#secret, 'Registration session unavailable. A lost commitment must expire before a new attempt.');
++    const args = [...this.bundle.plan.transactions[3].candidateArguments];
++    args[2] = '0x' + Array.from(this.#secret, byte => byte.toString(16).padStart(2, '0')).join('');
++    return args;
++  }
++  formatAmount(value) { return formatUnits(value, this.bundle.inputs.spending.decimals); }
++  commitmentForReview(args) {
++    return keccak256(AbiCoder.defaultAbiCoder().encode(['string','address','bytes32','address','address','uint64','bytes32'], [...args.slice(0, 6), args[7]]));
++  }
++  async #prerequisites(step) {
++    const preceding = this.bundle.plan.transactions.slice(0, this.bundle.plan.transactions.indexOf(step));
++    for (const prior of preceding.filter(s => s.conditionallyIncluded)) {
++      const saved = this.#state.entries[prior.id];
++      need(saved?.receiptHash && this.#prepared.has(prior.id), 'Verified prerequisite receipt required: ' + prior.id);
++      await this.#verify(prior.id, saved.receiptHash);
++    }
++  }
++  async #fresh(header, epoch) {
++    const { expiry } = this.bundle.inputs;
++    const [latest, canonical] = await Promise.all([
++      this.read('eth_getBlockByNumber', ['latest', false]),
++      this.read('eth_getBlockByNumber', [header.number, false]),
++    ]);
++    need(headerOK(latest) && canonical?.hash === header.hash, 'Review block lost canonicality');
++    const lag = BigInt(latest.number) - BigInt(header.number);
++    const age = this.now() / 1000 - Number(BigInt(header.timestamp));
++    need(lag >= 0n && lag <= BigInt(expiry.maxAgeBlocks) && age >= -15 && age <= expiry.maxAgeSeconds, 'Review snapshot expired');
++    await this.identity();
++    need(epoch === this.#epoch, 'Wallet context changed');
++    return latest;
++  }
++  async prepare(stepId) {
++    return this.#run(async epoch => {
++      const { plan, inputs } = this.bundle;
++      const step = plan.transactions.find(s => s.id === stepId);
++      need(step?.conditionallyIncluded, 'Step excluded or unknown');
++      need(!this.#state.entries[stepId]?.receiptHash, 'Existing receipt requires reconciliation');
++      await this.identity();
++      await this.#prerequisites(step);
++      if (stepId === 'T04') need(this.#privateEstimate, 'Private reveal estimate requires an isolated transport');
++      const header = await this.read('eth_getBlockByNumber', ['latest', false]);
++      need(headerOK(header), 'Latest header unavailable');
++      const checkNonce = async () => {
++        const tags = [header.number, 'latest', 'pending'];
++        const nonces = await Promise.all(tags.map(tag => this.read('eth_getTransactionCount', [this.owner, tag])));
++        need(nonces.every(n => BigInt(n) === BigInt(step.candidateNonce)), 'Owner nonce or reviewed prefix changed');
++      };
++      await checkNonce();
++      if (stepId === 'T03' && !this.#secret) this.#secret = this.#random(new Uint8Array(32));
++      const privateArgs = stepId === 'T03' ? [this.commitmentForReview(this.#revealArgs())] : stepId === 'T04' ? this.#revealArgs() : undefined;
++      const spec = await candidateStep(this, step, header, privateArgs, this.#state.entries);
++      const { args } = spec;
++      const iface = this.interfaces[step.abi];
++      const creation = step.signature.startsWith('constructor(');
++      const data = creation ? this.bundle.creation[step.abi] + iface.encodeDeploy(args).slice(2) : iface.encodeFunctionData(step.signature, args);
++      need(same(step.signer.address, this.owner) && (!step.candidateCalldata || same(step.candidateCalldata, data)), 'Reviewed sender/calldata changed');
++      if (creation) need(same(getCreateAddress({ from: this.owner, nonce: BigInt(step.candidateNonce) }), step.candidateCreationAddress), 'Reviewed CREATE prediction changed');
++      const tip = 1n;
++      const fee = 2n * BigInt(header.baseFeePerGas) + tip;
++      need(fee <= BigInt(inputs.fees.maxFeePerGasWei) && tip <= BigInt(inputs.fees.maxPriorityFeePerGasWei), 'Fee exceeds approved ceiling');
++      const tx = { from: this.owner, to: step.candidateDestination ?? '', data, value: '0x0', chainId: '0xaa36a7',
++        nonce: step.candidateNonce, maxFeePerGas: toQuantity(fee), maxPriorityFeePerGas: toQuantity(tip) };
++      const estimateTx = { ...tx };
++      if (creation) delete estimateTx.to;
++      let estimate;
++      try {
++        estimate = BigInt(await (stepId === 'T04' ? this.#privateEstimate(estimateTx, header.number) : this.read('eth_estimateGas', [estimateTx, header.number])));
++      } catch { throw new Error('Exact gas estimate unavailable'); }
++      const gas = (estimate * BigInt(inputs.fees.gasLimitMultiplierPercent) + 99n) / 100n;
++      const reserve = gas * fee;
++      const spent = Object.values(this.#state.entries).reduce((sum, entry) => sum + BigInt(entry.costWei ?? 0), 0n);
++      const balance = BigInt(await this.read('eth_getBalance', [this.owner, header.number]));
++      need(estimate > 0n && gas >= estimate && gas <= BigInt(inputs.fees.maxGasPerStep) &&
++        reserve + spent <= BigInt(inputs.fees.maxTotalWei) && balance >= reserve, 'Gas or ETH budget exceeded');
++      await checkNonce();
++      const latest = await this.#fresh(header, epoch);
++      need(fee >= BigInt(latest.baseFeePerGas) + tip, 'Base fee moved outside reviewed envelope');
++      if (spec.revealDeadline) need(BigInt(latest.timestamp) < spec.revealDeadline, 'Commitment reveal window expired');
++      if (spec.minimumRemaining) need(BigInt(args.at(-1)) - BigInt(latest.timestamp) >= spec.minimumRemaining, 'Credential margin too short');
++      tx.gas = toQuantity(gas);
++      const preview = await spec.receipt(header);
++      const packet = { tx, arguments: args, signature: step.signature, abi: this.abis[step.abi], creation,
++        creationBytecode: creation ? this.bundle.creation[step.abi] : null,
++        expectedAddress: step.candidateCreationAddress, expectedTarget: step.candidateDestination,
++        tokenReview: spec.tokenReview, inputClass: 'UNSIGNED_CANDIDATE', expectedEvents: preview.events, postconditions: preview.post };
++      const review = { ...decodePacket(packet), step: stepId, execution: 'DISABLED', snapshot: { number: header.number, hash: header.hash, timestamp: header.timestamp },
++        estimate: estimate.toString(), reservedWei: reserve.toString(), prerequisiteReads: spec.checks,
++        expectedEventSignatures: preview.events.map(({ address, signature }) => ({ address, signature })),
++        unsignedTransaction: stepId === 'T04' ? { ...tx, data: '[PRIVATE REVEAL]' } : tx };
++      this.#save(stepId, { status: 'PREPARED', reviewDigest: digest(review), packetDigest: digest(packet) });
++      this.#prepared.set(stepId, { packet, spec, review });
++      return structuredClone(review);
++    });
++  }
++  async reconcile(stepId, txHash) { return this.#run(() => this.#verify(stepId, txHash)); }
++  async #verify(stepId, txHash) {
++    const saved = this.#state.entries[stepId];
++    try { return await this.#verifyBoundReceipt(stepId, txHash); }
++    catch (error) {
++      if (saved?.receiptHash) this.#save(stepId, { ...saved, status: 'RECHECK_REQUIRED' });
++      throw error;
++    }
++  }
++  async #verifyBoundReceipt(stepId, txHash) {
++    const item = this.#prepared.get(stepId);
++    need(item && hash(txHash), 'Prepared packet and receipt hash required in this session');
++    const { packet, spec } = item;
++    const saved = this.#state.entries[stepId];
++    need(saved?.packetDigest === digest(packet) && (!saved.receiptHash || same(saved.receiptHash, txHash)), 'Receipt differs from journal binding');
++    const epoch = this.#epoch;
++    await this.identity();
++    const receipt = await this.read('eth_getTransactionReceipt', [txHash]);
++    need(receipt, 'Receipt pending');
++    const header = await this.read('eth_getBlockByNumber', [receipt.blockNumber, false]);
++    need(header?.hash === receipt.blockHash && BigInt(header.number) >= BigInt(item.review.snapshot.number), 'Receipt block invalid');
++    const mined = await this.read('eth_getTransactionByHash', [txHash]);
++    need(['gas','maxFeePerGas','maxPriorityFeePerGas'].every(field => mined?.[field] != null && BigInt(mined[field]) === BigInt(packet.tx[field])), 'Mined gas or fee differs from reviewed envelope');
++    const bound = await spec.receipt(header);
++    const frozen = { ...packet, expectedEvents: bound.events, postconditions: bound.post, currentPostconditions: bound.current };
++    let journal;
++    const engine = new DeploymentWorkflow({ provider: this.#wallet, owner: this.owner,
++      policy: { confirmations: this.bundle.inputs.confirmations.count, finalityTag: this.bundle.inputs.confirmations.finalityTag },
++      steps: [{ id: stepId, packet: frozen, packetDigest: digest(frozen) }],
++      journal: { read: () => null, write: value => { journal = value; } } });
++    try {
++      need(await engine.verifyReceipt(stepId, txHash), 'Receipt failed or lacks confirmations/finality');
++      need(epoch === this.#epoch, 'Wallet context changed');
++      const costWei = (BigInt(receipt.gasUsed) * BigInt(receipt.effectiveGasPrice)).toString();
++      const entry = { ...saved, status: 'CONFIRMED', receiptHash: txHash, evidence: journal.entries[stepId].receiptEvidence,
++        bindings: bound.bindings ?? {}, costWei };
++      this.#save(stepId, entry);
++      if (stepId === 'T04') this.#clearSecret();
++      return structuredClone(entry);
++    } finally { engine.close(); }
++  }
++}
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/candidate_bundle.mjs
+@@ -0,0 +1,22 @@
++import path from 'node:path';
++
++import { load, readJSON, OUT, ROOT } from '../deployment_candidate/common.mjs';
++import { securityPolicy } from '../deployment_candidate/security_policy.mjs';
++
++export async function loadCandidateBundle(directory = path.join(OUT, 'fresh-preflight')) {
++  const { inputs, abis, addresses, original, artifacts } = await load();
++  const [plan, observation, baseline, proofs, runtime, policy] = await Promise.all([
++    readJSON(path.join(directory, 'review-plan.json')),
++    readJSON(path.join(directory, 'public-bindings.json')),
++    readJSON(path.join(ROOT, 'docs/prep/evidence/stage3e/current-sepolia.json')),
++    readJSON(path.join(OUT, 'local-artifact-proof.json')),
++    readJSON(path.join(ROOT, 'docs/prep/evidence/stage3f-audit/semantic-runtime-reconciliation.json')),
++    securityPolicy(original),
++  ]);
++  const creation = Object.fromEntries(Object.entries(artifacts).map(([name, artifact]) => [name, artifact.bytecode.object]));
++  const runtimeHashes = Object.fromEntries(Object.entries(baseline.contracts).map(([name, record]) => [name, record.runtimeKeccak256]));
++  // The upstream proof uses SHA-256, unlike the other runtime records.
++  const logicSha256 = '0x' + runtime.contracts.UUPSProxyLogic.patchedRuntimeSHA256;
++  return { plan, observation, inputs, abis, addresses, creation, runtimeHashes, proofs, logicSha256,
++    registrationRoles: policy.rootRegistrationRoles.toString() };
++}
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/candidate_steps.mjs
+@@ -0,0 +1,222 @@
++import { AbiCoder, id, keccak256, sha256, toBeHex, zeroPadValue } from 'ethers';
++import { factoryPrediction } from '../deployment_candidate/prediction.mjs';
++
++export const need = (condition, message) => { if (!condition) throw new Error(message); };
++export const same = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
++const zero = '0x' + '00'.repeat(20);
++
++export async function candidateStep(ctx, step, header, privateArgs, entries) {
++  const { plan, inputs, observation, runtimeHashes, logicSha256, proofs } = ctx.bundle;
++  const { addresses: a, interfaces: i, abis, owner } = ctx;
++  const block = header.number;
++  const label = inputs.root.slice(0, -4);
++  const args = privateArgs ?? [...step.candidateArguments];
++  const now = BigInt(header.timestamp);
++  const root = entries.T04?.bindings;
++  const lock = entries.T08?.bindings;
++  const checks = [];
++  const event = (name, signature, args) => ({ address: a[name], abi: abis[name], signature: i[name].getEvent(signature).format('sighash'), arguments: args });
++  const expect = (name, sig, args, values) => ({ id: name + '.' + sig, kind: 'call', to: a[name],
++    data: i[name].encodeFunctionData(sig, args), expected: i[name].encodeFunctionResult(sig, values) });
++  const code = (name, expectedHash) => ({ id: name + '.runtime', kind: 'code', to: a[name], expectedHash });
++  const raw = (name, sig, args, tag = block) => ctx.read('eth_call', [{ to: a[name], data: i[name].encodeFunctionData(sig, args) }, tag]);
++  const read = async (name, sig, args = []) => i[name].decodeFunctionResult(sig, await raw(name, sig, args));
++  async function requireCheck(check) {
++    const actual = check.kind === 'code' ? keccak256(await ctx.read('eth_getCode', [check.to, block])) :
++      await ctx.read('eth_call', [{ to: check.to, data: check.data }, block]);
++    need(same(actual, check.expected ?? check.expectedHash), 'Prerequisite changed: ' + check.id);
++    checks.push(check.id);
++  }
++  const requireValue = (name, sig, args, values) => requireCheck(expect(name, sig, args, values));
++  const state = async (name, text) => (await read(name, 'getState', [id(text)]))[0];
++  const empty = name => requireCheck(code(name, keccak256('0x')));
++  const active = (name, text, binding) => expect(name, 'getOwner', [id(text)], [binding.owner]);
++  const status = (name, text, binding) => expect(name, 'getState', [id(text)], [[2, binding.expiry, binding.owner, binding.tokenId, binding.resource]]);
++  const registered = (name, text, binding) => [status(name, text, binding), active(name, text, binding)];
++  const roles = (name, resource, account, bitmap) => expect(name, 'roles', [resource, account], [bitmap]);
++  const rootGrant = BigInt(plan.initializationRoleBitmap);
++  const lockGrant = BigInt(plan.transactions[7].candidateArguments[4]);
++  const registrarGrant = BigInt(plan.transactions[12].candidateArguments[0]);
++  const registrationGrant = BigInt(ctx.bundle.registrationRoles);
++  const price = BigInt(observation.priceUnits);
++  let tokenReview = { token: a.MockUSDC, units: '0', amount: '0.0', decimals: inputs.spending.decimals };
++  let minimumRemaining, revealDeadline;
++  let receipt;
++  const staticResult = (events, post, current = post, bindings) => async () => ({ events, post, current, bindings });
++  const stage = Number(step.id.slice(1));
++
++  // Check only contracts and state that must exist before this step.
++  await empty('Owner');
++  await requireCheck(code('ETHRegistrar', runtimeHashes.ETHRegistrar));
++  await requireCheck(code('ETHRegistry', runtimeHashes.ETHRegistry));
++  await requireCheck(code('RootRegistry', runtimeHashes.RootRegistry));
++  await requireValue('RootRegistry', 'getSubregistry', ['eth'], [a.ETHRegistry]);
++  await requireValue('ETHRegistrar', 'ETH_REGISTRY', [], [a.ETHRegistry]);
++  if (stage <= 4) {
++    await requireCheck(code('MockUSDC', runtimeHashes.MockUSDC));
++    await requireCheck(code('StandardRentPriceOracle', runtimeHashes.StandardRentPriceOracle));
++    await requireValue('ETHRegistrar', 'rentPriceOracle', [], [a.StandardRentPriceOracle]);
++    await requireValue('ETHRegistrar', 'isAvailable', [label], [true]);
++    const [base, premium] = await read('ETHRegistrar', 'getRegisterPrice', [label, inputs.expiry.rootDurationSeconds, a.MockUSDC]);
++    need(base + premium === price && price <= BigInt(inputs.spending.maxRentUnits), 'Rent quote changed. Refresh candidate.');
++    const balance = (await read('MockUSDC', 'balanceOf', [owner]))[0];
++    const allowance = (await read('MockUSDC', 'allowance', [owner, a.ETHRegistrar]))[0];
++    checks.push('MockUSDC.balanceOf', 'MockUSDC.allowance', 'ETHRegistrar.getRegisterPrice');
++    tokenReview = { ...tokenReview, balanceUnits: balance.toString(), allowanceUnits: allowance.toString(), quoteUnits: price.toString() };
++    if (stage === 1) {
++      need(price > balance && BigInt(args[1]) === price - balance, 'Mint no longer matches exact deficit');
++      tokenReview = { ...tokenReview, units: String(args[1]), amount: ctx.formatAmount(args[1]) };
++      receipt = staticResult([event('MockUSDC','Transfer',[zero,owner,args[1]])],
++        [expect('MockUSDC','balanceOf',[owner],[price])], []);
++    }
++    if (stage === 2) {
++      need(balance >= price && allowance !== price && BigInt(args[1]) === price, 'Approval no longer matches exact quote or balance');
++      tokenReview = { ...tokenReview, units: price.toString(), amount: ctx.formatAmount(price), spender: a.ETHRegistrar };
++      receipt = staticResult([event('MockUSDC','Approval',[owner,a.ETHRegistrar,price])],
++        [expect('MockUSDC','allowance',[owner,a.ETHRegistrar],[price])], []);
++    }
++    if (stage >= 3) need(balance >= price && allowance === price, 'Rent funding or exact allowance missing');
++    if (stage === 3) {
++      await requireValue('ETHRegistrar','commitmentAt',[args[0]],[0]);
++      receipt = async h => ({ events: [event('ETHRegistrar','CommitmentMade',args)],
++        post: [expect('ETHRegistrar','commitmentAt',args,[h.timestamp])], current: [], bindings: { commitmentTimestamp: h.timestamp } });
++    }
++    if (stage === 4) {
++      const commitment = ctx.commitmentForReview(args);
++      const committedAt = BigInt(entries.T03.bindings.commitmentTimestamp);
++      await requireValue('ETHRegistrar','commitmentAt',[commitment],[committedAt]);
++      const min = (await read('ETHRegistrar','MIN_COMMITMENT_AGE'))[0];
++      const max = (await read('ETHRegistrar','MAX_COMMITMENT_AGE'))[0];
++      revealDeadline = committedAt + max;
++      need(now >= committedAt + min && now < revealDeadline, 'Outside commitment reveal window');
++      const beneficiary = (await read('ETHRegistrar','BENEFICIARY'))[0];
++      receipt = await registration('ETHRegistry', label, owner, a.ETHRegistrar, registrationGrant,
++        h => BigInt(h.timestamp) + BigInt(inputs.expiry.rootDurationSeconds),
++        b => [event('ETHRegistrar','NameRegistered',[b.tokenId,label,owner, ...args.slice(3),base,premium])],
++        [event('MockUSDC','Transfer',[owner,beneficiary,price])],
++        [expect('ETHRegistrar','commitmentAt',[commitment],[0])]);
++    }
++  }
++  if (stage >= 5) {
++    for (const check of registered('ETHRegistry',label,root)) await requireCheck(check);
++    await requireCheck(roles('ETHRegistry',root.resource,owner,registrationGrant));
++  }
++  if (stage >= 5 && stage <= 15) {
++    await requireCheck(code('VerifiableFactory', runtimeHashes.VerifiableFactory));
++    await requireCheck(code('UserRegistryImpl', runtimeHashes.UserRegistryImpl));
++    const logic = (await read('VerifiableFactory','proxyLogic'))[0];
++    const runtime = await ctx.read('eth_getCode',[logic,block]);
++    need(sha256(runtime) === logicSha256, 'Factory logic runtime drift');
++    await requireValue('UserRegistryImpl','LABEL_STORE',[],[a.LabelStore]);
++    for (const [name, createStage] of [['R1',5],['R2',9]]) {
++      if (stage < createStage) continue;
++      const prediction = factoryPrediction(a.VerifiableFactory,logic,owner,inputs.salts[name]);
++      need(same(prediction.address,a[name]), 'Factory prediction drift');
++      if (stage === createStage) {
++        await empty(name);
++        await requireValue('VerifiableFactory','predictProxyAddress',[owner,inputs.salts[name]],[a[name]]);
++        const renderer = (await read('UserRegistryImpl','URI_RENDERER'))[0];
++        receipt = staticResult([
++          event(name,'Upgraded',[a.UserRegistryImpl]),event(name,'RegistryCreated',[]),
++          event(name,'EACRolesChanged',[0,owner,0,rootGrant]),event(name,'URIUpdated',['',renderer,zero]),
++          event(name,'Initialized',[1]),event('VerifiableFactory','ProxyDeployed',[owner,a[name],inputs.salts[name],a.UserRegistryImpl]),
++        ], [code(name,keccak256(prediction.runtime)),expect('VerifiableFactory','verifyContract',[a[name]],[a.UserRegistryImpl]),
++          roles(name,0,owner,rootGrant),expect(name,'roleCount',[0],[rootGrant])],
++          [code(name,keccak256(prediction.runtime)),expect('VerifiableFactory','verifyContract',[a[name]],[a.UserRegistryImpl]),roles(name,0,owner,rootGrant)], { address: a[name] });
++      } else {
++        await requireCheck(code(name,keccak256(prediction.runtime)));
++        await requireValue('VerifiableFactory','verifyContract',[a[name]],[a.UserRegistryImpl]);
++        await requireCheck(roles(name,0,owner,rootGrant));
++      }
++    }
++  }
++  if (stage === 6) {
++    args[0] = root.tokenId;
++    await requireValue('ETHRegistry','getSubregistry',[label],[zero]);
++    receipt = staticResult([event('ETHRegistry','SubregistryUpdated',[args[0],a.R1,owner])],
++      [expect('ETHRegistry','getSubregistry',[label],[a.R1])]);
++  }
++  if (stage === 7) receipt = staticResult([event('R1','ParentUpdated',[a.ETHRegistry,label,owner])],
++    [expect('R1','getParent',[],[a.ETHRegistry,label])]);
++  if (stage === 8) {
++    const expiry = now + BigInt(inputs.expiry.lockDurationSeconds);
++    need(expiry <= BigInt(root.expiry) && expiry < 2n ** 64n, 'Lock expiry outside ancestor bounds');
++    args[5] = expiry;
++    receipt = await registration('R1','lock',owner,owner,lockGrant,() => expiry);
++  }
++  if (stage >= 9) {
++    for (const check of registered('R1','lock',lock)) await requireCheck(check);
++    await requireCheck(roles('R1',lock.resource,owner,lockGrant));
++  }
++  if (stage === 10) {
++    args[0] = lock.tokenId;
++    await requireValue('R1','getSubregistry',['lock'],[zero]);
++    receipt = staticResult([event('R1','SubregistryUpdated',[args[0],a.R2,owner])],
++      [expect('R1','getSubregistry',['lock'],[a.R2])]);
++  }
++  if (stage === 11) receipt = staticResult([event('R2','ParentUpdated',[a.R1,'lock',owner])],
++    [expect('R2','getParent',[],[a.R1,'lock'])]);
++  if (stage === 12 || stage === 14) {
++    const name = step.abi;
++    await empty(name);
++    const values = { owner, administrator: owner, parentRegistry: a.R1, guestRegistry: a.R2,
++      rootTokenId: root.tokenId, lockTokenId: lock.tokenId, rootLabelHash: id(label), deploymentEpoch: inputs.deploymentEpoch,
++      doorId: keccak256(AbiCoder.defaultAbiCoder().encode(
++        ['uint256','address','bytes32','bytes32','address','address','uint256','uint256','uint256'],
++        [11155111,a.DoorKeys,id(label),id('lock'),a.R1,a.R2,root.tokenId,lock.tokenId,inputs.deploymentEpoch])) };
++    const proof = proofs[name];
++    let runtime = proof.runtimeTemplate;
++    for (const field of proof.immutableReferences) {
++      const value = values[field.name];
++      need(value !== undefined, 'Unknown runtime immutable');
++      const word = zeroPadValue(typeof value === 'string' && value.startsWith('0x') ? value : toBeHex(value),32).slice(2).toLowerCase();
++      for (const { start, length } of field.slots) {
++        need(length === 32, 'Unsupported immutable width');
++        runtime = runtime.slice(0,start*2) + word + runtime.slice((start+length)*2);
++      }
++    }
++    receipt = staticResult([], [code(name,keccak256('0x'+runtime)),expect(name,'rootLabel',[],[label])],
++      undefined,{ address: a[name] });
++  }
++  if (stage === 13) {
++    await requireValue('R2','roleCount',[0],[rootGrant]);
++    await requireCheck(roles('R2',0,a.CredentialRegistrar,0));
++    receipt = staticResult([event('R2','EACRolesChanged',[0,a.CredentialRegistrar,0,registrarGrant])],
++      [roles('R2',0,a.CredentialRegistrar,registrarGrant),expect('R2','roleCount',[0],[rootGrant+registrarGrant])]);
++  }
++  if (stage === 15) {
++    await empty('Mira');
++    await requireValue('R2','isEmancipated',[],[false]);
++    for (const account of [inputs.mira,a.DoorKeys]) await requireCheck(roles('R2',0,account,0));
++    const expiry = now + BigInt(inputs.expiry.guestDurationSeconds);
++    minimumRemaining = BigInt(inputs.expiry.guestMinimumRemainingSeconds);
++    need(expiry <= BigInt(lock.expiry) && expiry < 2n ** 64n && expiry - now >= minimumRemaining, 'Guest expiry outside approved bounds');
++    args[2] = expiry;
++    receipt = await registration('R2','mira',inputs.mira,a.CredentialRegistrar,0n,() => expiry,
++      b => [event('CredentialRegistrar','CredentialIssued',[id('mira'),b.tokenId,inputs.mira,expiry])]);
++  }
++  need(receipt && args.every(value => value != null), 'Unresolved packet bindings');
++  return { args, tokenReview, checks, receipt, minimumRemaining, revealDeadline };
++
++  async function registration(name, text, account, sender, bitmap, expiryAt, trailing = () => [], leading = [], extra = []) {
++    await requireCheck(code('LabelStore',runtimeHashes.LabelStore));
++    const before = await state(name,text);
++    need(before.status === 0n && before.expiry === 0n && same(before.latestOwner,zero), 'Registration requires pristine available state');
++    const absent = (await read('LabelStore','getLabel',[id(text)]))[0] === '';
++    return async h => {
++      const expiry = expiryAt(h);
++      if (minimumRemaining) need(expiry - BigInt(h.timestamp) >= minimumRemaining, 'Mined guest margin too short');
++      // For an expired entry the reviewed registry reports eacVersionId + 1.
++      // Registration of a pristine entry activates it without a version bump.
++      const b = { tokenId: before.tokenId.toString(), resource: (before.resource - 1n).toString(), owner: account, expiry: expiry.toString() };
++      const logs = [...leading];
++      if (absent) logs.push(event('LabelStore','Label',[id(text),text]));
++      logs.push(event(name,'LabelRegistered',[b.tokenId,id(text),text,account,expiry,sender]),
++        event(name,'TransferSingle',[sender,zero,account,b.tokenId,1]),event(name,'TokenResource',[b.tokenId,b.resource]));
++      if (bitmap) logs.push(event(name,'EACRolesChanged',[b.resource,account,0,bitmap]));
++      const current = [...registered(name,text,b),roles(name,b.resource,account,bitmap)];
++      if (!bitmap) current.push(expect(name,'roleCount',[b.resource],[0]));
++      return { events: [...logs,...trailing(b)], post: [...current,...extra], current, bindings: b };
++    };
++  }
++}
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/demo.html
+@@ -0,0 +1,16 @@
++<!doctype html>
++<html lang="en">
++<head><meta charset="utf-8"><title>Synthetic deployment review</title><link rel="stylesheet" href="style.css"></head>
++<body><main>
++  <h1>Synthetic workflow demonstration</h1>
++  <p>Uses an in-memory provider and synthetic receipts.</p>
++  <button id="prepare">Prepare test review</button>
++  <pre id="demo"></pre>
++  <button id="ack" disabled>Acknowledge review</button>
++  <button id="submit" disabled>Simulate request</button>
++  <button id="receipt" disabled>Verify synthetic receipt</button>
++  <button id="reset">Reset demo</button>
++  <pre id="journal"></pre>
++  <p><a href="index.html">Return to unsigned candidate review</a></p>
++</main><script type="module" src="demo.js"></script></body>
++</html>
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/demo.mjs
+@@ -0,0 +1,14 @@
++import { digest } from './workflow.mjs';
++import { fixture } from './test/fixture.mjs';
++const element = id => document.getElementById(id);
++const show = (id, value) => { element(id).textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); };
++let demo, lastReview;
++function reset() { demo?.workflow.close(); demo = fixture(); lastReview = null; show('demo', 'Test-only provider idle.'); show('journal', 'No persisted test requests.'); for (const id of ['ack','submit','receipt']) element(id).disabled = true; }
++async function action(fn) { try { await fn(); } catch { show('demo', 'Blocked or rejected. No live wallet request was made. Re-prepare/reconcile the test-only packet.'); } show('journal', demo.persisted() ?? {}); }
++element('prepare').onclick = () => action(async () => { lastReview = await demo.workflow.prepare('T01', demo.packets[0]); show('demo', lastReview); element('ack').disabled = false; });
++element('ack').onclick = () => action(async () => { demo.workflow.acknowledge('T01', digest(lastReview)); element('submit').disabled = false; element('ack').disabled = true; });
++element('submit').onclick = () => action(async () => { element('submit').disabled = true; await demo.workflow.submitTestOnly('T01'); element('receipt').disabled = false; });
++element('receipt').onclick = () => action(async () => { demo.provider.mine(demo.packets[0]); await demo.workflow.reconcile('T01'); show('demo', demo.workflow.state('T01')); element('receipt').disabled = true; });
++element('reset').onclick = reset;
++
++reset();
+--- a/contracts/scripts/deployment_workflow/test/all.mjs
++++ b/contracts/scripts/deployment_workflow/test/all.mjs
+@@ -2,0 +3,2 @@
++
++import './candidate.test.mjs';
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/test/candidate.test.mjs
+@@ -0,0 +1,152 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { Interface, keccak256 } from 'ethers';
++import { CandidateReview } from '../candidate.mjs';
++import { loadCandidateBundle } from '../candidate_bundle.mjs';
++
++const bundle = await loadCandidateBundle();
++const { inputs, addresses, abis } = bundle;
++const token = new Interface(abis.MockUSDC);
++const block = { number: '0x64', timestamp: '0x6553f100', baseFeePerGas: '0x10', hash: '0x' + '11'.repeat(32) };
++const txHash = '0x' + '22'.repeat(32);
++const zero = '0x' + '00'.repeat(20);
++
++function fixture() {
++  const data = structuredClone(bundle);
++  const calls = [];
++  const listeners = new Map();
++  const records = new Map();
++  let nonce = data.plan.snapshot.nonce;
++  let accounts = [inputs.owner];
++  let mined, receipt, advance = false;
++  const storage = { getItem: key => records.get(key) ?? null, setItem: (key, value) => records.set(key, value) };
++  const answers = {
++    getSubregistry: [addresses.ETHRegistry], ETH_REGISTRY: [addresses.ETHRegistry],
++    rentPriceOracle: [addresses.StandardRentPriceOracle], isAvailable: [true],
++    getRegisterPrice: [8000021, 0], allowance: [0], balanceOf: [0],
++  };
++  const provider = {
++    isMetaMask: true, testOnly: true,
++    on: (event, fn) => { if (!listeners.has(event)) listeners.set(event, new Set()); listeners.get(event).add(fn); },
++    removeListener: (event, fn) => listeners.get(event)?.delete(fn),
++    async request({ method, params = [] }) {
++      calls.push({ method, params });
++      await provider.hook?.(method);
++      switch (method) {
++        case 'eth_accounts': return accounts;
++        case 'eth_chainId': return '0xaa36a7';
++        case 'eth_getBlockByNumber':
++          if (params[0] === 'latest' && advance) return { ...block, number: '0x70' };
++          return params[0] === '0x70' ? { ...block, number: '0x70' } : block;
++        case 'eth_getTransactionCount': return nonce;
++        case 'eth_getBalance': return '0xffffffffffffffff';
++        case 'eth_getCode': return params[0] === inputs.owner ? '0x' : '0x6000';
++        case 'eth_estimateGas': return '0xc350';
++        case 'eth_getTransactionReceipt': return receipt;
++        case 'eth_getTransactionByHash': return mined;
++        case 'eth_call': {
++          const abi = Object.entries(addresses).find(([, address]) => address.toLowerCase() === params[0].to.toLowerCase())[0];
++          const iface = new Interface(abis[abi]);
++          const fn = iface.parseTransaction({ data: params[0].data }).fragment;
++          return iface.encodeFunctionResult(fn, answers[fn.name]);
++        }
++        default: throw new Error('Unexpected wallet method: ' + method);
++      }
++    },
++  };
++  for (const key of Object.keys(data.runtimeHashes)) data.runtimeHashes[key] = keccak256('0x6000');
++  return { data, provider, storage, calls, records, answers,
++    now: () => Number(BigInt(block.timestamp)) * 1000,
++    emit: event => listeners.get(event)?.forEach(fn => fn()),
++    setNonce: value => { nonce = value; }, setAccounts: value => { accounts = value; },
++    confirm() {
++      advance = true;
++      answers.balanceOf = [8000021];
++      const estimated = calls.find(x => x.method === 'eth_estimateGas').params[0];
++      mined = { ...estimated, input: estimated.data, gas: '0xea60', hash: txHash, blockHash: block.hash };
++      const encoded = token.encodeEventLog(token.getEvent('Transfer'), [zero, inputs.owner, 8000021]);
++      receipt = { from: inputs.owner, to: addresses.MockUSDC, transactionHash: txHash, blockHash: block.hash,
++        blockNumber: block.number, status: '0x1', effectiveGasPrice: '0x11', gasUsed: '0xc350',
++        logs: [{ ...encoded, address: addresses.MockUSDC, logIndex: '0x0' }] };
++    },
++  };
++}
++const open = f => new CandidateReview({ provider: f.provider, bundle: f.data, storage: f.storage, now: f.now });
++
++test('real candidate prepares only the first ready step and binds its confirmed receipt and budget', async () => {
++  const f = fixture();
++  const review = open(f);
++  await assert.rejects(review.prepare('T02'), /prerequisite receipt/);
++  assert.equal(f.calls.some(x => x.method === 'eth_estimateGas'), false);
++  const first = await review.prepare('T01');
++  assert.equal(first.token.units, '8000021');
++  assert.equal(first.token.allowanceUnits, '0');
++  assert.equal(first.estimate, '50000');
++  assert.equal(first.gasLimit, '0xea60');
++  assert.equal(first.execution, 'DISABLED');
++  await assert.rejects(review.reconcile('T01', txHash), /pending/);
++  f.confirm();
++  const entry = await review.reconcile('T01', txHash);
++  assert.equal(entry.status, 'CONFIRMED');
++  assert.equal(entry.costWei, '850000');
++  assert.equal(entry.evidence.finalizedBlockNumber, block.number);
++  assert.ok(![...f.records.values()][0].includes(f.data.plan.transactions[0].candidateCalldata));
++  f.setNonce('0x33');
++  assert.equal((await review.prepare('T02')).token.spender, addresses.ETHRegistrar);
++  review.close();
++});
++
++test('pending nonce, owner and account changes block before or invalidate exact review', async () => {
++  const f = fixture();
++  const review = open(f);
++  f.setNonce('0x33');
++  await assert.rejects(review.prepare('T01'), /nonce/);
++  f.setNonce('0x32');
++  f.setAccounts([inputs.mira]);
++  await assert.rejects(review.prepare('T01'), /owner/);
++  f.setAccounts([inputs.owner]);
++  f.provider.hook = method => { if (method === 'eth_estimateGas') f.emit('chainChanged'); };
++  await assert.rejects(review.prepare('T01'), /context changed/);
++  delete f.provider.hook;
++  await review.prepare('T01');
++  f.emit('accountsChanged');
++  assert.equal(review.journal().entries.T01.status, 'RECHECK_REQUIRED');
++  await assert.rejects(review.reconcile('T01', txHash), /session/);
++  review.close();
++});
++
++test('real browser entry uses existing account access and exposes only unsigned read actions', async () => {
++  const f = fixture();
++  const nodes = new Map();
++  const element = id => {
++    if (!nodes.has(id)) nodes.set(id, { value: id === 'step' ? 'T01' : '', append() {} });
++    return nodes.get(id);
++  };
++  const backup = { document: globalThis.document, window: globalThis.window, fetch: globalThis.fetch, localStorage: globalThis.localStorage };
++  Object.assign(globalThis, {
++    document: { getElementById: element, createElement: () => ({}) },
++    window: { ethereum: f.provider, addEventListener() {} },
++    fetch: async () => ({ ok: true, json: async () => f.data }),
++    localStorage: f.storage,
++  });
++  // Browser real clock is used. Return a fresh timestamp from the provider.
++  f.provider.hook = () => {};
++  const request = f.provider.request.bind(f.provider);
++  f.provider.request = async args => {
++    const response = await request(args);
++    return args.method === 'eth_getBlockByNumber' ? { ...response, timestamp: '0x' + Math.floor(Date.now()/1000).toString(16) } : response;
++  };
++  try {
++    await import('../browser.mjs');
++    await new Promise(resolve => setImmediate(resolve));
++    assert.equal(f.calls.length, 0);
++    await element('prepare').onclick();
++    assert.match(element('review').textContent, /UNSIGNED_CANDIDATE/);
++    f.emit('chainChanged');
++    assert.match(element('review').textContent, /context changed/);
++    await element('receipt').onclick();
++    assert.equal(f.calls.some(x => /sign|send|requestAccounts|switchEthereumChain/i.test(x.method)), false);
++  } finally {
++    Object.assign(globalThis, backup);
++  }
++});
+--- a/contracts/scripts/deployment_candidate/simulate.mjs
++++ b/contracts/scripts/deployment_candidate/simulate.mjs
+@@ -0,0 +1,2 @@
++import { CandidateReview } from '../deployment_workflow/candidate.mjs';
++import { loadCandidateBundle } from '../deployment_workflow/candidate_bundle.mjs';
+@@ -19 +21,2 @@
+-let child,url,upstreamProxy,stage='BOOT',localCalls=0;
++let child,url,upstreamProxy,stage='BOOT',localCalls=0,candidate;
++const integrated=process.argv.includes('--candidate-workflow');
+@@ -50 +53 @@
+-  child=spawn('anvil',['--host','127.0.0.1','--port',String(port),'--accounts','0','--quiet','--disable-console-log','--fork-url',upstreamProxy.url,'--fork-block-number',observation.blockNumber,'--chain-id','11155111','--hardfork','prague','--disable-min-priority-fee','--no-storage-caching','--max-persisted-states','0'],{stdio:['ignore','pipe','pipe']});
++  child=spawn('anvil',['--host','127.0.0.1','--port',String(port),'--accounts','0','--quiet','--disable-console-log','--fork-url',upstreamProxy.url,'--fork-block-number',observation.blockNumber,'--chain-id','11155111','--hardfork','prague','--disable-min-priority-fee','--no-storage-caching',...(integrated?['--prune-history','2048']:['--max-persisted-states','0'])],{stdio:['ignore','pipe','pipe']});
+@@ -68 +71,13 @@
+-  let spentWorstCase=0n;
++  let spentWorstCase=0n, reviewClock=0, registrationBytes;
++  if(integrated){
++    const bundle=await loadCandidateBundle(REVIEW_OUT);
++    const journal=new Map();
++    candidate=new CandidateReview({
++      provider:{request:({method,params})=>method==='eth_accounts'?[inputs.owner]:rpc(method,params)},
++      bundle, storage:{getItem:key=>journal.get(key)??null,setItem:(key,value)=>journal.set(key,value)},
++      now:()=>reviewClock,
++      random:bytes=>{bytes.set(registrationBytes);return bytes;},
++      privateEstimate:(tx,block)=>rpc('eth_estimateGas',[tx,block]),
++    });
++    result.integratedWorkflow=[];
++  }
+@@ -89,0 +105,6 @@
++    if(candidate){
++      reviewClock=Number(BigInt(head.timestamp))*1000;
++      const review=await candidate.prepare(step);
++      need(review.calldataDigest===keccak256(data)&&BigInt(review.gasLimit)===gas&&BigInt(review.maxFeePerGasWei)===fee,'INTEGRATED_REVIEW_DRIFT');
++      need(review.execution==='DISABLED','INTEGRATED_EXECUTION_GUARD');
++    }
+@@ -103,0 +125,5 @@
++    if(candidate){
++      const entry=await candidate.reconcile(step,hash);
++      need(entry.status==='CONFIRMED'&&entry.evidence.hash===hash,'INTEGRATED_RECEIPT');
++      result.integratedWorkflow.push({id:step,status:entry.status,reviewDigest:entry.reviewDigest,receiptHash:hash});
++    }
+@@ -116 +142 @@
+-  const preimageBytes=randomBytes(32);let preimage='0x'+preimageBytes.toString('hex');upstreamProxy.protect(preimage);
++  const preimageBytes=randomBytes(32);registrationBytes=preimageBytes;let preimage='0x'+preimageBytes.toString('hex');upstreamProxy.protect(preimage);
+@@ -188,0 +215 @@
++  candidate?.close();
+@@ -192 +219 @@
+-  if(upstreamProxy){result.upstreamReadOnlyProxy=upstreamProxy.stats;await upstreamProxy.close();}await writeFile(path.join(REVIEW_OUT,'simulation-result.json'),stringify(result));
++  if(upstreamProxy){result.upstreamReadOnlyProxy=upstreamProxy.stats;await upstreamProxy.close();}await writeFile(integrated?path.join(OUT,'workflow-integration','simulation-result.json'):path.join(REVIEW_OUT,'simulation-result.json'),stringify(result));

@@ -1,26 +1,25 @@
-# Local deployment review (execution disabled)
+# Unsigned deployment review
 
-Stage3F is NO-GO. Production submission is locked in code; there is no browser enable switch. No wallet permission/signature is requested on page load. Do not use test-only addresses, public test preimages, salts or receipts as deployment inputs.
+Stage 3F remains NO-GO. The main page uses existing MetaMask account access through a read-only adapter. Select the approved owner on Sepolia (11155111). The page has no permission, signature or transaction actions. It clears the displayed review on account, chain or connection changes.
 
-From the repository root, with the pinned local ethers6.17.0/esbuild0.28.2 dependencies available:
+From the repository root:
 
 ```sh
-node contracts/scripts/deployment_workflow/test/workflow.test.mjs
+npm --prefix contracts/scripts/deployment_workflow test
 node contracts/scripts/deployment_workflow/build.mjs
-python3 -m http.server 8769 --bind 127.0.0.1 --directory /tmp/nak-local-deployment-review
+node contracts/scripts/deployment_workflow/serve.mjs
 ```
 
-Open `http://127.0.0.1:8769/` locally. The UI displays all15 unresolved review packets and an isolated in-memory lifecycle demonstration. The inspect-wallet button reads only accounts already exposed by the provider and chain ID; it never requests permissions or switches chains. There is no send/sign control for a real wallet. Stop the temporary server after review. Build outputs are outside the repository and are not committed.
+Open `http://127.0.0.1:8769/` for the candidate. The build loads the recorded fresh-preflight candidate and approved limits. At review time, the app checks the current owner, network, applicable state, nonce and fee envelope. If the reviewed quote, prefix or other binding has changed, refresh the candidate. The synthetic lifecycle is a separate page at `http://127.0.0.1:8769/demo.html`.
 
-`npm test` and `npm run build` also work from this directory. package-lock.json pins dependencies for separately authorized reproduction; dependency installation is not part of running the workflow. The browser demo journal is intentionally test memory. `BrowserJournal` is the public localStorage adapter for a future resolved/approved workflow; it is not initialized for deployment by the UI.
+Choose a step and prepare its unsigned review. After a reload, the workflow rebuilds public drafts from the original canonical review block and prepares a fresh review. Receipt recovery checks the reconstructed packet against its journal digests and verifies the mined envelope, events, canonicality, confirmations, finalized coverage and current state. Enter the transaction hash if the journal has not recorded it yet. Recovery requires a provider that can serve the original historical state.
 
-Pinned ordered test-only fork simulation (read-only RPC; disposable in-memory changes):
+The loopback server handles T04 estimates on an owned disposable Anvil fork. The browser sends reveal calldata only to the same loopback origin. The server validates the reviewed reveal envelope and block hash, permits only read-only upstream state queries, and returns only the gas quantity. The preimage and raw reveal calldata stay out of journal entries and logs. A lost unrevealed preimage blocks reveal. A new plan can prepare another commitment only after the prior mined commitment is reconciled and expires.
+
+Run the integrated fork using the reviewed historical candidate snapshot:
 
 ```sh
-forge test --root contracts --fork-url https://sepolia.gateway.tenderly.co \
-  --fork-block-number 12071963 --match-contract OrderedDeploymentWorkflowTest -vv
+node contracts/scripts/deployment_candidate/simulate.mjs --candidate-workflow
 ```
 
-This executes15 local EVM actions using a synthetic root and test wallets, not real externally submitted transactions. It is **not** the final approved-input deployment simulation. No `forge script --broadcast`, private key, mnemonic or wallet import is used.
-
-Implementation/security decisions, proposals, test evidence and remaining blockers: `docs/prep/workflow/IMPLEMENTATION_REPORT.md` and `PROPOSED_DEFAULTS.json`. The earlier Stage3F audit is preserved unchanged.
+This starts an ephemeral loopback Anvil fork and enforces a read-only upstream. The harness alone sends transactions to the owned local fork. Its results are written under `docs/prep/evidence/deployment-candidate/workflow-recovery/`. The node uses in-memory history for ancestor receipt rechecks and stops after the run. Anvil models confirmations and finality locally.

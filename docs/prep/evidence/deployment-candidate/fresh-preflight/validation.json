@@ -1,0 +1,11 @@
+{
+  "gitDiffCheckExit": 0,
+  "currentRunnerWhitespace": "PASS",
+  "retainedFailureEvidenceWhitespace": "attempt2 runner line35 retained, see validation-attempt1.json",
+  "historicalObservationHashRestored": true,
+  "productionContractsUnchanged": true,
+  "indexEmpty": true,
+  "liveExecutionAllowed": false,
+  "stage3F": "NO_GO",
+  "testsRun": "none; read-only preflight and packet assertions only"
+}

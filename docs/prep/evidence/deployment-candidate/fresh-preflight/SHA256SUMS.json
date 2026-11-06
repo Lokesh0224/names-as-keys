@@ -1,0 +1,17 @@
+{
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/failure-attempt1.json": "e417fda0dc7133aa2ddd734e2b235d3b2b1f7e92b3df7e87b550fe135f687c87",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/validation.json": "7535a933c56bde0c9bf3102a65c638f44c6f310777c50c4bbed3a630ecfa2a0e",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/preflight-attempt1.log": "6659c7b4a4e1e600626fb4278b5ea9e7726cb93a66a7997b28bc6b47c62ade01",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/review-plan.json": "db3912bf9155c1b39d066ec9c02cddbd824478ca5d1dc7f3184ac0069cece58b",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/candidate-comparison.json": "c520eaf9cd5546addf2e7305ba0e8d1619cce11221571c745ab1b7d9956553f1",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/preflight.log": "2519398dfbe1f87bcd9353355e93f28e5889033febe6c9a258b3796c35f3f708",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/preflight-runner-attempt2.mjs": "04a2e0298727fb6ea506ba2af293ee7f1dffcbf001bec8d28bcbdff5c1376dea",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/preflight-result.json": "8c742894f59c09e823c0d2f345ac6510eadeb26d471f561bfac1d7677e4e928a",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/preflight-runner-attempt1.mjs": "966c6994adc3eee73485a56e9fade09dd3e95c007d735e6692e74b9a26375f30",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/public-bindings.json": "fa34ba093051ae02a8a95577e561666aab2e6a5b6a5f7f8a2023f52f1e56516f",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/preflight-attempt2.log": "512d1fcb3d5cc3956d3c44f32cfca8034610417d08fa04b2a20b9a3224621ffd",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/failure-attempt2.json": "afdab6cfa710ad48b391240b51eeff5e8886c4388fea07b4a927500a3eb6c6be",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/preflight-runner.mjs": "8bc2f6f47c5e72fba43d5786143abbbc0c7ed3bf5c09a5fab42499aee1bb194b",
+  "docs/prep/evidence/deployment-candidate/fresh-preflight/validation-attempt1.json": "a848411d10a99b0d5ec386386d6ac12dfc8d17f51cfcd83446cf485d14fd620e",
+  "docs/prep/deployment-candidate/FRESH_PREFLIGHT_REPORT.md": "2750f3c69cea4123dafe924fa2fdd951074fed4d9716192894bc56c022cc42c7"
+}

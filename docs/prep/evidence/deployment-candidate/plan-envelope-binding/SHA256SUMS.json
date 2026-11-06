@@ -1,0 +1,9 @@
+{
+  "docs/prep/evidence/deployment-candidate/plan-envelope-binding/current-simulation.log": "f0e68ea93e8c97f4184485682db62f422cc49fee06a63d47851b0590c0bf27ec",
+  "docs/prep/evidence/deployment-candidate/plan-envelope-binding/current-simulation-result.json": "918299468ccb0e361fa1b806df3e3ee9ada5cd611ac817c0347194a3a0f92dc0",
+  "docs/prep/evidence/deployment-candidate/plan-envelope-binding/regression-tests.log": "9772d4a4313279d94cd2ca92f68b512a393fe31c744251f0684b898f835a3ed4",
+  "docs/prep/evidence/deployment-candidate/plan-envelope-binding/SOURCE_DIFF.patch": "2a9554298eb59565bda3dd6b4f87fd840183b739673d95a9edb49e4596ca64c8",
+  "contracts/scripts/deployment_candidate/validation.mjs": "21bc6f14eb6fd9569f0d1365798f90713638576823a09e08716ec333735640d9",
+  "contracts/scripts/deployment_candidate/simulate.mjs": "28b397bdf34d4cc67daf07725bbd6e243d8f7dd54db707c4656b2d8fc97fafa7",
+  "contracts/scripts/deployment_candidate/review_regressions.mjs": "efbfeed9bb03634d087b1833f51949de53e4039bd76ff5deff4b543a00356d62"
+}

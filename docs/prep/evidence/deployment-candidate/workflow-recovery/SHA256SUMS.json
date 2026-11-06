@@ -1,0 +1,22 @@
+{
+  "contracts/scripts/deployment_workflow/README.md": "6dc68fe5f793693fdfff8dab34c92b6e12b459146cea37394eef4e94944c8aa0",
+  "contracts/scripts/deployment_workflow/browser.mjs": "859fb0b1e894d41b48324f4f18fdbcb787bfc13b935a4bcce11bfd10249d2b8e",
+  "contracts/scripts/deployment_workflow/candidate.mjs": "580df8c9e8700f6ada675ec482929e1760d4b6a42d3f4188aac882969cce3095",
+  "contracts/scripts/deployment_workflow/private_transport.mjs": "516a237f96269bdadde982668589cfb7b60999671fe3db08a809865cbee93399",
+  "contracts/scripts/deployment_workflow/private_server.mjs": "7c84895f1dcee4f09da35ae96863e6d494bfcccb202d1fbb511e27ffdd604717",
+  "contracts/scripts/deployment_workflow/serve.mjs": "97b661b28cccd566291918323f946ed486fb56226e7523773871bc2ee5b6e6de",
+  "contracts/scripts/deployment_workflow/test/all.mjs": "3564030f86a62184d71f1607cc88945f4b9cf3ebe4356f831470269a74a8db85",
+  "contracts/scripts/deployment_workflow/test/candidate.test.mjs": "d2c69132fd24fc8ca23a9945ca3cf9336bc5bae0dd5a0af923998084c0917080",
+  "contracts/scripts/deployment_workflow/test/private.test.mjs": "c85886e8114d7b1fe10a9a54fb62f8930cea3786fd497b26fdd9423e53626b7d",
+  "contracts/scripts/deployment_candidate/simulate.mjs": "ed8f3ef6be68370e4626946ed36acc56e1c49fa65a642f6abdd9424457daf75c",
+  "docs/prep/deployment-candidate/WORKFLOW_RECOVERY_REPORT.md": "0e411abbc4332f372f3e6d0e1bc19fe66813dc11df9fe6314a45059439bef9bd",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/SOURCE_DIFF.patch": "b7647e00b110deaa8d7e064e087f41726f14ef329aa45110af8d14d4acbb13c4",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/build.log": "ff2835c06c2e2d0e40b18038032789c3d90145f6d7ffd45a547de40c7f496cd7",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/envelope-regressions.log": "5ec82d7e460fde602d7fc8d9a88b2ba5e9aa7a1a7be19e0ff9e8db3b188d0880",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/fork-before-final-guards.log": "f0e68ea93e8c97f4184485682db62f422cc49fee06a63d47851b0590c0bf27ec",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/fork.log": "f0e68ea93e8c97f4184485682db62f422cc49fee06a63d47851b0590c0bf27ec",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/simulation-before-final-guards.json": "1cd193ff719e754391b4bc8e05f1694c818c0c67310570c51e513542875ac8b2",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/simulation-result.json": "bc725957d00c0ffffa8790e1aa53a165efbb1a894dfea66cf3605af78fc24bfb",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/workflow-tests-attempt1.log": "670c9ca73a62051feeca8380c1ede8d8f162e93e8def70f64248aa93bb2ad805",
+  "docs/prep/evidence/deployment-candidate/workflow-recovery/workflow-tests.log": "0aee6dd3800b7992b92abf6cecc29af414e67267becc82b0a04c1ba8ee816047"
+}

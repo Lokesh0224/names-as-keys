@@ -1,0 +1,486 @@
+{
+  "classification": "ISOLATED_LOCAL_FORK_CANDIDATE_STATIC_INPUTS_NOT_LIVE_EXECUTION",
+  "stage3F": "NO_GO",
+  "steps": [
+    {
+      "id": "T01",
+      "nonce": "0x32",
+      "transactionHash": "0xebc7d01348416d7ea6436cdda632899ed4c8a8e2d41e91f0fb0f37bb9d0e4c10",
+      "blockNumber": "0xb838f8",
+      "blockHash": "0x27d7fd8e465abf2e8a9f2c2fe140cdcc9799e93026de6a29c0d1e87786d154a7",
+      "gasUsed": "0xc8a9",
+      "gasLimit": "61643",
+      "feeCeiling": "25",
+      "calldataDigest": "0xadccfb1f171252b51390ab50ba63b06f70ebf6cbcd46d75b1ce0aa665368fff0",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83938",
+      "finalizedCoverage": "0xb838f8",
+      "verifiedEvents": [
+        {
+          "emitter": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "signature": "Transfer"
+        }
+      ]
+    },
+    {
+      "id": "T02",
+      "nonce": "0x33",
+      "transactionHash": "0xf3ea69cfad2046cc4f6befba66d66ab992b1d68e6ded6a2a60737ada0a5c1029",
+      "blockNumber": "0xb83939",
+      "blockHash": "0xa2732fd891c87190f567aebefc25c93c2940b9eadcac67f2a02762811d929dd2",
+      "gasUsed": "0xb512",
+      "gasLimit": "55625",
+      "feeCeiling": "15",
+      "calldataDigest": "0x579b6e029ca6af6213ee65277ea2a1d8a8689bff67349afa44fd4676a61d00d5",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83979",
+      "finalizedCoverage": "0xb83939",
+      "verifiedEvents": [
+        {
+          "emitter": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "signature": "Approval"
+        }
+      ]
+    },
+    {
+      "id": "T03",
+      "nonce": "0x34",
+      "transactionHash": "0xe1d6bf512b31624b3662c1079a69a9b8be7469604464146fb05ac3515f3a7f6e",
+      "blockNumber": "0xb8397a",
+      "blockHash": "0xfc2ce0c20dd1eca413883e64d7e5b7aa01bf262cd67c3ab5fad1b986c9bd60ad",
+      "gasUsed": "0xb17e",
+      "gasLimit": "54526",
+      "feeCeiling": "15",
+      "calldataDigest": "0x4b81287e2879a61cd055ac486089c59761c382e7162734431f8b4d0194fcc5e0",
+      "privateInputOmitted": true,
+      "localOnly": true,
+      "confirmationHead": "0xb839ba",
+      "finalizedCoverage": "0xb8397a",
+      "verifiedEvents": [
+        {
+          "emitter": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+          "signature": "CommitmentMade"
+        }
+      ]
+    },
+    {
+      "id": "T04",
+      "nonce": "0x35",
+      "transactionHash": "0x1f5f30c38dc03ca0eb23b75a0187d526ea75fe311fa14c932e607ba9acf1a4a7",
+      "blockNumber": "0xb839bb",
+      "blockHash": "0xefd9e0d2e19d25b0d5b173f4adaf495baaf56de1a88010e95633620320dd56dd",
+      "gasUsed": "0x33dab",
+      "gasLimit": "272154",
+      "feeCeiling": "15",
+      "calldataDigest": "0x68b949f35a479822d6aa8645ec7bdc5aab5c4f9b23e80de207d59c322c4f29f3",
+      "privateInputOmitted": true,
+      "localOnly": true,
+      "confirmationHead": "0xb839fb",
+      "finalizedCoverage": "0xb839bb",
+      "verifiedEvents": [
+        {
+          "emitter": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "signature": "Transfer"
+        },
+        {
+          "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+          "signature": "Label"
+        },
+        {
+          "emitter": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "signature": "LabelRegistered"
+        },
+        {
+          "emitter": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "signature": "TransferSingle"
+        },
+        {
+          "emitter": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "signature": "TokenResource"
+        },
+        {
+          "emitter": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "signature": "EACRolesChanged"
+        },
+        {
+          "emitter": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+          "signature": "NameRegistered"
+        }
+      ]
+    },
+    {
+      "id": "T05",
+      "nonce": "0x36",
+      "transactionHash": "0xb08f88498d1066c61e06e70324b024d92ab421d1407298acdcbf8c508bc4a9ad",
+      "blockNumber": "0xb839fc",
+      "blockHash": "0x0626ba3f353dfbeb1f85369b85c7372a2c5dacadb92bbb141f0d64699c45b13e",
+      "gasUsed": "0x3149a",
+      "gasLimit": "247662",
+      "feeCeiling": "15",
+      "calldataDigest": "0xca790275c2b5341bb08760d73f86b7580e8e4390adf35d010021a17a00b3c9ac",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83a3c",
+      "finalizedCoverage": "0xb839fc",
+      "verifiedEvents": [
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "Upgraded"
+        },
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "RegistryCreated"
+        },
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "EACRolesChanged"
+        },
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "URIUpdated"
+        },
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "Initialized"
+        },
+        {
+          "emitter": "0xda70306c98e97ece36f997a21368e53298572991",
+          "signature": "ProxyDeployed"
+        }
+      ]
+    },
+    {
+      "id": "T06",
+      "nonce": "0x37",
+      "transactionHash": "0x3b2b533901fd0db20a25ee3f39079a203e6b13812ffe76476f376019395335d7",
+      "blockNumber": "0xb83a3d",
+      "blockHash": "0xea28b03cab6a1f2833e76f62279f5f97b5885aa3daf9a7f83a79e2dc29f81695",
+      "gasUsed": "0xe0bc",
+      "gasLimit": "69039",
+      "feeCeiling": "15",
+      "calldataDigest": "0x615c87b1bae8e170b39b2ae7ab5f7ab4cbaafdcb5f1910004ee16ae4e266b044",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83a7d",
+      "finalizedCoverage": "0xb83a3d",
+      "verifiedEvents": [
+        {
+          "emitter": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "signature": "SubregistryUpdated"
+        }
+      ]
+    },
+    {
+      "id": "T07",
+      "nonce": "0x38",
+      "transactionHash": "0xf27b8f54c81210c10c8040765e4b7da98ebcb539e18078c8d309688e59336738",
+      "blockNumber": "0xb83a7e",
+      "blockHash": "0x0a1ec55ebecdddd19f26ca9904631b1dc427de518804f79f45d1330db2e2a47a",
+      "gasUsed": "0x13c07",
+      "gasLimit": "98884",
+      "feeCeiling": "15",
+      "calldataDigest": "0x836d176b910e20ce270147ed691b46f40c153138375be00b8b47f54787d08dd8",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83abe",
+      "finalizedCoverage": "0xb83a7e",
+      "verifiedEvents": [
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "ParentUpdated"
+        }
+      ]
+    },
+    {
+      "id": "T08",
+      "nonce": "0x39",
+      "transactionHash": "0x18bd72886df107e80b487bdb6cd9e23030302eacffdd3deb6fdacefd0d185c1e",
+      "blockNumber": "0xb83abf",
+      "blockHash": "0x6aff6de1d6e3994ff16ddb0e866ea29fe977d068fc5dd31b3dddacd1cb40672a",
+      "gasUsed": "0x29095",
+      "gasLimit": "206824",
+      "feeCeiling": "15",
+      "calldataDigest": "0xd2ca48f1e0064be39aceb4cd75e25cf5dd2875604c649bd56bd3ebcffcaa5d9f",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83aff",
+      "finalizedCoverage": "0xb83abf",
+      "verifiedEvents": [
+        {
+          "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+          "signature": "Label"
+        },
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "LabelRegistered"
+        },
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "TransferSingle"
+        },
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "TokenResource"
+        },
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "EACRolesChanged"
+        }
+      ]
+    },
+    {
+      "id": "T09",
+      "nonce": "0x3a",
+      "transactionHash": "0x18087ca591d8e33e72ea9e98fbdee5f687c10db9765e22420cc2b3c9886232f6",
+      "blockNumber": "0xb83b00",
+      "blockHash": "0xd31eeec512afd3cde979e54d74917285ff8208f1b1200b536acdcef9b364d350",
+      "gasUsed": "0x3149a",
+      "gasLimit": "247662",
+      "feeCeiling": "15",
+      "calldataDigest": "0xb0262179318f96201f02b531a171c127d7950a17be0a53d6e2348486f971bbdc",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83b40",
+      "finalizedCoverage": "0xb83b00",
+      "verifiedEvents": [
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "Upgraded"
+        },
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "RegistryCreated"
+        },
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "EACRolesChanged"
+        },
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "URIUpdated"
+        },
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "Initialized"
+        },
+        {
+          "emitter": "0xda70306c98e97ece36f997a21368e53298572991",
+          "signature": "ProxyDeployed"
+        }
+      ]
+    },
+    {
+      "id": "T10",
+      "nonce": "0x3b",
+      "transactionHash": "0x20289cb8ba090b0bd5ef159683ad5b0593cfa836396065c852fc4efecff2974f",
+      "blockNumber": "0xb83b41",
+      "blockHash": "0x09e0059934f9dd89cf40f315589af2e13f6dee67e0729fbb5cab5957946b433e",
+      "gasUsed": "0xff3e",
+      "gasLimit": "79620",
+      "feeCeiling": "15",
+      "calldataDigest": "0x60c32d2b0f24a052272f31bfde03fe74f40cdf48174bad4c5114ed2130c9f24c",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83b81",
+      "finalizedCoverage": "0xb83b41",
+      "verifiedEvents": [
+        {
+          "emitter": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "signature": "SubregistryUpdated"
+        }
+      ]
+    },
+    {
+      "id": "T11",
+      "nonce": "0x3c",
+      "transactionHash": "0x96e909a4ea754e2186b76113237c4af394a7d953b189edb21cca15317f8c9523",
+      "blockNumber": "0xb83b82",
+      "blockHash": "0xe0fa2c1720ce73d1ec55da00ff0ed01791040926df82bc62a1dab9812eff4e33",
+      "gasUsed": "0x13b53",
+      "gasLimit": "98668",
+      "feeCeiling": "15",
+      "calldataDigest": "0xc97dac014014abc2ce3272bde5d1e8f0f9b0bf3d0d958b70746cd986406a5412",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83bc2",
+      "finalizedCoverage": "0xb83b82",
+      "verifiedEvents": [
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "ParentUpdated"
+        }
+      ]
+    },
+    {
+      "id": "T12",
+      "nonce": "0x3d",
+      "transactionHash": "0x679f96c0ae593e334f0d9a0a543f9d6c93c514e38ba95a7a1d7c0874eceec82b",
+      "blockNumber": "0xb83bc3",
+      "blockHash": "0xa001f84292dee6856085ab553e04e35ddb5c5f544f6aa227029188c62a6d190a",
+      "gasUsed": "0x212d56",
+      "gasLimit": "2609153",
+      "feeCeiling": "15",
+      "calldataDigest": "0x5a3094538d7dfae639d9b2b7255494a089ab949fc136a6b8e4bc11fa45249d83",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83c03",
+      "finalizedCoverage": "0xb83bc3",
+      "verifiedEvents": []
+    },
+    {
+      "id": "T13",
+      "nonce": "0x3e",
+      "transactionHash": "0xc5fe1f5b64bd35baba0c4165d99476a7af694a24ef079ee8ba0f19ec4812b9da",
+      "blockNumber": "0xb83c04",
+      "blockHash": "0xc2afcf436db58d49458b727ecdd651f75d4c00984d99acc445468c615563d976",
+      "gasUsed": "0xf745",
+      "gasLimit": "77097",
+      "feeCeiling": "15",
+      "calldataDigest": "0x41c38851ffd16ce1a7decacc9257497d7338f54832c51ef47c139f59325068fb",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83c44",
+      "finalizedCoverage": "0xb83c04",
+      "verifiedEvents": [
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "EACRolesChanged"
+        }
+      ]
+    },
+    {
+      "id": "T14",
+      "nonce": "0x3f",
+      "transactionHash": "0xe3bb44019775b613eb08a38bd2373c70bb248b12177e287991f791864e0812b8",
+      "blockNumber": "0xb83c45",
+      "blockHash": "0x7439da76f45da5109788312865c7d3cc9e2a8fa5210b08edabcdbc266c51cb76",
+      "gasUsed": "0x153ff9",
+      "gasLimit": "1671160",
+      "feeCeiling": "15",
+      "calldataDigest": "0x5cf46290ef6c544c1eb29fe6860a326dd0928b2da4bc9e3c1285cd8b46f3e617",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83c85",
+      "finalizedCoverage": "0xb83c45",
+      "verifiedEvents": []
+    },
+    {
+      "id": "T15",
+      "nonce": "0x40",
+      "transactionHash": "0xb4272476e753d30e02edf20279bd35165a7bb27819a0e4568da98369ed3c9ab0",
+      "blockNumber": "0xb83c86",
+      "blockHash": "0x6c4f9110016911bb2eb705f050a7479cbc65cad27c264514322235e5b7bf294a",
+      "gasUsed": "0x3ed09",
+      "gasLimit": "335171",
+      "feeCeiling": "15",
+      "calldataDigest": "0xeb59d426be4a6aa8d40e66c269df83a16bd25d0757ddd6b7f42fbeb669e2f859",
+      "privateInputOmitted": false,
+      "localOnly": true,
+      "confirmationHead": "0xb83cc6",
+      "finalizedCoverage": "0xb83c86",
+      "verifiedEvents": [
+        {
+          "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+          "signature": "Label"
+        },
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "LabelRegistered"
+        },
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "TransferSingle"
+        },
+        {
+          "emitter": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "signature": "TokenResource"
+        },
+        {
+          "emitter": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+          "signature": "CredentialIssued"
+        }
+      ]
+    }
+  ],
+  "preimageHandling": "Fresh random32-byte fork-only preimage in RAM, never serialized; destroyed with processes; never reused live",
+  "liveReceipts": {},
+  "liveExecutionAllowed": false,
+  "forkBlockNumber": "12073207",
+  "forkBlockHash": "0x9b3982ff5b8e962aaa1e658583dc3f33e7e0e997be3228fd4fe7a331189ecf07",
+  "approvedStaticInputs": {
+    "owner": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+    "mira": "0x5a9191871b9117218F83Ed43293E011667053F39",
+    "root": "nak-lokesh-20261105.eth",
+    "salts": {
+      "R1": "0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39",
+      "R2": "0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95"
+    },
+    "epoch": 1,
+    "rootDuration": 31536000,
+    "lockDuration": 7776000,
+    "guestDuration": 86400
+  },
+  "nodeInfo": {
+    "client": "anvil/v1.3.5",
+    "evmModel": "Prague; actual network fork-rule parity not independently attested",
+    "accountsGenerated": 0,
+    "persistence": "disabled",
+    "upstream": "public read-only fork transport",
+    "ownedLoopbackOnly": true
+  },
+  "localBindings": {
+    "addresses": {
+      "R1": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+      "R2": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+      "CredentialRegistrar": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+      "DoorKeys": "0x93ac7E046AcdE7BBFb3F5086775bcA5032c6c7e6"
+    },
+    "rootTokenId": "80528888745245994281891050364927917536355893854608130930097487246952469889024",
+    "rootResource": "80528888745245994281891050364927917536355893854608130930097487246952469889024",
+    "rootExpiry": "1825463376",
+    "lockTokenId": "44058796675038520504801569636438252801473183425383913991093836489951650250752",
+    "lockResource": "44058796675038520504801569636438252801473183425383913991093836489951650250752",
+    "lockExpiry": "1801703634",
+    "lockReference": {
+      "number": "0xb83abe",
+      "hash": "0xba3598986c7c424b17bc3b2fd803f6eee8442d47cb8ced7127a2045a6783717e",
+      "timestamp": "0x6aed29d2"
+    },
+    "guestTokenId": "22525466630966598848928789999894602506900603399969195729871270327397585518592",
+    "guestExpiry": "1794014486",
+    "guestReference": {
+      "number": "0xb83c85",
+      "hash": "0x2b286a9d8fdf837b25d1bc82453390ed47f1bf4f3ae6da85ec4048e831f16966",
+      "timestamp": "0x6aed2b96"
+    },
+    "doorId": "0x43bdc8e53aa46d9e343889964b1bed96760bf57da7af4b31c4287c5263055ec1"
+  },
+  "verified": {
+    "allIncludedStepsSucceeded": true,
+    "exactEncodedInputsAndNonces": true,
+    "allReceiptEventsExact": true,
+    "confirmationAndFinalizedModel": true,
+    "hierarchyAndBothParentLinks": true,
+    "ownersRolesExpiries": true,
+    "fullProductionRuntimeBytes": true,
+    "fullProxyRuntimeBytes": true,
+    "readOnlyUnlockAcceptedNoPersistentEvent": true
+  },
+  "totalReservedGasWei": "93389750",
+  "localRpcCalls": 211,
+  "status": "PASS",
+  "nodeStopped": true,
+  "upstreamReadOnlyProxy": {
+    "forwarded": {
+      "eth_getBlockByNumber": 2,
+      "eth_getBalance": 16,
+      "eth_getTransactionCount": 16,
+      "eth_getCode": 16,
+      "eth_getStorageAt": 23,
+      "eth_getTransactionReceipt": 3
+    },
+    "blocked": 2
+  }
+}

@@ -1,0 +1,2 @@
+PASS: read-only public candidate predictions and snapshot written; no secret, wallet or write RPC used
+BLOCKED: fresh read-only preflight failed

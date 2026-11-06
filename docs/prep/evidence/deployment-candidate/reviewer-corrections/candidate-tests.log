@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: conditional CREATE nonce predictions account for both preliminary transactions
+ok 1 - conditional CREATE nonce predictions account for both preliminary transactions
+  ---
+  duration_ms: 4.363599
+  type: 'test'
+  ...
+# Subtest: skipped mint and approval change CREATE predictions without inventing transactions
+ok 2 - skipped mint and approval change CREATE predictions without inventing transactions
+  ---
+  duration_ms: 1.538988
+  type: 'test'
+  ...
+# Subtest: public inspection refuses every write/sign method before fetch
+ok 3 - public inspection refuses every write/sign method before fetch
+  ---
+  duration_ms: 0.749805
+  type: 'test'
+  ...
+# Subtest: fork proxy rejects write, signing, account and eth_call forwarding
+ok 4 - fork proxy rejects write, signing, account and eth_call forwarding
+  ---
+  duration_ms: 0.254093
+  type: 'test'
+  ...
+# Subtest: fork proxy permits only allowed reads and filters private bytes even in read params
+ok 5 - fork proxy permits only allowed reads and filters private bytes even in read params
+  ---
+  duration_ms: 0.218941
+  type: 'test'
+  ...
+# Subtest: mixed/empty/malformed proxy batches are rejected
+ok 6 - mixed/empty/malformed proxy batches are rejected
+  ---
+  duration_ms: 0.254705
+  type: 'test'
+  ...
+# Subtest: recorded public CREATE2 predictions match independent pinned-bytecode derivation
+ok 7 - recorded public CREATE2 predictions match independent pinned-bytecode derivation
+  ---
+  duration_ms: 11.377225
+  type: 'test'
+  ...
+# Subtest: public candidate never fills preimages, live receipts or final transaction fields
+ok 8 - public candidate never fills preimages, live receipts or final transaction fields
+  ---
+  duration_ms: 0.948494
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24.190862

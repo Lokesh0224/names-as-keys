@@ -1,0 +1,48 @@
+{
+  "classification": "ISOLATED_LOCAL_FORK_CANDIDATE_STATIC_INPUTS_NOT_LIVE_EXECUTION",
+  "stage3F": "NO_GO",
+  "steps": [],
+  "planComparisons": [],
+  "preimageHandling": "Fresh random32-byte fork-only preimage in RAM, never serialized; destroyed with processes; never reused live",
+  "liveReceipts": {},
+  "liveExecutionAllowed": false,
+  "sourceReviewPlan": {
+    "path": "docs/prep/evidence/deployment-candidate/reviewer-corrections/review-plan.json",
+    "sha256": "0xda9ed9b88c40457975592a9dcecb9931e6d2a757293deadd12025d910a5e033f",
+    "preparationContext": "LIVE_REVIEW",
+    "snapshot": {
+      "number": "0xb839e0",
+      "hash": "0x5230826f1ca25ae61f14bea0c149c8f1fa7f6f7b012d5ccae4a4f8a54015213d",
+      "timestamp": "0x6aed3314",
+      "nonce": "0x32",
+      "pendingNonce": "0x32"
+    }
+  },
+  "simulationContext": "HISTORICAL_FORK_FROM_IDENTIFIED_PLAN_SNAPSHOT_NOT_FRESH_LIVE_REVIEW",
+  "forkBlockNumber": "12073440",
+  "forkBlockHash": "0x5230826f1ca25ae61f14bea0c149c8f1fa7f6f7b012d5ccae4a4f8a54015213d",
+  "approvedStaticInputs": {
+    "owner": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+    "mira": "0x5a9191871b9117218F83Ed43293E011667053F39",
+    "root": "nak-lokesh-20261105.eth",
+    "salts": {
+      "R1": "0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39",
+      "R2": "0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95"
+    },
+    "epoch": 1,
+    "rootDuration": 31536000,
+    "lockDuration": 7776000,
+    "guestDuration": 86400
+  },
+  "status": "BLOCKED",
+  "failure": {
+    "stage": "BOOT",
+    "classification": "SANITIZED_LOCAL_SIMULATION_FAILURE",
+    "rpcCode": null
+  },
+  "nodeStopped": true,
+  "upstreamReadOnlyProxy": {
+    "forwarded": {},
+    "blocked": 0
+  }
+}

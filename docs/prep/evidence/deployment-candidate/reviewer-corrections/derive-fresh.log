@@ -1,0 +1,1 @@
+PASS: both factory RPC predictions independently reproduced from pinned clone bytecode/salt derivation; proxy logic runtime unchanged

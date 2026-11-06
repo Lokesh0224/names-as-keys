@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { getCreateAddress } from 'ethers';
+import path from 'node:path';
+import { noncePlan,publicRPC,readJSON,OUT,DOC } from './common.mjs';
+import { allowedForward } from './upstream_proxy.mjs';
+import { factoryPrediction } from './prediction.mjs';
+const OWNER='0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7';
+test('conditional CREATE nonce predictions account for both preliminary transactions',()=>{const p=noncePlan('0x32',true,true,OWNER);assert.equal(BigInt(p.steps[11].nonce),61n);assert.equal(BigInt(p.steps[13].nonce),63n);assert.equal(p.registrar,getCreateAddress({from:OWNER,nonce:61}));});
+test('skipped mint and approval change CREATE predictions without inventing transactions',()=>{const p=noncePlan('0x32',false,false,OWNER);assert.equal(p.steps[0].nonce,null);assert.equal(BigInt(p.steps[11].nonce),59n);assert.equal(BigInt(p.steps[13].nonce),61n);});
+test('public inspection refuses every write/sign method before fetch',async()=>{for(const method of ['eth_sendTransaction','eth_sendRawTransaction','personal_sign','eth_requestAccounts','anvil_impersonateAccount'])await assert.rejects(()=>publicRPC(method),/read-only/);});
+test('fork proxy rejects write, signing, account and eth_call forwarding',()=>{for(const method of ['eth_sendTransaction','eth_sendRawTransaction','eth_sign','eth_requestAccounts','eth_call'])assert.equal(allowedForward({jsonrpc:'2.0',id:1,method,params:[]}),false);});
+test('fork proxy permits only allowed reads and filters private bytes even in read params',()=>{const secret='0x'+'ab'.repeat(32);const request={jsonrpc:'2.0',id:1,method:'eth_getStorageAt',params:[OWNER,'0x0','latest']};assert.equal(allowedForward(request,secret),true);request.params[1]=secret.toUpperCase();assert.equal(allowedForward(request,secret),false);});
+test('mixed/empty/malformed proxy batches are rejected',()=>{assert.equal(allowedForward([]),false);assert.equal(allowedForward({method:'eth_chainId'}),false);assert.equal(allowedForward([{jsonrpc:'2.0',method:'eth_chainId',params:[]},{jsonrpc:'2.0',method:'eth_sendTransaction',params:[]}]),false);});
+test('recorded public CREATE2 predictions match independent pinned-bytecode derivation',async()=>{const x=await readJSON(path.join(OUT,'public-bindings.json')),inputs=await readJSON(path.join(DOC,'APPROVED_INPUTS.json'));for(const name of ['R1','R2']){const p=factoryPrediction(x.upstream.VerifiableFactory.address,x.factoryLogic,inputs.owner,inputs.salts[name]);assert.equal(p.address,x.predictions[name]);assert.equal((p.runtime.length-2)/2,77);}});
+test('public candidate never fills preimages, live receipts or final transaction fields',async()=>{const p=await readJSON(path.join(DOC,'review-plan.json'));assert.equal(p.registrationSecret,null);assert.equal(p.registrationCommitment,null);assert.equal(p.liveExecutionAllowed,false);for(const s of p.transactions){assert.equal(s.finalCalldata,null);assert.equal(s.liveReceipt,null);}for(const id of ['T03','T04','T06','T08','T10','T15'])assert.equal(p.transactions.find(s=>s.id===id).candidateCalldata,null);});

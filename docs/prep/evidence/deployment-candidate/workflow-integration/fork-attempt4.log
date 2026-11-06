@@ -1,0 +1,2 @@
+Diagnostic frame:     at fail (file:///home/l/EthMumbai2026/names-as-keys/contracts/scripts/deployment_workflow/workflow.mjs:276:179)     at DeploymentWorkflow.verifyReceipt (file:///home/l/EthMumbai2026/names-as-keys/contracts/scripts/deployment_workflow/workflow.mjs:305:30)     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+BLOCKED: isolated candidate simulation failed at T09; private error details withheld

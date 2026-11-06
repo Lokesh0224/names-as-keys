@@ -1,0 +1,12 @@
+{
+  "historicalGateRecordsUnchanged": {
+    "docs/prep/stage3f-audit/gate-status.json": "a291a20dfa7d00d82bf89997560796fac54bf98734d493f5753f72c560282141",
+    "docs/prep/stage3f-audit/READINESS_REPORT.md": "5bb3e225b806773db8d8f2a54294a344c69f334077d4193594be4e1dba59f440"
+  },
+  "newFilesSha256": {
+    "docs/prep/evidence/deployment-candidate/gate-reconciliation/owner-connection-report.json": "af2b5e8d9494cb424c7f5128a68f35a64a938fe9e1cd91dc5fcc672fce542377",
+    "docs/prep/deployment-candidate/CURRENT_GATE_RECONCILIATION.md": "8dd94728adfc6bf7b62b0d3869ed178bfbf84add5116bb5ef8a1cfbc946d789e"
+  },
+  "productionDiffEmpty": true,
+  "liveExecutionAllowed": false
+}

@@ -1,0 +1,69 @@
+{
+  "classification": "OWNER_APPROVED_CANDIDATE_DEFAULTS_NOT_LIVE_AUTHORIZATION",
+  "stage3F": "NO_GO",
+  "root": "nak-lokesh-20261105.eth",
+  "paymentToken": "MockUSDC",
+  "salts": {
+    "R1": "0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39",
+    "R2": "0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95"
+  },
+  "saltPolicy": "Approved for candidate preparation; public deterministic uint256 salts still require empty prediction/code and confirmed live receipt checks",
+  "registrationSecret": {
+    "lengthBytes": 32,
+    "generator": "Future live-session crypto.getRandomValues32 bytes; no live preimage generated. Disposable fork uses fresh node:crypto32-byte preimages in RAM only.",
+    "storage": "memory only; never localStorage, public journal or Git",
+    "lossPolicy": "stop if lost; wait commitment expiration then separately review a new attempt; encrypted recovery is a separate owner decision",
+    "distinction": "This is a commit/reveal preimage, never a MetaMask seed/private key"
+  },
+  "expiry": {
+    "rootDurationSeconds": 31536000,
+    "lockDurationSeconds": 7776000,
+    "guestDurationSeconds": 86400,
+    "reference": "latest identified review block after ancestors confirmed; uint64 absolute expiries; no silent clamping",
+    "guestMinimumRemainingSeconds": 600,
+    "maxAgeSeconds": 120,
+    "maxAgeBlocks": 2
+  },
+  "spending": {
+    "approval": "exact fresh quoted units only, no unlimited approval",
+    "mint": "exact verified deficit only",
+    "maxRentUnits": "8100000",
+    "decimals": 6,
+    "maxRentDisplay": "8.1 MockUSDC",
+    "priceChange": "stop for a new quote/allowance/review, even below cap"
+  },
+  "fees": {
+    "maxFeePerGasWei": "2000000000",
+    "maxPriorityFeePerGasWei": "100000000",
+    "gasLimitMultiplierPercent": 120,
+    "maxGasPerStep": "3000000",
+    "maxTotalWei": "30000000000000000",
+    "maxTotalDisplay": "0.03 Sepolia ETH",
+    "policy": "Ceilings, not fee targets. Resolve RPC quote/estimate for every exact packet; do not silently cap failing estimates"
+  },
+  "confirmations": {
+    "count": 12,
+    "finalityTag": "finalized",
+    "policy": "both 12 confirmations and receipt height covered by finalized header, same canonical hash; revalidate ancestors and current state before every next packet"
+  },
+  "deploymentEpoch": 1,
+  "noncePolicy": "one owner sender; no concurrent unrelated owner transactions; explicit retry/replacement review only",
+  "decisionsRequired": [
+    "Independent architecture/security review",
+    "Explicit future authorization for the complete live write sequence"
+  ],
+  "approvalSource": "Owner selected Use all recommended candidate defaults in this chat",
+  "recordedUTC": "2026-11-06T01:12:38.527Z",
+  "checkpoint": "a23821d7fd8056c0ec473d67d18890e775a16f11",
+  "owner": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+  "mira": "0x5a9191871b9117218F83Ed43293E011667053F39",
+  "liveExecutionAllowed": false,
+  "approvedDecisionGroups": [
+    "salts and deployment epoch",
+    "private registration-preimage loss/recovery policy",
+    "exact duration/absolute-expiry reference",
+    "8.1 MockUSDC rent cap and exact-quote approval policy",
+    "gas/fee/total ceilings",
+    "12 confirmations plus finalized and reorg policy"
+  ]
+}

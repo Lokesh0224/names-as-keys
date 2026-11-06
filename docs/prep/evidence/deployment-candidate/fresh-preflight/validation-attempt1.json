@@ -1,0 +1,13 @@
+{
+  "newEvidenceWhitespaceFindings": [
+    [
+      "preflight-runner-attempt2.mjs",
+      35
+    ],
+    [
+      "preflight-runner.mjs",
+      37
+    ]
+  ],
+  "resolution": "Removed trailing space from current runner; failed attempt2 runner retained exactly with its trailing space as historical failure evidence."
+}

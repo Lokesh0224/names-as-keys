@@ -1,0 +1,593 @@
+--- a/contracts/scripts/deployment_workflow/README.md
++++ b/contracts/scripts/deployment_workflow/README.md
+@@ -10 +10 @@
+-python3 -m http.server 8769 --bind 127.0.0.1 --directory /tmp/nak-local-deployment-review
++node contracts/scripts/deployment_workflow/serve.mjs
+@@ -15 +15 @@
+-Choose a step and prepare its unsigned review. Receipt review requires the original prepared packet in the same page session. It checks the supplied public hash against the reviewed envelope, receipt events, canonical headers and state. The journal retains public digests and receipt evidence. On page reload it retains the record and blocks progression where the original packet is unavailable.
++Choose a step and prepare its unsigned review. After a reload, the workflow rebuilds public drafts from the original canonical review block and prepares a fresh review. Receipt recovery checks the reconstructed packet against its journal digests and verifies the mined envelope, events, canonicality, confirmations, finalized coverage and current state. Enter the transaction hash if the journal has not recorded it yet. Recovery requires a provider that can serve the original historical state.
+@@ -17 +17 @@
+-T04 requires an isolated estimate transport because its calldata includes the registration preimage. The browser supplies no such transport. The guarded Anvil harness supplies its own loopback-only estimator, and the preimage stays in session memory.
++The loopback server handles T04 estimates on an owned disposable Anvil fork. The browser sends reveal calldata only to the same loopback origin. The server validates the reviewed reveal envelope and block hash, permits only read-only upstream state queries, and returns only the gas quantity. The preimage and raw reveal calldata stay out of journal entries and logs. A lost unrevealed preimage blocks reveal. A new plan can prepare another commitment only after the prior mined commitment is reconciled and expires.
+@@ -25 +25 @@
+-This starts an ephemeral loopback Anvil fork and enforces a read-only upstream. The harness alone sends transactions to the owned local fork. Its results are written under `docs/prep/evidence/deployment-candidate/workflow-integration/`. The node uses in-memory history for ancestor receipt rechecks and stops after the run. Anvil models confirmations and finality locally.
++This starts an ephemeral loopback Anvil fork and enforces a read-only upstream. The harness alone sends transactions to the owned local fork. Its results are written under `docs/prep/evidence/deployment-candidate/workflow-recovery/`. The node uses in-memory history for ancestor receipt rechecks and stops after the run. Anvil models confirmations and finality locally.
+--- a/contracts/scripts/deployment_workflow/browser.mjs
++++ b/contracts/scripts/deployment_workflow/browser.mjs
+@@ -1,0 +2 @@
++import { privateEstimator } from './private_transport.mjs';
+@@ -26 +27 @@
+-  const candidate = new CandidateReview({ provider: window.ethereum, bundle, storage: localStorage, update: () => {
++  const candidate = new CandidateReview({ provider: window.ethereum, bundle, storage: localStorage, privateEstimate: privateEstimator(window.location), update: () => {
+@@ -63 +64,3 @@
+-    await candidate.reconcile(element('step').value, element('hash').value.trim());
++    const step = element('step').value;
++    const hash = element('hash').value.trim() || candidate.journal().entries[step]?.receiptHash;
++    await candidate.reconcile(step, hash);
+--- a/contracts/scripts/deployment_workflow/candidate.mjs
++++ b/contracts/scripts/deployment_workflow/candidate.mjs
+@@ -12 +12 @@
+-  #handlers; #update; #privateEstimate; #random; #state;
++  #handlers; #update; #privateEstimate; #random; #state; #storage; #registrationKey;
+@@ -29,0 +30,2 @@
++    this.#storage = storage;
++    this.#registrationKey = 'nak-registration:' + inputs.owner.toLowerCase() + ':' + inputs.root;
+@@ -32 +34,8 @@
+-    need(this.#state.planDigest === planDigest, 'Journal plan mismatch');
++    need(this.#state.schema === 1 && this.#state.planDigest === planDigest, 'Journal plan mismatch');
++    for (const [id, entry] of Object.entries(this.#state.entries)) {
++      need(plan.transactions.some(step => step.id === id && step.conditionallyIncluded) &&
++        hash(entry.reviewDigest) && hash(entry.packetDigest), 'Invalid recovery record');
++      // Only safe identifiers are presented from storage. Chain evidence is rebuilt.
++      if (entry.receiptHash) need(hash(entry.receiptHash), 'Invalid recovery receipt hash');
++      entry.status = 'RECHECK_REQUIRED';
++    }
+@@ -52 +61,7 @@
+-  journal() { return structuredClone(this.#state); }
++  journal() {
++    const entries = Object.fromEntries(Object.entries(this.#state.entries).map(([id, entry]) => [id, {
++      status: entry.status, receiptHash: entry.receiptHash, reviewDigest: entry.reviewDigest,
++      ...(entry.status === 'CONFIRMED' ? { evidence: entry.evidence, bindings: entry.bindings, costWei: entry.costWei } : {}),
++    }]));
++    return { schema: 1, planDigest: this.#state.planDigest, entries };
++  }
+@@ -85 +100 @@
+-      need(saved?.receiptHash && this.#prepared.has(prior.id), 'Verified prerequisite receipt required: ' + prior.id);
++      need(saved?.receiptHash, 'Verified prerequisite receipt required: ' + prior.id);
+@@ -110,0 +126,5 @@
++      if (stepId === 'T03' && !this.#secret) await this.#checkLostCommitment();
++      const saved = this.#state.entries[stepId];
++      if (saved && !this.#prepared.has(stepId) && stepId !== 'T03' && stepId !== 'T04') {
++        await this.#recover(stepId, saved);
++      }
+@@ -124,10 +144,2 @@
+-      const iface = this.interfaces[step.abi];
+-      const creation = step.signature.startsWith('constructor(');
+-      const data = creation ? this.bundle.creation[step.abi] + iface.encodeDeploy(args).slice(2) : iface.encodeFunctionData(step.signature, args);
+-      need(same(step.signer.address, this.owner) && (!step.candidateCalldata || same(step.candidateCalldata, data)), 'Reviewed sender/calldata changed');
+-      if (creation) need(same(getCreateAddress({ from: this.owner, nonce: BigInt(step.candidateNonce) }), step.candidateCreationAddress), 'Reviewed CREATE prediction changed');
+-      const tip = 1n;
+-      const fee = 2n * BigInt(header.baseFeePerGas) + tip;
+-      need(fee <= BigInt(inputs.fees.maxFeePerGasWei) && tip <= BigInt(inputs.fees.maxPriorityFeePerGasWei), 'Fee exceeds approved ceiling');
+-      const tx = { from: this.owner, to: step.candidateDestination ?? '', data, value: '0x0', chainId: '0xaa36a7',
+-        nonce: step.candidateNonce, maxFeePerGas: toQuantity(fee), maxPriorityFeePerGas: toQuantity(tip) };
++      const { tx, creation } = this.#envelope(step, header, args);
++      const fee = BigInt(tx.maxFeePerGas), tip = BigInt(tx.maxPriorityFeePerGas);
+@@ -138 +150 @@
+-        estimate = BigInt(await (stepId === 'T04' ? this.#privateEstimate(estimateTx, header.number) : this.read('eth_estimateGas', [estimateTx, header.number])));
++        estimate = BigInt(await (stepId === 'T04' ? this.#privateEstimate(estimateTx, header) : this.read('eth_estimateGas', [estimateTx, header.number])));
+@@ -152,10 +164,6 @@
+-      const preview = await spec.receipt(header);
+-      const packet = { tx, arguments: args, signature: step.signature, abi: this.abis[step.abi], creation,
+-        creationBytecode: creation ? this.bundle.creation[step.abi] : null,
+-        expectedAddress: step.candidateCreationAddress, expectedTarget: step.candidateDestination,
+-        tokenReview: spec.tokenReview, inputClass: 'UNSIGNED_CANDIDATE', expectedEvents: preview.events, postconditions: preview.post };
+-      const review = { ...decodePacket(packet), step: stepId, execution: 'DISABLED', snapshot: { number: header.number, hash: header.hash, timestamp: header.timestamp },
+-        estimate: estimate.toString(), reservedWei: reserve.toString(), prerequisiteReads: spec.checks,
+-        expectedEventSignatures: preview.events.map(({ address, signature }) => ({ address, signature })),
+-        unsignedTransaction: stepId === 'T04' ? { ...tx, data: '[PRIVATE REVEAL]' } : tx };
+-      this.#save(stepId, { status: 'PREPARED', reviewDigest: digest(review), packetDigest: digest(packet) });
++      const { packet, review } = await this.#packet(step, header, spec, tx, creation, estimate);
++      const anchor = { number: header.number, hash: header.hash, estimate: estimate.toString() };
++      if (stepId === 'T03') this.#storage.setItem(this.#registrationKey, JSON.stringify({
++        planDigest: this.#state.planDigest, commitment: args[0],
++      }));
++      this.#save(stepId, { status: 'PREPARED', reviewDigest: digest(review), packetDigest: digest(packet), anchor });
+@@ -166 +174,101 @@
+-  async reconcile(stepId, txHash) { return this.#run(() => this.#verify(stepId, txHash)); }
++  async #checkLostCommitment() {
++    const raw = this.#storage.getItem(this.#registrationKey);
++    if (!raw && !this.#state.entries.T03) return;
++    const previous = raw ? JSON.parse(raw) : null;
++    const blocked = 'Registration preimage lost. Reconcile the commit and wait for expiry before reviewing a new plan.';
++    need(previous && hash(previous.planDigest) && hash(previous.commitment) &&
++      previous.planDigest !== this.#state.planDigest && !this.#state.entries.T03, blocked);
++    const header = await this.read('eth_getBlockByNumber', ['latest', false]);
++    need(headerOK(header), blocked);
++    const iface = this.interfaces.ETHRegistrar;
++    const read = async (name, args) => iface.decodeFunctionResult(name, await this.read('eth_call', [{
++      to: this.addresses.ETHRegistrar, data: iface.encodeFunctionData(name, args),
++    }, header.number]))[0];
++    const original = new BrowserJournal(this.#storage, 'nak-candidate:' + previous.planDigest).read();
++    const receiptHash = original?.entries?.T03?.receiptHash;
++    need(hash(receiptHash), blocked);
++    const [receipt, mined, finalized] = await Promise.all([
++      this.read('eth_getTransactionReceipt', [receiptHash]),
++      this.read('eth_getTransactionByHash', [receiptHash]),
++      this.read('eth_getBlockByNumber', [this.bundle.inputs.confirmations.finalityTag, false]),
++    ]);
++    need(receipt?.status === '0x1' && same(receipt.transactionHash, receiptHash) &&
++      mined?.blockHash === receipt.blockHash && same(mined.hash, receiptHash) &&
++      same(mined.from, this.owner) && same(mined.to, this.addresses.ETHRegistrar) &&
++      same(mined.input, iface.encodeFunctionData('commit', [previous.commitment])) &&
++      headerOK(finalized) && BigInt(finalized.number) >= BigInt(receipt.blockNumber), blocked);
++    const commitBlock = await this.read('eth_getBlockByNumber', [receipt.blockNumber, false]);
++    need(headerOK(commitBlock) && commitBlock.hash === receipt.blockHash, blocked);
++    const at = await read('commitmentAt', [previous.commitment]);
++    const max = await read('MAX_COMMITMENT_AGE', []);
++    need(at > 0n && at === BigInt(commitBlock.timestamp) && BigInt(header.timestamp) >= at + max &&
++      (await this.read('eth_getBlockByNumber', [header.number, false]))?.hash === header.hash, blocked);
++  }
++  #envelope(step, header, args) {
++    const { inputs } = this.bundle;
++    const iface = this.interfaces[step.abi];
++    const creation = step.signature.startsWith('constructor(');
++    const data = creation ? this.bundle.creation[step.abi] + iface.encodeDeploy(args).slice(2) : iface.encodeFunctionData(step.signature, args);
++    need(same(step.signer.address, this.owner) && (!step.candidateCalldata || same(step.candidateCalldata, data)), 'Reviewed sender/calldata changed');
++    if (creation) need(same(getCreateAddress({ from: this.owner, nonce: BigInt(step.candidateNonce) }), step.candidateCreationAddress), 'Reviewed CREATE prediction changed');
++    const tip = 1n;
++    const fee = 2n * BigInt(header.baseFeePerGas) + tip;
++    need(fee <= BigInt(inputs.fees.maxFeePerGasWei) && tip <= BigInt(inputs.fees.maxPriorityFeePerGasWei), 'Fee exceeds approved ceiling');
++    const tx = { from: this.owner, to: step.candidateDestination ?? '', data, value: '0x0', chainId: '0xaa36a7',
++      nonce: step.candidateNonce, maxFeePerGas: toQuantity(fee), maxPriorityFeePerGas: toQuantity(tip) };
++    return { tx, creation };
++  }
++  async #packet(step, header, spec, tx, creation, estimate) {
++    const stepId = step.id, args = spec.args;
++    const reserve = BigInt(tx.gas) * BigInt(tx.maxFeePerGas);
++    const preview = await spec.receipt(header);
++    const packet = { tx, arguments: args, signature: step.signature, abi: this.abis[step.abi], creation,
++      creationBytecode: creation ? this.bundle.creation[step.abi] : null,
++      expectedAddress: step.candidateCreationAddress, expectedTarget: step.candidateDestination,
++      tokenReview: spec.tokenReview, inputClass: 'UNSIGNED_CANDIDATE', expectedEvents: preview.events, postconditions: preview.post };
++    const review = { ...decodePacket(packet), step: stepId, execution: 'DISABLED', snapshot: { number: header.number, hash: header.hash, timestamp: header.timestamp },
++      estimate: estimate.toString(), reservedWei: reserve.toString(), prerequisiteReads: spec.checks,
++      expectedEventSignatures: preview.events.map(({ address, signature }) => ({ address, signature })),
++      unsignedTransaction: stepId === 'T04' ? { ...tx, data: '[PRIVATE REVEAL]' } : tx };
++    return { packet, review };
++  }
++  async #recover(stepId, saved, mined, receipt) {
++    const { plan, inputs } = this.bundle;
++    const step = plan.transactions.find(s => s.id === stepId);
++    const anchor = saved?.anchor;
++    need(step?.conditionallyIncluded && anchor && /^0x[0-9a-f]+$/.test(anchor.number) &&
++      hash(anchor.hash) && typeof anchor.estimate === 'string' && /^[1-9][0-9]{0,15}$/.test(anchor.estimate), 'Missing or invalid recovery anchor');
++    const header = await this.read('eth_getBlockByNumber', [anchor.number, false]);
++    need(headerOK(header) && header.number === anchor.number && header.hash === anchor.hash &&
++      (!receipt || BigInt(receipt.blockNumber) >= BigInt(header.number)), 'Recovery anchor is no longer canonical');
++    need(BigInt(await this.read('eth_getTransactionCount', [this.owner, header.number])) === BigInt(step.candidateNonce), 'Recovery nonce differs from plan');
++    let privateArgs;
++    if (stepId === 'T03' || stepId === 'T04') {
++      // The input is public only after a successful canonical receipt. Keep it in memory.
++      need(mined?.blockHash === receipt.blockHash && same(mined.from, this.owner) &&
++        same(mined.to, step.candidateDestination) && same(mined.hash, receipt.transactionHash), 'Invalid mined registration input');
++      privateArgs = Array.from(this.interfaces.ETHRegistrar.decodeFunctionData(step.signature, mined.input));
++      need(step.candidateArguments.every((value, index) => value === null || same(value, privateArgs[index])), 'Mined reveal differs from plan');
++      // Canonicalize ABI integers exactly as in the original plan.
++      if (stepId === 'T04') privateArgs = step.candidateArguments.map((value, index) => value ?? privateArgs[index]);
++    }
++    const spec = await candidateStep(this, step, header, privateArgs, this.#state.entries);
++    const { tx, creation } = this.#envelope(step, header, spec.args);
++    const estimate = BigInt(anchor.estimate);
++    const gas = (estimate * BigInt(inputs.fees.gasLimitMultiplierPercent) + 99n) / 100n;
++    need(gas >= estimate && gas <= BigInt(inputs.fees.maxGasPerStep) &&
++      gas * BigInt(tx.maxFeePerGas) <= BigInt(inputs.fees.maxTotalWei), 'Recovered gas budget exceeds policy');
++    tx.gas = toQuantity(gas);
++    const item = { ...await this.#packet(step, header, spec, tx, creation, estimate), spec };
++    need(saved.reviewDigest === digest(item.review) && saved.packetDigest === digest(item.packet), 'Recovered packet digest mismatch');
++    need((await this.read('eth_getBlockByNumber', [header.number, false]))?.hash === header.hash, 'Recovery anchor changed');
++    return item;
++  }
++  async reconcile(stepId, txHash) {
++    return this.#run(async () => {
++      const step = this.bundle.plan.transactions.find(s => s.id === stepId);
++      need(step?.conditionallyIncluded, 'Step excluded or unknown');
++      await this.#prerequisites(step);
++      return this.#verify(stepId, txHash);
++    });
++  }
+@@ -176,3 +283,0 @@
+-    const item = this.#prepared.get(stepId);
+-    need(item && hash(txHash), 'Prepared packet and receipt hash required in this session');
+-    const { packet, spec } = item;
+@@ -180 +285 @@
+-    need(saved?.packetDigest === digest(packet) && (!saved.receiptHash || same(saved.receiptHash, txHash)), 'Receipt differs from journal binding');
++    need(saved?.anchor && hash(txHash) && (!saved.receiptHash || same(saved.receiptHash, txHash)), 'Prepared review and matching receipt hash required');
+@@ -186 +291,2 @@
+-    need(header?.hash === receipt.blockHash && BigInt(header.number) >= BigInt(item.review.snapshot.number), 'Receipt block invalid');
++    need(header?.hash === receipt.blockHash && same(receipt.transactionHash, txHash) &&
++      receipt.status === '0x1' && BigInt(header.number) >= BigInt(saved.anchor.number), 'Receipt block or status invalid');
+@@ -187,0 +294,3 @@
++    const item = this.#prepared.get(stepId) ?? await this.#recover(stepId, saved, mined, receipt);
++    const { packet, spec } = item;
++    need(saved.packetDigest === digest(packet), 'Receipt differs from journal binding');
+@@ -202,0 +312 @@
++      this.#prepared.set(stepId, item);
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/private_transport.mjs
+@@ -0,0 +1,16 @@
++/** Browser transport for one operation on the same loopback review server. */
++export function privateEstimator(location, fetcher = fetch) {
++  return async (tx, header) => {
++    if (location?.protocol !== 'http:' || location.hostname !== '127.0.0.1')
++      throw new Error('Private estimation requires the loopback review server');
++    const response = await fetcher('/private-estimate', {
++      method: 'POST', headers: { 'content-type': 'application/json' },
++      body: JSON.stringify({ tx, header: { number: header.number, hash: header.hash } }),
++      credentials: 'omit', cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(90_000),
++    });
++    if (!response.ok) throw new Error('Private estimate unavailable');
++    const { gas } = await response.json();
++    if (!/^0x[1-9a-f][0-9a-f]*$/.test(gas)) throw new Error('Private estimate invalid');
++    return gas;
++  };
++}
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/private_server.mjs
+@@ -0,0 +1,100 @@
++import { spawn } from 'node:child_process';
++import { createServer } from 'node:http';
++import { once } from 'node:events';
++import { Interface } from 'ethers';
++import { startUpstreamProxy } from '../deployment_candidate/upstream_proxy.mjs';
++
++const same = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
++const quantity = x => typeof x === 'string' && /^0x(?:0|[1-9a-f][0-9a-f]*)$/.test(x);
++const hash = x => typeof x === 'string' && /^0x[0-9a-f]{64}$/i.test(x);
++const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
++
++export function revealRequest(bundle, payload) {
++  const { tx, header } = payload;
++  const step = bundle.plan.transactions.find(s => s.id === 'T04');
++  const iface = new Interface(bundle.abis.ETHRegistrar);
++  if (!tx || Object.keys(tx).length !== 8 || !header || !quantity(header.number) || !hash(header.hash) ||
++      !same(tx.from, bundle.inputs.owner) || !same(tx.to, step.candidateDestination) || tx.chainId !== '0xaa36a7' ||
++      tx.value !== '0x0' || tx.nonce !== step.candidateNonce ||
++      !quantity(tx.maxFeePerGas) || !quantity(tx.maxPriorityFeePerGas) ||
++      BigInt(tx.maxFeePerGas) > BigInt(bundle.inputs.fees.maxFeePerGasWei) ||
++      BigInt(tx.maxPriorityFeePerGas) > BigInt(bundle.inputs.fees.maxPriorityFeePerGasWei) ||
++      BigInt(tx.maxPriorityFeePerGas) > BigInt(tx.maxFeePerGas)) throw new Error('Invalid reveal envelope');
++  const args = Array.from(iface.decodeFunctionData(step.signature, tx.data));
++  if (!hash(args[2]) || !same(iface.encodeFunctionData(step.signature, args), tx.data) ||
++      !step.candidateArguments.every((value, index) => index === 2 || same(value, args[index])))
++    throw new Error('Invalid reveal binding');
++  return { tx, header, secret: args[2] };
++}
++
++export function privateEstimateHandler(bundle, estimate) {
++  let busy = false;
++  return async (req, res) => {
++    res.setHeader('Cache-Control', 'no-store');
++    const send = (status, body) => {
++      res.writeHead(status, { 'content-type': 'application/json' });
++      res.end(JSON.stringify(body));
++    };
++    const origin = 'http://' + req.headers.host;
++    if (req.method !== 'POST' || req.url !== '/private-estimate' ||
++        !/^127\.0\.0\.1:\d+$/.test(req.headers.host ?? '') || req.headers.origin !== origin ||
++        req.headers['content-type'] !== 'application/json') return send(403, { error: 'Private estimate denied' });
++    if (busy) return send(409, { error: 'Private estimate busy' });
++    busy = true;
++    try {
++      let body = '';
++      for await (const chunk of req) {
++        body += chunk;
++        if (body.length > 8192) throw new Error('Request too large');
++      }
++      const gas = await estimate(revealRequest(bundle, JSON.parse(body)));
++      if (!quantity(gas) || BigInt(gas) === 0n) throw new Error('Invalid estimate');
++      send(200, { gas });
++    } catch { send(400, { error: 'Private estimate blocked' }); }
++    finally { busy = false; }
++  };
++}
++
++export async function estimateOnOwnedFork({ tx, header, secret }) {
++  const upstream = await startUpstreamProxy();
++  upstream.protect(secret);
++  let child;
++  try {
++    const portProbe = createServer();
++    portProbe.listen(0, '127.0.0.1');
++    await once(portProbe, 'listening');
++    const port = portProbe.address().port;
++    await new Promise(resolve => portProbe.close(resolve));
++    child = spawn('anvil', ['--host','127.0.0.1','--port',String(port),'--accounts','0','--quiet',
++      '--disable-console-log','--fork-url',upstream.url,'--fork-block-number',BigInt(header.number).toString(),
++      '--chain-id','11155111','--hardfork','prague','--disable-min-priority-fee','--no-storage-caching','--max-persisted-states','0'],
++      { stdio: 'ignore' });
++    let spawnFailed = false;
++    child.on('error', () => { spawnFailed = true; });
++    const rpc = async (method, params) => {
++      if (spawnFailed || child.exitCode !== null) throw new Error('Owned fork unavailable');
++      const response = await fetch('http://127.0.0.1:' + port, {
++        method: 'POST', headers: { 'content-type': 'application/json' }, redirect: 'error',
++        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(25_000),
++      });
++      const reply = await response.json();
++      if (reply.error || !('result' in reply)) throw new Error('Owned fork read failed');
++      return reply.result;
++    };
++    let pinned;
++    for (let attempt = 0; attempt < 40 && !spawnFailed && child.exitCode === null; attempt++) {
++      try { pinned = await rpc('eth_getBlockByNumber', [header.number, false]); if (pinned) break; }
++      catch { await sleep(250); }
++    }
++    if (pinned?.hash !== header.hash || await rpc('eth_chainId', []) !== '0xaa36a7')
++      throw new Error('Fork reference mismatch');
++    return await rpc('eth_estimateGas', [tx, header.number]);
++  } finally {
++    if (child?.pid && child.exitCode === null && child.signalCode === null) {
++      const exited = once(child, 'exit');
++      child.kill('SIGKILL');
++      await exited;
++    }
++    await upstream.close();
++  }
++}
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/serve.mjs
+@@ -0,0 +1,20 @@
++import { createServer } from 'node:http';
++import { readFile } from 'node:fs/promises';
++import { privateEstimateHandler, estimateOnOwnedFork } from './private_server.mjs';
++
++const root = '/tmp/nak-local-deployment-review';
++const bundle = JSON.parse(await readFile(root + '/candidate-bundle.json', 'utf8'));
++const estimate = privateEstimateHandler(bundle, estimateOnOwnedFork);
++const types = { html: 'text/html', js: 'text/javascript', css: 'text/css', json: 'application/json' };
++const files = new Set(['index.html','demo.html','app.js','demo.js','style.css','candidate-bundle.json']);
++createServer(async (req, res) => {
++  if (req.headers.host !== '127.0.0.1:8769') { res.writeHead(403).end(); return; }
++  if (req.url === '/private-estimate') return estimate(req, res);
++  const file = req.url === '/' ? 'index.html' : req.url.slice(1);
++  if (req.method !== 'GET' || !files.has(file)) { res.writeHead(404).end(); return; }
++  try {
++    const body = await readFile(root + '/' + file);
++    res.writeHead(200, { 'content-type': types[file.split('.').at(-1)], 'cache-control': 'no-store' });
++    res.end(body);
++  } catch { res.writeHead(404).end(); }
++}).listen(8769, '127.0.0.1', () => console.log('Unsigned review at http://127.0.0.1:8769/'));
+--- a/contracts/scripts/deployment_workflow/test/all.mjs
++++ b/contracts/scripts/deployment_workflow/test/all.mjs
+@@ -4,0 +5 @@
++import './private.test.mjs';
+--- a/contracts/scripts/deployment_workflow/test/candidate.test.mjs
++++ b/contracts/scripts/deployment_workflow/test/candidate.test.mjs
+@@ -51 +51,2 @@
+-          return iface.encodeFunctionResult(fn, answers[fn.name]);
++          const result = fn.name === 'balanceOf' && params[1] === block.number && receipt?.blockNumber !== block.number ? [0] : answers[fn.name];
++          return iface.encodeFunctionResult(fn, result);
+@@ -62 +63 @@
+-    confirm() {
++    confirm(receiptBlock = block.number) {
+@@ -69 +70 @@
+-        blockNumber: block.number, status: '0x1', effectiveGasPrice: '0x11', gasUsed: '0xc350',
++        blockNumber: receiptBlock, status: '0x1', effectiveGasPrice: '0x11', gasUsed: '0xc350',
+@@ -114 +115 @@
+-  await assert.rejects(review.reconcile('T01', txHash), /session/);
++  await assert.rejects(review.reconcile('T01', txHash), /pending/);
+@@ -152,0 +154,70 @@
++
++test('reload validates an unsigned public anchor and creates a fresh review', async () => {
++  const f = fixture();
++  const first = open(f);
++  const original = await first.prepare('T01');
++  first.close();
++  const reloaded = open(f);
++  assert.deepEqual(await reloaded.prepare('T01'), original);
++  assert.equal(f.calls.filter(call => call.method === 'eth_estimateGas').length, 2);
++  reloaded.close();
++});
++
++test('reload reconciles a public receipt and rechecks it before the dependent step', async () => {
++  const f = fixture();
++  const first = open(f);
++  await first.prepare('T01');
++  f.confirm('0x65');
++  // Provide the distinct receipt block and enough confirmation depth.
++  const request = f.provider.request.bind(f.provider);
++  f.provider.request = async args => {
++    const response = await request(args);
++    if (args.method === 'eth_getBlockByNumber') {
++      if (args.params[0] === '0x65' || args.params[0] === 'finalized') return { ...block, number: '0x65' };
++      if (args.params[0] === 'latest' || args.params[0] === '0x72') return { ...block, number: '0x72' };
++    }
++    if (args.method === 'eth_getTransactionCount' && args.params[1] !== block.number) return '0x33';
++    return response;
++  };
++  first.close();
++  const reloaded = open(f);
++  assert.equal((await reloaded.reconcile('T01', txHash)).status, 'CONFIRMED');
++  const later = await reloaded.prepare('T02');
++  assert.equal(later.step, 'T02');
++  reloaded.close();
++});
++
++test('reload rejects tampered digest, header and estimate before producing a public review', async () => {
++  for (const tamper of [
++    e => { e.packetDigest = '0x' + '77'.repeat(32); },
++    e => { e.anchor.hash = '0x' + '77'.repeat(32); },
++    e => { e.anchor.estimate = '51000'; },
++  ]) {
++    const f = fixture();
++    const first = open(f);
++    await first.prepare('T01');
++    first.close();
++    const [key, text] = [...f.records.entries()][0];
++    const saved = JSON.parse(text);
++    tamper(saved.entries.T01);
++    f.records.set(key, JSON.stringify(saved));
++    const reloaded = open(f);
++    await assert.rejects(reloaded.prepare('T01'), /digest mismatch|no longer canonical/);
++    assert.equal(f.calls.filter(call => call.method === 'eth_estimateGas').length, 1);
++    reloaded.close();
++  }
++});
++
++test('a lost registration record blocks a new commitment across candidate keys without verified expiry', async () => {
++  const f = fixture();
++  // The prerequisite prefix is empty in this test fixture. Registration guards
++  // must still stop before generating or estimating a new commitment.
++  f.data.plan.transactions[0].conditionallyIncluded = false;
++  f.data.plan.transactions[1].conditionallyIncluded = false;
++  const key = 'nak-registration:' + inputs.owner.toLowerCase() + ':' + inputs.root;
++  f.records.set(key, JSON.stringify({ planDigest: '0x' + '77'.repeat(32), commitment: '0x' + '88'.repeat(32) }));
++  const reloaded = open(f);
++  await assert.rejects(reloaded.prepare('T03'), /preimage lost.*expiry/);
++  assert.equal(f.calls.some(call => call.method === 'eth_estimateGas'), false);
++  reloaded.close();
++});
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/test/private.test.mjs
+@@ -0,0 +1,76 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { Readable } from 'node:stream';
++import { Interface } from 'ethers';
++import { privateEstimator } from '../private_transport.mjs';
++import { privateEstimateHandler } from '../private_server.mjs';
++import { loadCandidateBundle } from '../candidate_bundle.mjs';
++import { allowedForward } from '../../deployment_candidate/upstream_proxy.mjs';
++
++const bundle = await loadCandidateBundle();
++const step = bundle.plan.transactions.find(s => s.id === 'T04');
++const iface = new Interface(bundle.abis.ETHRegistrar);
++const secret = '0x' + 'ab'.repeat(32);
++const args = [...step.candidateArguments];
++args[2] = secret;
++const tx = { from: bundle.inputs.owner, to: step.candidateDestination, nonce: step.candidateNonce,
++  value: '0x0', chainId: '0xaa36a7', maxFeePerGas: '0x21', maxPriorityFeePerGas: '0x1',
++  data: iface.encodeFunctionData(step.signature, args) };
++const header = { number: '0x64', hash: '0x' + '11'.repeat(32) };
++const origin = 'http://127.0.0.1:8769';
++
++async function invoke(handler, { body = { tx, header }, site = origin, host = '127.0.0.1:8769', method = 'POST' } = {}) {
++  const req = Readable.from([JSON.stringify(body)]);
++  Object.assign(req, { method, url: '/private-estimate', headers: { host, origin: site, 'content-type': 'application/json' } });
++  const result = {};
++  await handler(req, { setHeader: (key, value) => { result[key] = value; },
++    writeHead: status => { result.status = status; }, end: text => { result.body = text; } });
++  return result;
++}
++
++test('browser private estimator requires the loopback origin and forbids redirects and caching', async () => {
++  const calls = [];
++  const fetcher = async (...args) => { calls.push(args); return { ok: true, json: async () => ({ gas: '0x12' }) }; };
++  await assert.rejects(privateEstimator(new URL('https://example.test'), fetcher)(tx, header), /loopback/);
++  assert.equal(calls.length, 0);
++  assert.equal(await privateEstimator(new URL(origin), fetcher)(tx, header), '0x12');
++  const [[url, options]] = calls;
++  assert.equal(url, '/private-estimate');
++  assert.equal(options.redirect, 'error');
++  assert.equal(options.cache, 'no-store');
++  assert.equal(options.credentials, 'omit');
++});
++
++test('private endpoint accepts only reviewed reveal and returns a gas quantity without reflecting secrets', async () => {
++  let calls = 0;
++  const handler = privateEstimateHandler(bundle, async request => {
++    calls++;
++    assert.equal(request.secret, secret);
++    assert.deepEqual(request.header, header);
++    return '0x1234';
++  });
++  assert.equal((await invoke(handler, { site: 'https://example.test' })).status, 403);
++  assert.equal((await invoke(handler, { host: 'localhost:8769' })).status, 403);
++  assert.equal((await invoke(handler, { method: 'GET' })).status, 403);
++  for (const bad of [{ ...tx, nonce: '0x0' }, { ...tx, to: bundle.inputs.mira },
++    { ...tx, data: iface.encodeFunctionData('commit', [secret]) },
++    { ...tx, data: iface.encodeFunctionData(step.signature, ['other', ...args.slice(1)]) }]) {
++    assert.equal((await invoke(handler, { body: { tx: bad, header } })).status, 400);
++  }
++  const result = await invoke(handler);
++  assert.equal(calls, 1);
++  assert.equal(result.status, 200);
++  assert.equal(result['Cache-Control'], 'no-store');
++  assert.deepEqual(JSON.parse(result.body), { gas: '0x1234' });
++  const failure = await invoke(privateEstimateHandler(bundle, async () => { throw new Error(tx.data); }));
++  assert.equal(failure.status, 400);
++  assert.ok(!failure.body.includes(secret.slice(2)));
++  assert.ok(!failure.body.includes(tx.data));
++});
++
++test('guarded upstream rejects raw reveal estimates and preimage bytes even in allowed reads', () => {
++  const payload = (method, params) => ({ jsonrpc: '2.0', id: 1, method, params });
++  assert.equal(allowedForward(payload('eth_estimateGas', [tx, header.number]), secret), false);
++  assert.equal(allowedForward(payload('eth_getStorageAt', [tx.to, secret, header.number]), secret), false);
++  assert.equal(allowedForward(payload('eth_getBlockByNumber', [header.number, false]), secret), true);
++});
+--- a/contracts/scripts/deployment_candidate/simulate.mjs
++++ b/contracts/scripts/deployment_candidate/simulate.mjs
+@@ -0,0 +1,4 @@
++import { privateEstimateHandler } from '../deployment_workflow/private_server.mjs';
++import { privateEstimator } from '../deployment_workflow/private_transport.mjs';
++import { createServer as httpServer } from 'node:http';
++import { once } from 'node:events';
+@@ -21 +25 @@
+-let child,url,upstreamProxy,stage='BOOT',localCalls=0,candidate;
++let child,url,upstreamProxy,stage='BOOT',localCalls=0,candidate,privateServer;
+@@ -71 +75 @@
+-  let spentWorstCase=0n, reviewClock=0, registrationBytes;
++  let spentWorstCase=0n, reviewClock=0, registrationBytes, openCandidate, candidateJournal;
+@@ -74,2 +78,13 @@
+-    const journal=new Map();
+-    candidate=new CandidateReview({
++    const journal=new Map();candidateJournal=journal;
++    privateServer=httpServer(privateEstimateHandler(bundle,async ({tx,header,secret})=>{
++      upstreamProxy.protect(secret);
++      need((await rpc('eth_getBlockByNumber',[header.number,false])).hash===header.hash,'PRIVATE_REFERENCE');
++      return rpc('eth_estimateGas',[tx,header.number]);
++    }));
++    privateServer.listen(0,'127.0.0.1');
++    await once(privateServer,'listening');
++    const origin='http://127.0.0.1:'+privateServer.address().port;
++    const privateEstimate=privateEstimator(new URL(origin),(route,options)=>fetch(origin+route,{
++      ...options,headers:{...options.headers,origin},
++    }));
++    openCandidate=()=>new CandidateReview({
+@@ -80 +95 @@
+-      privateEstimate:(tx,block)=>rpc('eth_estimateGas',[tx,block]),
++      privateEstimate,
+@@ -81,0 +97,2 @@
++    candidate=openCandidate();
++    result.recoveryChecks=[];
+@@ -109,0 +127,6 @@
++      if(step==='T04'){
++        const secret=args[2].slice(2).toLowerCase();
++        const publicText=JSON.stringify([review,...candidateJournal.values()]).toLowerCase();
++        need(review.unsignedTransaction.data==='[PRIVATE REVEAL]'&&!publicText.includes(secret)&&!publicText.includes(data.toLowerCase()),'PRIVATE_REDACTION');
++        result.recoveryChecks.push({id:step,privateReviewAndJournalRedacted:true});
++      }
+@@ -125,0 +149,4 @@
++      if(step==='T01'||step==='T04'){
++        candidate.close();
++        candidate=openCandidate();
++      }
+@@ -126,0 +154,11 @@
++      if(step==='T01'||step==='T04')result.recoveryChecks.push({id:step,reloadedBeforeReconciliation:true});
++      if(step==='T04')need(!JSON.stringify([...candidateJournal.values()]).toLowerCase().includes(args[2].slice(2).toLowerCase()),'PRIVATE_RECOVERY_JOURNAL');
++      if(step==='T03'){
++        const reopened=openCandidate();
++        try{
++          await reopened.prepare('T04');
++          throw new Error('LOST_PREIMAGE_ACCEPTED');
++        }catch(error){need(error.message.includes('Registration session unavailable'),'LOST_PREIMAGE_GUARD');}
++        finally{reopened.close();}
++        result.recoveryChecks.push({id:'T04',lostPreimageBlocked:true});
++      }
+@@ -215,0 +254 @@
++  if(privateServer){privateServer.closeAllConnections();await new Promise(resolve=>privateServer.close(resolve));}
+@@ -219 +258 @@
+-  if(upstreamProxy){result.upstreamReadOnlyProxy=upstreamProxy.stats;await upstreamProxy.close();}await writeFile(integrated?path.join(OUT,'workflow-integration','simulation-result.json'):path.join(REVIEW_OUT,'simulation-result.json'),stringify(result));
++  if(upstreamProxy){result.upstreamReadOnlyProxy=upstreamProxy.stats;await upstreamProxy.close();}await writeFile(integrated?path.join(OUT,'workflow-recovery','simulation-result.json'):path.join(REVIEW_OUT,'simulation-result.json'),stringify(result));

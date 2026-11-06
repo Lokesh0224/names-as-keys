@@ -1,0 +1,1 @@
+PASS: both unchanged production creation/runtime templates and ABIs reproduced, with AST-named immutable slots

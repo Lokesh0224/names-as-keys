@@ -1,0 +1,62 @@
+{
+  "blockNumber": {
+    "reviewed": "12073440",
+    "fresh": "12073591",
+    "changed": true
+  },
+  "blockHash": {
+    "reviewed": "0x5230826f1ca25ae61f14bea0c149c8f1fa7f6f7b012d5ccae4a4f8a54015213d",
+    "fresh": "0xa769c26b9f46fb3705fd61a53ca431f9769a3b5708dd62ddb84e2ab5ff08b766",
+    "changed": true
+  },
+  "priceUnits": {
+    "reviewed": "8000021",
+    "fresh": "8000021",
+    "changed": false
+  },
+  "tokenBalanceUnits": {
+    "reviewed": "0",
+    "fresh": "0",
+    "changed": false
+  },
+  "allowanceUnits": {
+    "reviewed": "0",
+    "fresh": "0",
+    "changed": false
+  },
+  "nonce": {
+    "reviewed": "0x32",
+    "fresh": "0x32",
+    "changed": false
+  },
+  "pendingNonce": {
+    "reviewed": "0x32",
+    "fresh": "0x32",
+    "changed": false
+  },
+  "predictions": {
+    "reviewed": {
+      "R1": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+      "R2": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+      "CredentialRegistrar": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+      "DoorKeys": "0x93ac7E046AcdE7BBFb3F5086775bcA5032c6c7e6"
+    },
+    "fresh": {
+      "R1": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+      "R2": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+      "CredentialRegistrar": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+      "DoorKeys": "0x93ac7E046AcdE7BBFb3F5086775bcA5032c6c7e6"
+    },
+    "changed": false
+  },
+  "includeMint": {
+    "reviewed": true,
+    "fresh": true,
+    "changed": false
+  },
+  "includeApprove": {
+    "reviewed": true,
+    "fresh": true,
+    "changed": false
+  }
+}

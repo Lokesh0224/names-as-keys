@@ -1,0 +1,2122 @@
+{
+  "kind": "REVIEW_ONLY_SUPPLEMENT_NOT_AN_EXECUTOR",
+  "approvedCheckpoint": "a23821d7fd8056c0ec473d67d18890e775a16f11",
+  "sourceManifestSHA256": "3c9c32ecd64268623283033d0a1269acac5f033cb563a3d7a888b2c51bbbdfe6",
+  "chainId": 11155111,
+  "observationBlock": 12073591,
+  "observationBlockHash": "0xa769c26b9f46fb3705fd61a53ca431f9769a3b5708dd62ddb84e2ab5ff08b766",
+  "owner": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+  "mira": "0x5a9191871b9117218F83Ed43293E011667053F39",
+  "accountSelectionSource": "Owner supplied both public addresses in this chat; no wallet connection or signing-control check",
+  "proposalsRetainedForReview": {
+    "root": "nak-lokesh-20261105.eth",
+    "payment": "MockUSDC",
+    "rootDurationSeconds": 31536000,
+    "lockDurationSeconds": 7776000,
+    "guestDurationSeconds": 86400,
+    "deploymentEpoch": 1
+  },
+  "initializationCalldata": "0x37cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f70000000000000000000000000011110100000000000000000000000000111101",
+  "initializationRoleBitmap": "380593917518227438537563280301172632627253505",
+  "futureAddresses": {
+    "R1": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+    "R2": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+    "CredentialRegistrar": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+    "DoorKeys": "0x93ac7E046AcdE7BBFb3F5086775bcA5032c6c7e6"
+  },
+  "salts": {
+    "R1": "0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39",
+    "R2": "0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95"
+  },
+  "registrationSecret": null,
+  "registrationCommitment": null,
+  "lockExpiry": null,
+  "guestExpiry": null,
+  "broadcastEnabled": false,
+  "stage3F": "NO_GO",
+  "transactions": [
+    {
+      "id": "T01",
+      "label": "Obtain mock rent tokens if needed",
+      "signature": "mint(address,uint256)",
+      "abi": "MockUSDC",
+      "target": {
+        "reference": "verified.MockUSDC",
+        "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        },
+        {
+          "binding": "quote.tokenDeficit",
+          "value": "8000021",
+          "classification": "EXACT_SNAPSHOT_TOKEN_DEFICIT"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": {
+        "classification": "SNAPSHOT_ONLY_REQUIRES_FRESH_LIVE_REVIEW",
+        "signature": "mint(address,uint256)",
+        "arguments": [
+          "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "8000021"
+        ],
+        "transaction": {
+          "from": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "to": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "value": "0x0",
+          "data": "0x40c10f1900000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f700000000000000000000000000000000000000000000000000000000007a1215"
+        }
+      },
+      "expectedEvents": [
+        {
+          "name": "Transfer",
+          "emitterBinding": "verified.MockUSDC",
+          "signature": "Transfer(address,address,uint256)",
+          "fields": [
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Transfer"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x32",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "8000021"
+      ],
+      "candidateDestination": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x40c10f1900000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f700000000000000000000000000000000000000000000000000000000007a1215",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T02",
+      "label": "Approve bounded registrar rent spend",
+      "signature": "approve(address,uint256)",
+      "abi": "MockUSDC",
+      "target": {
+        "reference": "verified.MockUSDC",
+        "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "reference": "verified.ETHRegistrar",
+          "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "quote.basePlusPremium",
+          "value": "8000021",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": {
+        "classification": "SNAPSHOT_ONLY_REQUIRES_FRESH_LIVE_REVIEW",
+        "signature": "approve(address,uint256)",
+        "arguments": [
+          "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+          "8000021"
+        ],
+        "transaction": {
+          "from": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "to": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "value": "0x0",
+          "data": "0x095ea7b3000000000000000000000000f633e7fc17e2bbe0d0965d18ec1821dcb754a3d300000000000000000000000000000000000000000000000000000000007a1215"
+        }
+      },
+      "expectedEvents": [
+        {
+          "name": "Approval",
+          "emitterBinding": "verified.MockUSDC",
+          "signature": "Approval(address,address,uint256)",
+          "fields": [
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "spender",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Approval"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x33",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "8000021"
+      ],
+      "candidateDestination": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x095ea7b3000000000000000000000000f633e7fc17e2bbe0d0965d18ec1821dcb754a3d300000000000000000000000000000000000000000000000000000000007a1215",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T03",
+      "label": "Commit root registration intent",
+      "signature": "commit(bytes32)",
+      "abi": "ETHRegistrar",
+      "target": {
+        "reference": "verified.ETHRegistrar",
+        "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "binding": "registration.commitment",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "registration.commitment"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "CommitmentMade",
+          "emitterBinding": "verified.ETHRegistrar",
+          "signature": "CommitmentMade(bytes32)",
+          "fields": [
+            {
+              "name": "commitment",
+              "type": "bytes32",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "CommitmentMade"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x34",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        null
+      ],
+      "candidateDestination": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": null,
+      "candidateBlockers": [
+        "registration.commitment"
+      ],
+      "privateInputPolicy": "Private session binding, never publish preimage or raw reveal calldata"
+    },
+    {
+      "id": "T04",
+      "label": "Reveal/register the approved Sepolia root",
+      "signature": "register(string,address,bytes32,address,address,uint64,address,bytes32)",
+      "abi": "ETHRegistrar",
+      "target": {
+        "reference": "verified.ETHRegistrar",
+        "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        "nak-lokesh-20261105",
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        },
+        {
+          "binding": "privateRegistrationState.secret",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+        31536000,
+        {
+          "reference": "verified.MockUSDC",
+          "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "privateRegistrationState.secret"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "NameRegistered",
+          "emitterBinding": "verified.ETHRegistrar",
+          "signature": "NameRegistered(uint256,string,address,address,address,uint64,address,bytes32,uint256,uint256)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "subregistry",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "resolver",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "duration",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "name": "paymentToken",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "referrer",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "base",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "premium",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "LabelRegistered",
+          "abi": "ETHRegistry",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "LabelRegistered(uint256,bytes32,string,address,uint64,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "labelHash",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "expiry",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "MockUSDC",
+          "name": "Transfer",
+          "emitterBinding": "verified.MockUSDC",
+          "signature": "Transfer(address,address,uint256)",
+          "fields": [
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "ETHRegistry",
+          "name": "TransferSingle",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "TransferSingle(address,address,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "operator",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "id",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "ETHRegistry",
+          "name": "TokenResource",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "TokenResource(uint256,uint256)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "ETHRegistry",
+          "name": "EACRolesChanged",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Transfer",
+        "LabelRegistered",
+        "TransferSingle",
+        "TokenResource",
+        "EACRolesChanged",
+        "NameRegistered"
+      ],
+      "labelStoreEvent": {
+        "name": "Label",
+        "signature": "Label(bytes32,string)",
+        "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+        "indexed": [
+          true,
+          false
+        ],
+        "condition": "T04/T08/T15 only: exactly one event if global getLabel(labelId) is empty immediately before registration; otherwise zero; compare source LibLabel.id, exact label and emitter",
+        "currentlyStoredLabelRead": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "execution": "DISABLED",
+      "candidateNonce": "0x35",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "nak-lokesh-20261105",
+        "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        null,
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+        31536000,
+        "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "candidateDestination": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": null,
+      "candidateBlockers": [
+        "privateRegistrationState.secret"
+      ],
+      "privateInputPolicy": "Private session binding, never publish preimage or raw reveal calldata"
+    },
+    {
+      "id": "T05",
+      "label": "Create R1 and initialize owner grants atomically",
+      "signature": "deployProxy(address,uint256,bytes)",
+      "abi": "VerifiableFactory",
+      "target": {
+        "reference": "verified.VerifiableFactory",
+        "value": "0xda70306c98e97ece36f997a21368e53298572991",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "reference": "verified.UserRegistryImpl",
+          "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "salts.R1",
+          "value": "0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        },
+        {
+          "binding": "encoded.initializeOwnerGrants",
+          "value": "0x37cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f70000000000000000000000000011110100000000000000000000000000111101",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "ProxyDeployed",
+          "emitterBinding": "verified.VerifiableFactory",
+          "signature": "ProxyDeployed(address,address,uint256,address)",
+          "fields": [
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "proxyAddress",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "salt",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "implementation",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "RegistryCreated",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R1",
+          "signature": "RegistryCreated()",
+          "fields": [],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "EACRolesChanged",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R1",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "Upgraded",
+          "emitterBinding": "future.R1",
+          "signature": "Upgraded(address)",
+          "fields": [
+            {
+              "name": "implementation",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "URIUpdated",
+          "emitterBinding": "future.R1",
+          "signature": "URIUpdated(string,address,address)",
+          "fields": [
+            {
+              "name": "uri",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "renderer",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "Initialized",
+          "emitterBinding": "future.R1",
+          "signature": "Initialized(uint64)",
+          "fields": [
+            {
+              "name": "version",
+              "type": "uint64",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Upgraded",
+        "RegistryCreated",
+        "EACRolesChanged",
+        "URIUpdated",
+        "Initialized",
+        "ProxyDeployed"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x36",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+        "0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39",
+        "0x37cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f70000000000000000000000000011110100000000000000000000000000111101"
+      ],
+      "candidateDestination": "0xda70306c98e97ece36f997a21368e53298572991",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x5d84121a0000000000000000000000009bd8a88719068d09ecee662f36c0e3856708366a21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e390000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000008437cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f7000000000000000000000000001111010000000000000000000000000011110100000000000000000000000000000000000000000000000000000000",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T06",
+      "label": "Attach R1 to root",
+      "signature": "setSubregistry(uint256,address)",
+      "abi": "ETHRegistry",
+      "target": {
+        "reference": "verified.ETHRegistry",
+        "value": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "binding": "receipts.rootTokenId",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R1",
+          "value": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "receipts.rootTokenId"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "SubregistryUpdated",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "SubregistryUpdated(uint256,address,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "subregistry",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "SubregistryUpdated"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x37",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        null,
+        "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C"
+      ],
+      "candidateDestination": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": null,
+      "candidateBlockers": [
+        "receipts.rootTokenId"
+      ]
+    },
+    {
+      "id": "T07",
+      "label": "Set R1 canonical parent metadata",
+      "signature": "setParent(address,string)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R1",
+        "value": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+        "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+      },
+      "arguments": [
+        {
+          "reference": "verified.ETHRegistry",
+          "value": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        "nak-lokesh-20261105"
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "ParentUpdated",
+          "emitterBinding": "future.R1",
+          "signature": "ParentUpdated(address,string,address)",
+          "fields": [
+            {
+              "name": "parent",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "ParentUpdated"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x38",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+        "nak-lokesh-20261105"
+      ],
+      "candidateDestination": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x5357263f000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T08",
+      "label": "Register owner-controlled lock with no child attached yet",
+      "signature": "register(string,address,address,address,uint256,uint64)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R1",
+        "value": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+        "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+      },
+      "arguments": [
+        "lock",
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        },
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+        "91700664256357922357994873537130062512592519168",
+        {
+          "binding": "inputs.lockExpiry",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "inputs.lockExpiry"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "LabelRegistered",
+          "emitterBinding": "future.R1",
+          "signature": "LabelRegistered(uint256,bytes32,string,address,uint64,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "labelHash",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "expiry",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "TokenResource",
+          "emitterBinding": "future.R1",
+          "signature": "TokenResource(uint256,uint256)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "TransferSingle",
+          "emitterBinding": "future.R1",
+          "signature": "TransferSingle(address,address,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "operator",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "id",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "EACRolesChanged",
+          "emitterBinding": "future.R1",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "LabelRegistered",
+        "TransferSingle",
+        "TokenResource",
+        "EACRolesChanged"
+      ],
+      "labelStoreEvent": {
+        "name": "Label",
+        "signature": "Label(bytes32,string)",
+        "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+        "indexed": [
+          true,
+          false
+        ],
+        "condition": "T04/T08/T15 only: exactly one event if global getLabel(labelId) is empty immediately before registration; otherwise zero; compare source LibLabel.id, exact label and emitter",
+        "currentlyStoredLabelRead": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "execution": "DISABLED",
+      "candidateNonce": "0x39",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "lock",
+        "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+        "91700664256357922357994873537130062512592519168",
+        null
+      ],
+      "candidateDestination": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": null,
+      "candidateBlockers": [
+        "inputs.lockExpiry"
+      ]
+    },
+    {
+      "id": "T09",
+      "label": "Create R2 and initialize owner grants atomically",
+      "signature": "deployProxy(address,uint256,bytes)",
+      "abi": "VerifiableFactory",
+      "target": {
+        "reference": "verified.VerifiableFactory",
+        "value": "0xda70306c98e97ece36f997a21368e53298572991",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "reference": "verified.UserRegistryImpl",
+          "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "salts.R2",
+          "value": "0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        },
+        {
+          "binding": "encoded.initializeOwnerGrants",
+          "value": "0x37cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f70000000000000000000000000011110100000000000000000000000000111101",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "ProxyDeployed",
+          "emitterBinding": "verified.VerifiableFactory",
+          "signature": "ProxyDeployed(address,address,uint256,address)",
+          "fields": [
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "proxyAddress",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "salt",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "implementation",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "RegistryCreated",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R2",
+          "signature": "RegistryCreated()",
+          "fields": [],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "EACRolesChanged",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R2",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "Upgraded",
+          "emitterBinding": "future.R2",
+          "signature": "Upgraded(address)",
+          "fields": [
+            {
+              "name": "implementation",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "URIUpdated",
+          "emitterBinding": "future.R2",
+          "signature": "URIUpdated(string,address,address)",
+          "fields": [
+            {
+              "name": "uri",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "renderer",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "Initialized",
+          "emitterBinding": "future.R2",
+          "signature": "Initialized(uint64)",
+          "fields": [
+            {
+              "name": "version",
+              "type": "uint64",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Upgraded",
+        "RegistryCreated",
+        "EACRolesChanged",
+        "URIUpdated",
+        "Initialized",
+        "ProxyDeployed"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x3a",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+        "0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95",
+        "0x37cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f70000000000000000000000000011110100000000000000000000000000111101"
+      ],
+      "candidateDestination": "0xda70306c98e97ece36f997a21368e53298572991",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x5d84121a0000000000000000000000009bd8a88719068d09ecee662f36c0e3856708366a3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd950000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000008437cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f7000000000000000000000000001111010000000000000000000000000011110100000000000000000000000000000000000000000000000000000000",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T10",
+      "label": "Attach R2 under lock",
+      "signature": "setSubregistry(uint256,address)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R1",
+        "value": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+        "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+      },
+      "arguments": [
+        {
+          "binding": "receipts.lockTokenId",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R2",
+          "value": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "receipts.lockTokenId"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "SubregistryUpdated",
+          "emitterBinding": "future.R1",
+          "signature": "SubregistryUpdated(uint256,address,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "subregistry",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "SubregistryUpdated"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x3b",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        null,
+        "0x5D86d3AF67103091e3Ba85A77405c1074D394849"
+      ],
+      "candidateDestination": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": null,
+      "candidateBlockers": [
+        "receipts.lockTokenId"
+      ]
+    },
+    {
+      "id": "T11",
+      "label": "Set R2 canonical parent metadata",
+      "signature": "setParent(address,string)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R2",
+        "value": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+        "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+      },
+      "arguments": [
+        {
+          "binding": "future.R1",
+          "value": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+        },
+        "lock"
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "ParentUpdated",
+          "emitterBinding": "future.R2",
+          "signature": "ParentUpdated(address,string,address)",
+          "fields": [
+            {
+              "name": "parent",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "ParentUpdated"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x3c",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+        "lock"
+      ],
+      "candidateDestination": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x5357263f0000000000000000000000009eee3b2a2c47c458bcefb475679330fc1c76bd4c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000046c6f636b00000000000000000000000000000000000000000000000000000000",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T12",
+      "label": "Deploy CredentialRegistrar",
+      "signature": "constructor(address,string,address,address)",
+      "abi": "CredentialRegistrar",
+      "target": null,
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        },
+        "nak-lokesh-20261105",
+        {
+          "binding": "future.R1",
+          "value": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+        },
+        {
+          "binding": "future.R2",
+          "value": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": null,
+      "expectedEvents": [],
+      "expectedApplicationEventOrder": [],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x3d",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "nak-lokesh-20261105",
+        "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+        "0x5D86d3AF67103091e3Ba85A77405c1074D394849"
+      ],
+      "candidateDestination": null,
+      "candidateCreationAddress": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x610120604052348015610010575f80fd5b5060405161332e38038061332e83398101604081905261002f91610a99565b62aa36a74614158061004857506001600160a01b038416155b806100645750806001600160a01b0316826001600160a01b0316145b8061007757506001600160a01b0382163b155b8061008a57506001600160a01b0381163b155b156100a85760405163c52a9bd360e01b815260040160405180910390fd5b6100b18361021a565b6001600160a01b0384166080525f6100c98482610bdf565b506001600160a01b0382811660a052811660c0528251602084012060405163089935e560e31b815260048101919091525f8051602061330e833981519152906344c9af289060240160a060405180830381865afa15801561012c573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906101509190610c9e565b6060015160e0526040805180820190915260048152636c6f636b60e01b6020909101526001600160a01b0382166344c9af287f6168652c307c1e813ca11cfb3a601f1cf3b22452021a5052d8b05f1f1f8a3e926040518263ffffffff1660e01b81526004016101c191815260200190565b60a060405180830381865afa1580156101dc573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906102009190610c9e565b6060015161010052610210610387565b5050505050610e2a565b805181906003118061022d575060208151115b8061025c5750805f8151811061024557610245610d31565b6020910101516001600160f81b031916602d60f81b145b80610298575080600182516102719190610d45565b8151811061028157610281610d31565b6020910101516001600160f81b031916602d60f81b145b156102b657604051633d36cb8d60e01b815260040160405180910390fd5b5f5b8151811015610377575f8282815181106102d4576102d4610d31565b01602001516001600160f81b0319169050606160f81b81108015906103075750603d60f91b6001600160f81b0319821611155b806103395750600360fc1b6001600160f81b03198216108015906103395750603960f81b6001600160f81b0319821611155b806103515750602d60f81b6001600160f81b03198216145b61036e57604051633d36cb8d60e01b815260040160405180910390fd5b506001016102b8565b505050565b805160209091012090565b5f62aa36a7461415806104355750604051631ad7b10b60e11b81526020600482015260036024820152620cae8d60eb1b60448201525f8051602061330e8339815191529073b458d6a3a77919449d03e7a6903c26827c1ec43f906335af621690606401602060405180830381865afa158015610405573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906104299190610d6a565b6001600160a01b031614155b1561045357604051632b4d8a2560e21b815260040160405180910390fd5b60a05161045f90610977565b60c05161046b90610977565b5f5f8051602061330e8339815191526001600160a01b03166344c9af286105195f805461049790610b5c565b80601f01602080910402602001604051908101604052809291908181526020018280546104c390610b5c565b801561050e5780601f106104e55761010080835404028352916020019161050e565b820191905f5260205f20905b8154815290600101906020018083116104f157829003601f168201915b505061037c92505050565b6040518263ffffffff1660e01b815260040161053791815260200190565b60a060405180830381865afa158015610552573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906105769190610c9e565b90505f60a0516001600160a01b03166344c9af286105b5604051806040016040528060048152602001636c6f636b60e01b81525061037c60201b60201c565b6040518263ffffffff1660e01b81526004016105d391815260200190565b60a060405180830381865afa1580156105ee573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906106129190610c9e565b905060028251600281111561062957610629610d8c565b141580610649575060028151600281111561064657610646610d8c565b14155b8061066157504282602001516001600160401b031611155b8061067957504281602001516001600160401b031611155b8061069d575081602001516001600160401b031681602001516001600160401b0316115b806106ae575060e051826060015114155b806106c0575061010051816060015114155b8061076657506080516001600160a01b03165f8051602061330e8339815191526001600160a01b031663c41a360a6106fd5f805461049790610b5c565b6040518263ffffffff1660e01b815260040161071b91815260200190565b602060405180830381865afa158015610736573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061075a9190610d6a565b6001600160a01b031614155b8061081d57506080516001600160a01b031660a0516001600160a01b031663c41a360a6107b4604051806040016040528060048152602001636c6f636b60e01b81525061037c60201b60201c565b6040518263ffffffff1660e01b81526004016107d291815260200190565b602060405180830381865afa1580156107ed573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906108119190610d6a565b6001600160a01b031614155b806108ad575060a051604051631ad7b10b60e11b81526001600160a01b03909116905f8051602061330e833981519152906335af621690610862905f90600401610da0565b602060405180830381865afa15801561087d573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906108a19190610d6a565b6001600160a01b031614155b8061094f575060c0516001600160a01b031660a0516001600160a01b03166335af62166040518163ffffffff1660e01b8152600401610904906020808252600490820152636c6f636b60e01b604082015260600190565b602060405180830381865afa15801561091f573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906109439190610d6a565b6001600160a01b031614155b1561096d57604051632b4d8a2560e21b815260040160405180910390fd5b6020015192915050565b604051633d200b4560e01b81526001600160a01b0382166004820152739bd8a88719068d09ecee662f36c0e3856708366a9073da70306c98e97ece36f997a21368e5329857299190633d200b4590602401602060405180830381865afa1580156109e3573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610a079190610d6a565b6001600160a01b031614610a2e5760405163c52a9bd360e01b815260040160405180910390fd5b50565b6001600160a01b0381168114610a2e575f80fd5b634e487b7160e01b5f52604160045260245ffd5b604051601f8201601f191681016001600160401b0381118282101715610a8157610a81610a45565b604052919050565b8051610a9481610a31565b919050565b5f805f8060808587031215610aac575f80fd5b8451610ab781610a31565b602086810151919550906001600160401b0380821115610ad5575f80fd5b818801915088601f830112610ae8575f80fd5b815181811115610afa57610afa610a45565b610b0c601f8201601f19168501610a59565b91508082528984828501011115610b21575f80fd5b808484018584015e5f84828401015250809550505050610b4360408601610a89565b9150610b5160608601610a89565b905092959194509250565b600181811c90821680610b7057607f821691505b602082108103610b8e57634e487b7160e01b5f52602260045260245ffd5b50919050565b601f82111561037757805f5260205f20601f840160051c81016020851015610bb95750805b601f840160051c820191505b81811015610bd8575f8155600101610bc5565b5050505050565b81516001600160401b03811115610bf857610bf8610a45565b610c0c81610c068454610b5c565b84610b94565b602080601f831160018114610c3f575f8415610c285750858301515b5f19600386901b1c1916600185901b178555610c96565b5f85815260208120601f198616915b82811015610c6d57888601518255948401946001909101908401610c4e565b5085821015610c8a57878501515f19600388901b60f8161c191681555b505060018460011b0185555b505050505050565b5f60a08284031215610cae575f80fd5b60405160a081016001600160401b038082118383101715610cd157610cd1610a45565b816040528451915060038210610ce5575f80fd5b9082526020840151908082168214610cfb575f80fd5b5060208201526040830151610d0f81610a31565b6040820152606083810151908201526080928301519281019290925250919050565b634e487b7160e01b5f52603260045260245ffd5b81810381811115610d6457634e487b7160e01b5f52601160045260245ffd5b92915050565b5f60208284031215610d7a575f80fd5b8151610d8581610a31565b9392505050565b634e487b7160e01b5f52602160045260245ffd5b5f60208083525f8454610db281610b5c565b806020870152604060018084165f8114610dd35760018114610def57610e1c565b60ff19851660408a0152604084151560051b8a01019550610e1c565b895f5260205f205f5b85811015610e135781548b8201860152908301908801610df8565b8a016040019650505b509398975050505050505050565b60805160a05160c05160e051610100516123a4610f6a5f395f81816102b20152611b8201525f81816101a90152611b5301525f818161012f015281816103b3015281816104390152818161051d015281816105c10152818161063f015281816106e9015281816108db0152818161090a01528181610a1e01528181610a4d01528181610b3901528181610ca501528181610dba01528181610e5e01528181610f2201528181610feb0152818161106e0152818161110f015281816111c8015281816111f7015281816112e30152818161131201528181611408015281816118b90152611e2e01525f818161028b0152818161189001528181611a1d01528181611cc401528181611d900152611e5801525f81816101de01528181610305015281816107c50152818161088c01528181611bb10152611ca001526123a45ff3fe608060405234801561000f575f80fd5b5060043610610111575f3560e01c8063b73e92a61161009e578063c9b84d4d1161006e578063c9b84d4d14610286578063e1fad57b146102ad578063e7e32b6f146102d4578063f271f385146102e9578063f68e9553146102f2575f80fd5b8063b73e92a614610234578063b8b3ab3a14610247578063c153b08314610262578063c92cc49a1461026b575f80fd5b806388f13dde116100e457806388f13dde146101a45780638da5cb5b146101d95780639db1e60514610200578063b1724b461461020a578063b6a6d1771461022c575f80fd5b806327ec80d9146101155780632a35004d1461012a5780632dd310001461016e5780634750070814610189575b5f80fd5b610128610123366004611f85565b6102fa565b005b6101517f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b0390911681526020015b60405180910390f35b61015173da70306c98e97ece36f997a21368e5329857299181565b61015173d4ebcbbdf463c9c45784603db0ddd499bc44a8b481565b6101cb7f000000000000000000000000000000000000000000000000000000000000000081565b604051908152602001610165565b6101517f000000000000000000000000000000000000000000000000000000000000000081565b6101cb62aa36a781565b61021462278d0081565b6040516001600160401b039091168152602001610165565b610214603c81565b6101cb610242366004611ff4565b6107b9565b610151739bd8a88719068d09ecee662f36c0e3856708366a81565b6101cb61100181565b61015173b458d6a3a77919449d03e7a6903c26827c1ec43f81565b6101517f000000000000000000000000000000000000000000000000000000000000000081565b6101cb7f000000000000000000000000000000000000000000000000000000000000000081565b6102dc611506565b6040516101659190612057565b6101cb61100081565b6101cb600181565b336001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001614610342576040516282b42960e81b815260040160405180910390fd5b60015460ff1615610366576040516306fda65d60e31b815260040160405180910390fd5b6001805460ff191681179055604080516020601f85018190048102820181019092528381526103ae9185908590819084018382808284375f9201919091525061159192505050565b6103d77f00000000000000000000000000000000000000000000000000000000000000006116f3565b5f61041684848080601f0160208091040260200160405190810160405280939291908181526020018383808284375f920191909152506117ad92505050565b60405163089935e560e31b8152600481018290529091505f906001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906344c9af289060240160a060405180830381865afa15801561047e573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906104a291906120a7565b90506002815160028111156104b9576104b9612138565b1415806104ca575082816060015114155b806104e257504281602001516001600160401b031611155b156105005760405163104b04ef60e11b815260040160405180910390fd5b60405163781ef8db60e01b815261100060048201523060248201527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169063781ef8db90604401602060405180830381865afa15801561056a573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061058e919061214c565b6105ab5760405163932d94f760e01b815260040160405180910390fd5b6040516350158b0f60e11b8152600481018390527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169063a02b161e906024015f604051808303815f87803b15801561060a575f80fd5b505af115801561061c573d5f803e3d5ffd5b5060029250610629915050565b60405163089935e560e31b8152600481018490527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316906344c9af289060240160a060405180830381865afa15801561068c573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906106b091906120a7565b5160028111156106c2576106c2612138565b148061075e575060405163620d1b0560e11b8152600481018390525f906001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063c41a360a90602401602060405180830381865afa15801561072e573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906107529190612172565b6001600160a01b031614155b1561077c5760405163c5bef9cd60e01b815260040160405180910390fd5b604051839083907f75f6605999947515f809e45f97b7200bd8afc73fe9f88ea28987627467dbac84905f90a350506001805460ff19169055505050565b5f336001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001614610802576040516282b42960e81b815260040160405180910390fd5b60015460ff1615610826576040516306fda65d60e31b815260040160405180910390fd5b6001805460ff191681179055604080516020601f870181900481028201810190925285815261086e9187908790819084018382808284375f9201919091525061159192505050565b5f6108776117b8565b90506001600160a01b03841615806108c057507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316846001600160a01b0316145b806108d357506001600160a01b03841630145b806109f857507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316635adf47247f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316631c3fc3eb6040518163ffffffff1660e01b8152600401602060405180830381865afa158015610964573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610988919061218d565b6040516001600160e01b031960e084901b16815260048101919091526001600160a01b0387166024820152604401602060405180830381865afa1580156109d1573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906109f5919061218d565b15155b15610a165760405163366677f760e11b815260040160405180910390fd5b6110006001177f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316635adf47247f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316631c3fc3eb6040518163ffffffff1660e01b8152600401602060405180830381865afa158015610aa7573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610acb919061218d565b6040516001600160e01b031960e084901b1681526004810191909152306024820152604401602060405180830381865afa158015610b0b573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610b2f919061218d565b141580610bb757507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031663955266f56040518163ffffffff1660e01b8152600401602060405180830381865afa158015610b93573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610bb7919061214c565b15610bd55760405163932d94f760e01b815260040160405180910390fd5b610be0603c426121b8565b836001600160401b03161080610c0a5750610bfe62278d00426121b8565b836001600160401b0316115b80610c265750806001600160401b0316836001600160401b0316115b15610c435760405162d36c8560e81b815260040160405180910390fd5b5f610c8287878080601f0160208091040260200160405190810160405280939291908181526020018383808284375f920191909152506117ad92505050565b60405163089935e560e31b8152600481018290529091505f906001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906344c9af289060240160a060405180830381865afa158015610cea573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610d0e91906120a7565b90505f81516002811115610d2457610d24612138565b141580610d3d575060208101516001600160401b031615155b80610d54575060408101516001600160a01b031615155b80610d6c5750610d64825f611f2c565b816060015114155b80610d855750610d7d826001611f2c565b816080015114155b15610da35760405163b14f288160e01b815260040160405180910390fd5b6040516385f3e64360e01b81526001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906385f3e64390610dfb908b908b908b905f90819081908e906004016121f3565b6020604051808303815f875af1158015610e17573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610e3b919061218d565b60405163089935e560e31b8152600481018490529094505f906001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906344c9af289060240160a060405180830381865afa158015610ea3573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610ec791906120a7565b9050600281516002811115610ede57610ede612138565b141580610eef575084816060015114155b80610f105750856001600160401b031681602001516001600160401b031614155b80610fb95750866001600160a01b03167f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031663c41a360a856040518263ffffffff1660e01b8152600401610f6e91815260200190565b602060405180830381865afa158015610f89573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610fad9190612172565b6001600160a01b031614155b80611057575060808101516040516316b7d1c960e21b815260048101919091526001600160a01b0388811660248301527f00000000000000000000000000000000000000000000000000000000000000001690635adf472490604401602060405180830381865afa158015611030573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611054919061218d565b15155b806110f85750604051631ad7b10b60e11b81525f907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316906335af6216906110ad908d908d90600401612247565b602060405180830381865afa1580156110c8573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906110ec9190612172565b6001600160a01b031614155b80611199575060405163e4ae7d7760e01b81525f907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169063e4ae7d779061114e908d908d90600401612247565b602060405180830381865afa158015611169573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061118d9190612172565b6001600160a01b031614155b156111b75760405163c5bef9cd60e01b815260040160405180910390fd5b6111bf6117b8565b506110006001177f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316635adf47247f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316631c3fc3eb6040518163ffffffff1660e01b8152600401602060405180830381865afa158015611251573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611275919061218d565b6040516001600160e01b031960e084901b1681526004810191909152306024820152604401602060405180830381865afa1580156112b5573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906112d9919061218d565b14158061140057507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316635adf47247f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316631c3fc3eb6040518163ffffffff1660e01b8152600401602060405180830381865afa15801561136c573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611390919061218d565b6040516001600160e01b031960e084901b16815260048101919091526001600160a01b038a166024820152604401602060405180830381865afa1580156113d9573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906113fd919061218d565b15155b8061148657507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031663955266f56040518163ffffffff1660e01b8152600401602060405180830381865afa158015611462573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611486919061214c565b156114a45760405163c5bef9cd60e01b815260040160405180910390fd5b6040516001600160401b03871681526001600160a01b03881690869085907f76412427ad101a894578d41d550df6a76c451d99fd156ed13c9de2cce96156b99060200160405180910390a450506001805460ff19169055509095945050505050565b5f805461151290612262565b80601f016020809104026020016040519081016040528092919081815260200182805461153e90612262565b80156115895780601f1061156057610100808354040283529160200191611589565b820191905f5260205f20905b81548152906001019060200180831161156c57829003601f168201915b505050505081565b80518190600311806115a4575060208151115b806115d35750805f815181106115bc576115bc61229a565b6020910101516001600160f81b031916602d60f81b145b8061160f575080600182516115e891906122ae565b815181106115f8576115f861229a565b6020910101516001600160f81b031916602d60f81b145b1561162d57604051633d36cb8d60e01b815260040160405180910390fd5b5f5b81518110156116ee575f82828151811061164b5761164b61229a565b01602001516001600160f81b0319169050606160f81b811080159061167e5750603d60f91b6001600160f81b0319821611155b806116b05750600360fc1b6001600160f81b03198216108015906116b05750603960f81b6001600160f81b0319821611155b806116c85750602d60f81b6001600160f81b03198216145b6116e557604051633d36cb8d60e01b815260040160405180910390fd5b5060010161162f565b505050565b604051633d200b4560e01b81526001600160a01b0382166004820152739bd8a88719068d09ecee662f36c0e3856708366a9073da70306c98e97ece36f997a21368e5329857299190633d200b4590602401602060405180830381865afa15801561175f573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906117839190612172565b6001600160a01b0316146117aa5760405163c52a9bd360e01b815260040160405180910390fd5b50565b805160209091012090565b5f62aa36a74614158061186d5750604051631ad7b10b60e11b81526020600482015260036024820152620cae8d60eb1b604482015273d4ebcbbdf463c9c45784603db0ddd499bc44a8b49073b458d6a3a77919449d03e7a6903c26827c1ec43f906335af621690606401602060405180830381865afa15801561183d573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906118619190612172565b6001600160a01b031614155b1561188b57604051632b4d8a2560e21b815260040160405180910390fd5b6118b47f00000000000000000000000000000000000000000000000000000000000000006116f3565b6118dd7f00000000000000000000000000000000000000000000000000000000000000006116f3565b5f73d4ebcbbdf463c9c45784603db0ddd499bc44a8b46001600160a01b03166344c9af286119975f805461191090612262565b80601f016020809104026020016040519081016040528092919081815260200182805461193c90612262565b80156119875780601f1061195e57610100808354040283529160200191611987565b820191905f5260205f20905b81548152906001019060200180831161196a57829003601f168201915b5050505050805160209091012090565b6040518263ffffffff1660e01b81526004016119b591815260200190565b60a060405180830381865afa1580156119d0573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906119f491906120a7565b6040805180820190915260048152636c6f636b60e01b60209091015290505f6001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000166344c9af287f6168652c307c1e813ca11cfb3a601f1cf3b22452021a5052d8b05f1f1f8a3e926040518263ffffffff1660e01b8152600401611a8191815260200190565b60a060405180830381865afa158015611a9c573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611ac091906120a7565b9050600282516002811115611ad757611ad7612138565b141580611af75750600281516002811115611af457611af4612138565b14155b80611b0f57504282602001516001600160401b031611155b80611b2757504281602001516001600160401b031611155b80611b4b575081602001516001600160401b031681602001516001600160401b0316115b80611b7a57507f0000000000000000000000000000000000000000000000000000000000000000826060015114155b80611ba957507f0000000000000000000000000000000000000000000000000000000000000000816060015114155b80611c7457507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031673d4ebcbbdf463c9c45784603db0ddd499bc44a8b46001600160a01b031663c41a360a611c0b5f805461191090612262565b6040518263ffffffff1660e01b8152600401611c2991815260200190565b602060405180830381865afa158015611c44573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611c689190612172565b6001600160a01b031614155b80611d7357506040805180820190915260048152636c6f636b60e01b6020909101526001600160a01b037f00000000000000000000000000000000000000000000000000000000000000008116907f00000000000000000000000000000000000000000000000000000000000000001663c41a360a7f6168652c307c1e813ca11cfb3a601f1cf3b22452021a5052d8b05f1f1f8a3e926040518263ffffffff1660e01b8152600401611d2891815260200190565b602060405180830381865afa158015611d43573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611d679190612172565b6001600160a01b031614155b80611e265750604051631ad7b10b60e11b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169073d4ebcbbdf463c9c45784603db0ddd499bc44a8b4906335af621690611ddb905f906004016122c1565b602060405180830381865afa158015611df6573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611e1a9190612172565b6001600160a01b031614155b80611f0457507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03167f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03166335af62166040518163ffffffff1660e01b8152600401611eb9906020808252600490820152636c6f636b60e01b604082015260600190565b602060405180830381865afa158015611ed4573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190611ef89190612172565b6001600160a01b031614155b15611f2257604051632b4d8a2560e21b815260040160405180910390fd5b6020015192915050565b63ffffffff8281168318908216185b92915050565b5f8083601f840112611f51575f80fd5b5081356001600160401b03811115611f67575f80fd5b602083019150836020828501011115611f7e575f80fd5b9250929050565b5f805f60408486031215611f97575f80fd5b83356001600160401b03811115611fac575f80fd5b611fb886828701611f41565b909790965060209590950135949350505050565b6001600160a01b03811681146117aa575f80fd5b6001600160401b03811681146117aa575f80fd5b5f805f8060608587031215612007575f80fd5b84356001600160401b0381111561201c575f80fd5b61202887828801611f41565b909550935050602085013561203c81611fcc565b9150604085013561204c81611fe0565b939692955090935050565b602081525f82518060208401528060208501604085015e5f604082850101526040601f19601f83011684010191505092915050565b805161209781611fe0565b919050565b805161209781611fcc565b5f60a082840312156120b7575f80fd5b60405160a081018181106001600160401b03821117156120e557634e487b7160e01b5f52604160045260245ffd5b6040528251600381106120f6575f80fd5b81526121046020840161208c565b60208201526121156040840161209c565b604082015260608301516060820152608083015160808201528091505092915050565b634e487b7160e01b5f52602160045260245ffd5b5f6020828403121561215c575f80fd5b8151801515811461216b575f80fd5b9392505050565b5f60208284031215612182575f80fd5b815161216b81611fcc565b5f6020828403121561219d575f80fd5b5051919050565b634e487b7160e01b5f52601160045260245ffd5b80820180821115611f3b57611f3b6121a4565b81835281816020850137505f828201602090810191909152601f909101601f19169091010190565b60c081525f61220660c08301898b6121cb565b6001600160a01b03978816602084015295871660408301525092909416606083015260808201526001600160401b0390921660a09092019190915292915050565b602081525f61225a6020830184866121cb565b949350505050565b600181811c9082168061227657607f821691505b60208210810361229457634e487b7160e01b5f52602260045260245ffd5b50919050565b634e487b7160e01b5f52603260045260245ffd5b81810381811115611f3b57611f3b6121a4565b5f60208083525f84545f60018260011c915060018316806122e357607f831692505b60208310810361230157634e487b7160e01b5f52602260045260245ffd5b602088018390526040880181801561232057600181146123365761235f565b60ff198616825284151560051b8201965061235f565b5f8b8152602090205f5b8681101561235957815484820152908501908901612340565b83019750505b5094999850505050505050505056fea26469706673582212208b57b9588338f86e6e351c92820db59d9f0bbbbe36f2cde9f23e611bca0e362e64736f6c63430008190033000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b400000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f700000000000000000000000000000000000000000000000000000000000000800000000000000000000000009eee3b2a2c47c458bcefb475679330fc1c76bd4c0000000000000000000000005d86d3af67103091e3ba85a77405c1074d39484900000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T13",
+      "label": "Grant only minimal registrar permissions",
+      "signature": "grantRootRoles(uint256,address)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R2",
+        "value": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+        "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+      },
+      "arguments": [
+        4097,
+        {
+          "binding": "future.CredentialRegistrar",
+          "value": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+          "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "EACRolesChanged",
+          "emitterBinding": "future.R2",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "EACRolesChanged"
+      ],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x3e",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        4097,
+        "0x4F5F652308F19386cEC8876f9B3F34385C5724A2"
+      ],
+      "candidateDestination": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x072d5d7700000000000000000000000000000000000000000000000000000000000010010000000000000000000000004f5f652308f19386cec8876f9b3f34385c5724a2",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T14",
+      "label": "Deploy DoorKeys",
+      "signature": "constructor(address,string,address,address,uint256)",
+      "abi": "DoorKeys",
+      "target": null,
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        },
+        "nak-lokesh-20261105",
+        {
+          "binding": "future.R1",
+          "value": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+          "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+        },
+        {
+          "binding": "future.R2",
+          "value": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+          "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+        },
+        1
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [],
+      "snapshotCandidate": null,
+      "expectedEvents": [],
+      "expectedApplicationEventOrder": [],
+      "labelStoreEvent": null,
+      "execution": "DISABLED",
+      "candidateNonce": "0x3f",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "nak-lokesh-20261105",
+        "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+        "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+        1
+      ],
+      "candidateDestination": null,
+      "candidateCreationAddress": "0x93ac7E046AcdE7BBFb3F5086775bcA5032c6c7e6",
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": "0x610180604052348015610010575f80fd5b506040516124c83803806124c883398101604081905261002f91610a8f565b62aa36a74614158061004857506001600160a01b038516155b806100645750816001600160a01b0316836001600160a01b0316145b8061007757506001600160a01b0383163b155b8061008a57506001600160a01b0382163b155b156100a85760405163c52a9bd360e01b815260040160405180910390fd5b6100b184610278565b6001600160a01b0385166080525f6100c98582610bde565b508351602085012060e08190526001600160a01b0384811660a052831660c05260405163089935e560e31b815260048101919091525f80516020612488833981519152906344c9af289060240160a060405180830381865afa158015610131573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906101559190610c9d565b606001516101005260405163089935e560e31b81525f805160206124a883398151915260048201526001600160a01b038416906344c9af289060240160a060405180830381865afa1580156101ac573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906101d09190610c9d565b60600151610120526101408190526101e66103da565b5060e080516101008051610120805160408051466020820152309181019190915260608101959095525f805160206124a883398151915260808601526001600160a01b03808a1660a0870152881660c086015294840191909152908201929092529081018290526101400160408051601f1981840301815291905280516020909101206101605250610e299350505050565b805181906003118061028b575060208151115b806102ba5750805f815181106102a3576102a3610d30565b6020910101516001600160f81b031916602d60f81b145b806102f6575080600182516102cf9190610d44565b815181106102df576102df610d30565b6020910101516001600160f81b031916602d60f81b145b1561031457604051633d36cb8d60e01b815260040160405180910390fd5b5f5b81518110156103d5575f82828151811061033257610332610d30565b01602001516001600160f81b0319169050606160f81b81108015906103655750603d60f91b6001600160f81b0319821611155b806103975750600360fc1b6001600160f81b03198216108015906103975750603960f81b6001600160f81b0319821611155b806103af5750602d60f81b6001600160f81b03198216145b6103cc57604051633d36cb8d60e01b815260040160405180910390fd5b50600101610316565b505050565b5f62aa36a7461415806104885750604051631ad7b10b60e11b81526020600482015260036024820152620cae8d60eb1b60448201525f805160206124888339815191529073b458d6a3a77919449d03e7a6903c26827c1ec43f906335af621690606401602060405180830381865afa158015610458573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061047c9190610d69565b6001600160a01b031614155b156104a657604051632b4d8a2560e21b815260040160405180910390fd5b60a051604051633d200b4560e01b81526001600160a01b039091166004820152739bd8a88719068d09ecee662f36c0e3856708366a9073da70306c98e97ece36f997a21368e5329857299190633d200b4590602401602060405180830381865afa158015610516573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061053a9190610d69565b6001600160a01b03161415806105eb575060c051604051633d200b4560e01b81526001600160a01b039091166004820152739bd8a88719068d09ecee662f36c0e3856708366a9073da70306c98e97ece36f997a21368e5329857299190633d200b4590602401602060405180830381865afa1580156105bb573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906105df9190610d69565b6001600160a01b031614155b156106095760405163c52a9bd360e01b815260040160405180910390fd5b60e05160405163089935e560e31b81525f915f80516020612488833981519152916344c9af28916106409160040190815260200190565b60a060405180830381865afa15801561065b573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061067f9190610c9d565b60a05160405163089935e560e31b81525f805160206124a883398151915260048201529192505f916001600160a01b03909116906344c9af289060240160a060405180830381865afa1580156106d7573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906106fb9190610c9d565b905060028251600281111561071257610712610d8b565b141580610732575060028151600281111561072f5761072f610d8b565b14155b8061074a57504282602001516001600160401b031611155b8061076257504281602001516001600160401b031611155b80610786575081602001516001600160401b031681602001516001600160401b0316115b80610798575061010051826060015114155b806107aa575061012051816060015114155b8061083a575060805160e05160405163620d1b0560e11b815260048101919091526001600160a01b03909116905f805160206124888339815191529063c41a360a90602401602060405180830381865afa15801561080a573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061082e9190610d69565b6001600160a01b031614155b806108ca575060805160a05160405163620d1b0560e11b81525f805160206124a883398151915260048201526001600160a01b03928316929091169063c41a360a90602401602060405180830381865afa15801561089a573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906108be9190610d69565b6001600160a01b031614155b8061095a575060a051604051631ad7b10b60e11b81526001600160a01b03909116905f80516020612488833981519152906335af62169061090f905f90600401610d9f565b602060405180830381865afa15801561092a573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061094e9190610d69565b6001600160a01b031614155b806109fc575060c0516001600160a01b031660a0516001600160a01b03166335af62166040518163ffffffff1660e01b81526004016109b1906020808252600490820152636c6f636b60e01b604082015260600190565b602060405180830381865afa1580156109cc573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906109f09190610d69565b6001600160a01b031614155b15610a1a57604051632b4d8a2560e21b815260040160405180910390fd5b6020015192915050565b6001600160a01b0381168114610a38575f80fd5b50565b634e487b7160e01b5f52604160045260245ffd5b604051601f8201601f191681016001600160401b0381118282101715610a7757610a77610a3b565b604052919050565b8051610a8a81610a24565b919050565b5f805f805f60a08688031215610aa3575f80fd5b8551610aae81610a24565b602087810151919650906001600160401b0380821115610acc575f80fd5b818901915089601f830112610adf575f80fd5b815181811115610af157610af1610a3b565b610b03601f8201601f19168501610a4f565b91508082528a84828501011115610b18575f80fd5b808484018584015e5f84828401015250809650505050610b3a60408701610a7f565b9250610b4860608701610a7f565b9150608086015190509295509295909350565b600181811c90821680610b6f57607f821691505b602082108103610b8d57634e487b7160e01b5f52602260045260245ffd5b50919050565b601f8211156103d557805f5260205f20601f840160051c81016020851015610bb85750805b601f840160051c820191505b81811015610bd7575f8155600101610bc4565b5050505050565b81516001600160401b03811115610bf757610bf7610a3b565b610c0b81610c058454610b5b565b84610b93565b602080601f831160018114610c3e575f8415610c275750858301515b5f19600386901b1c1916600185901b178555610c95565b5f85815260208120601f198616915b82811015610c6c57888601518255948401946001909101908401610c4d565b5085821015610c8957878501515f19600388901b60f8161c191681555b505060018460011b0185555b505050505050565b5f60a08284031215610cad575f80fd5b60405160a081016001600160401b038082118383101715610cd057610cd0610a3b565b816040528451915060038210610ce4575f80fd5b9082526020840151908082168214610cfa575f80fd5b5060208201526040830151610d0e81610a24565b6040820152606083810151908201526080928301519281019290925250919050565b634e487b7160e01b5f52603260045260245ffd5b81810381811115610d6357634e487b7160e01b5f52601160045260245ffd5b92915050565b5f60208284031215610d79575f80fd5b8151610d8481610a24565b9392505050565b634e487b7160e01b5f52602160045260245ffd5b5f60208083525f8454610db181610b5b565b806020870152604060018084165f8114610dd25760018114610dee57610e1b565b60ff19851660408a0152604084151560051b8a01019550610e1b565b895f5260205f205f5b85811015610e125781548b8201860152908301908801610df7565b8a016040019650505b509398975050505050505050565b60805160a05160c05160e05161010051610120516101405161016051611578610f105f395f818161020c01526107de01525f61010f01525f81816102df0152610e9001525f818161023c0152610e6101525f818161014901528181610c9b0152610ecc01525f8181610170015281816103e8015281816104cb01528181610562015281816105de0152818161060d015281816106fa01528181610bc9015261111e01525f81816102b801528181610b0801528181610d5901528181610fec01528181611080015261114801525f818161031b01528181610ef20152610fc801526115785ff3fe608060405234801561000f575f80fd5b5060043610610106575f3560e01c806388f13dde1161009e578063c92cc49a1161006e578063c92cc49a14610298578063c9b84d4d146102b3578063e1fad57b146102da578063e7e32b6f14610301578063f53d0a8e14610316575f80fd5b806388f13dde146102375780639db1e6051461025e578063a96ce7aa14610268578063b8b3ab3a1461027d575f80fd5b806346f46bed116100d957806346f46bed146101c557806347500708146101ec578063595320d2146102075780637c1a03021461022e575f80fd5b80630201fc041461010a57806318efd4d6146101445780632a35004d1461016b5780632dd31000146101aa575b5f80fd5b6101317f000000000000000000000000000000000000000000000000000000000000000081565b6040519081526020015b60405180910390f35b6101317f000000000000000000000000000000000000000000000000000000000000000081565b6101927f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200161013b565b61019273da70306c98e97ece36f997a21368e5329857299181565b6101317f6168652c307c1e813ca11cfb3a601f1cf3b22452021a5052d8b05f1f1f8a3e9281565b61019273d4ebcbbdf463c9c45784603db0ddd499bc44a8b481565b6101317f000000000000000000000000000000000000000000000000000000000000000081565b61013160015481565b6101317f000000000000000000000000000000000000000000000000000000000000000081565b61013162aa36a781565b61027b610276366004611227565b61033d565b005b610192739bd8a88719068d09ecee662f36c0e3856708366a81565b61019273b458d6a3a77919449d03e7a6903c26827c1ec43f81565b6101927f000000000000000000000000000000000000000000000000000000000000000081565b6101317f000000000000000000000000000000000000000000000000000000000000000081565b610309610831565b60405161013b9190611293565b6101927f000000000000000000000000000000000000000000000000000000000000000081565b61037b82828080601f0160208091040260200160405190810160405280939291908181526020018383808284375f920191909152506108bc92505050565b5f610384610a1e565b90505f6103c584848080601f0160208091040260200160405190810160405280939291908181526020018383808284375f9201919091525061121c92505050565b60405163089935e560e31b8152600481018290529091505f906001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906344c9af289060240160a060405180830381865afa15801561042d573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906104519190611306565b905060028151600281111561046857610468611398565b141580610483575042816020015167ffffffffffffffff1611155b806104a557508267ffffffffffffffff16816020015167ffffffffffffffff16115b80610540575060405163620d1b0560e11b81526004810183905233906001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063c41a360a90602401602060405180830381865afa158015610510573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061053491906113ac565b6001600160a01b031614155b806105d657506080810151604051630bc9fe8960e21b815260048101919091527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031690632f27fa2490602401602060405180830381865afa1580156105af573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906105d391906113ce565b15155b806106f257507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316635adf47247f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316631c3fc3eb6040518163ffffffff1660e01b8152600401602060405180830381865afa158015610667573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061068b91906113ce565b6040516001600160e01b031960e084901b1681526004810191909152336024820152604401602060405180830381865afa1580156106cb573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906106ef91906113ce565b15155b8061077857507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031663955266f56040518163ffffffff1660e01b8152600401602060405180830381865afa158015610754573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061077891906113e5565b156107965760405163caa03ea560e01b815260040160405180910390fd5b5f60015f81546107a590611418565b91829055506060808401516020808601516040805193845267ffffffffffffffff909116918301919091528101839052919250849133917f0000000000000000000000000000000000000000000000000000000000000000917fc5c3967162d4bcdfe7656c6ac144e79d13cc742d7993ce525d5d08d9b1409f57910160405180910390a4505050505050565b5f805461083d90611430565b80601f016020809104026020016040519081016040528092919081815260200182805461086990611430565b80156108b45780601f1061088b576101008083540402835291602001916108b4565b820191905f5260205f20905b81548152906001019060200180831161089757829003601f168201915b505050505081565b80518190600311806108cf575060208151115b806108fe5750805f815181106108e7576108e7611468565b6020910101516001600160f81b031916602d60f81b145b8061093a57508060018251610913919061147c565b8151811061092357610923611468565b6020910101516001600160f81b031916602d60f81b145b1561095857604051633d36cb8d60e01b815260040160405180910390fd5b5f5b8151811015610a19575f82828151811061097657610976611468565b01602001516001600160f81b0319169050606160f81b81108015906109a95750603d60f91b6001600160f81b0319821611155b806109db5750600360fc1b6001600160f81b03198216108015906109db5750603960f81b6001600160f81b0319821611155b806109f35750602d60f81b6001600160f81b03198216145b610a1057604051633d36cb8d60e01b815260040160405180910390fd5b5060010161095a565b505050565b5f62aa36a746141580610ad35750604051631ad7b10b60e11b81526020600482015260036024820152620cae8d60eb1b604482015273d4ebcbbdf463c9c45784603db0ddd499bc44a8b49073b458d6a3a77919449d03e7a6903c26827c1ec43f906335af621690606401602060405180830381865afa158015610aa3573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610ac791906113ac565b6001600160a01b031614155b15610af157604051632b4d8a2560e21b815260040160405180910390fd5b604051633d200b4560e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000166004820152739bd8a88719068d09ecee662f36c0e3856708366a9073da70306c98e97ece36f997a21368e5329857299190633d200b4590602401602060405180830381865afa158015610b7d573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610ba191906113ac565b6001600160a01b0316141580610c6e5750604051633d200b4560e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000166004820152739bd8a88719068d09ecee662f36c0e3856708366a9073da70306c98e97ece36f997a21368e5329857299190633d200b4590602401602060405180830381865afa158015610c3e573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610c6291906113ac565b6001600160a01b031614155b15610c8c5760405163c52a9bd360e01b815260040160405180910390fd5b60405163089935e560e31b81527f000000000000000000000000000000000000000000000000000000000000000060048201525f9073d4ebcbbdf463c9c45784603db0ddd499bc44a8b4906344c9af289060240160a060405180830381865afa158015610cfb573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610d1f9190611306565b60405163089935e560e31b81527f6168652c307c1e813ca11cfb3a601f1cf3b22452021a5052d8b05f1f1f8a3e9260048201529091505f907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316906344c9af289060240160a060405180830381865afa158015610da6573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610dca9190611306565b9050600282516002811115610de157610de1611398565b141580610e015750600281516002811115610dfe57610dfe611398565b14155b80610e1a575042826020015167ffffffffffffffff1611155b80610e33575042816020015167ffffffffffffffff1611155b80610e595750816020015167ffffffffffffffff16816020015167ffffffffffffffff16115b80610e8857507f0000000000000000000000000000000000000000000000000000000000000000826060015114155b80610eb757507f0000000000000000000000000000000000000000000000000000000000000000816060015114155b80610f85575060405163620d1b0560e11b81527f000000000000000000000000000000000000000000000000000000000000000060048201527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169073d4ebcbbdf463c9c45784603db0ddd499bc44a8b49063c41a360a90602401602060405180830381865afa158015610f55573d5f803e3d5ffd5b505050506040513d601f19601f82011682018060405250810190610f7991906113ac565b6001600160a01b031614155b80611063575060405163620d1b0560e11b81527f6168652c307c1e813ca11cfb3a601f1cf3b22452021a5052d8b05f1f1f8a3e9260048201526001600160a01b037f00000000000000000000000000000000000000000000000000000000000000008116917f00000000000000000000000000000000000000000000000000000000000000009091169063c41a360a90602401602060405180830381865afa158015611033573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061105791906113ac565b6001600160a01b031614155b806111165750604051631ad7b10b60e11b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169073d4ebcbbdf463c9c45784603db0ddd499bc44a8b4906335af6216906110cb905f90600401611495565b602060405180830381865afa1580156110e6573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061110a91906113ac565b6001600160a01b031614155b806111f457507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03167f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03166335af62166040518163ffffffff1660e01b81526004016111a9906020808252600490820152636c6f636b60e01b604082015260600190565b602060405180830381865afa1580156111c4573d5f803e3d5ffd5b505050506040513d601f19601f820116820180604052508101906111e891906113ac565b6001600160a01b031614155b1561121257604051632b4d8a2560e21b815260040160405180910390fd5b6020015192915050565b805160209091012090565b5f8060208385031215611238575f80fd5b823567ffffffffffffffff8082111561124f575f80fd5b818501915085601f830112611262575f80fd5b813581811115611270575f80fd5b866020828501011115611281575f80fd5b60209290920196919550909350505050565b602081525f82518060208401528060208501604085015e5f604082850101526040601f19601f83011684010191505092915050565b805167ffffffffffffffff811681146112df575f80fd5b919050565b6001600160a01b03811681146112f8575f80fd5b50565b80516112df816112e4565b5f60a08284031215611316575f80fd5b60405160a0810181811067ffffffffffffffff8211171561134557634e487b7160e01b5f52604160045260245ffd5b604052825160038110611356575f80fd5b8152611364602084016112c8565b6020820152611375604084016112fb565b604082015260608301516060820152608083015160808201528091505092915050565b634e487b7160e01b5f52602160045260245ffd5b5f602082840312156113bc575f80fd5b81516113c7816112e4565b9392505050565b5f602082840312156113de575f80fd5b5051919050565b5f602082840312156113f5575f80fd5b815180151581146113c7575f80fd5b634e487b7160e01b5f52601160045260245ffd5b5f6001820161142957611429611404565b5060010190565b600181811c9082168061144457607f821691505b60208210810361146257634e487b7160e01b5f52602260045260245ffd5b50919050565b634e487b7160e01b5f52603260045260245ffd5b8181038181111561148f5761148f611404565b92915050565b5f60208083525f84545f60018260011c915060018316806114b757607f831692505b6020831081036114d557634e487b7160e01b5f52602260045260245ffd5b60208801839052604088018180156114f4576001811461150a57611533565b60ff198616825284151560051b82019650611533565b5f8b8152602090205f5b8681101561152d57815484820152908501908901611514565b83019750505b5094999850505050505050505056fea2646970667358221220a3f060636e694ee7b305d2c530c735deb2ef26813407c951fe10ef989dafdf2764736f6c63430008190033000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b46168652c307c1e813ca11cfb3a601f1cf3b22452021a5052d8b05f1f1f8a3e9200000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f700000000000000000000000000000000000000000000000000000000000000a00000000000000000000000009eee3b2a2c47c458bcefb475679330fc1c76bd4c0000000000000000000000005d86d3af67103091e3ba85a77405c1074d394849000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000136e616b2d6c6f6b6573682d323032363131303500000000000000000000000000",
+      "candidateBlockers": [
+        "All live prerequisite/receipt/source/nonce/fee checks and separate authorization still required"
+      ]
+    },
+    {
+      "id": "T15",
+      "label": "Issue Mira temporary credential",
+      "signature": "issue(string,address,uint64)",
+      "abi": "CredentialRegistrar",
+      "target": {
+        "binding": "future.CredentialRegistrar",
+        "value": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+        "classification": "PUBLIC_PREDICTION_REQUIRES_LIVE_RECEIPT"
+      },
+      "arguments": [
+        "mira",
+        {
+          "binding": "accounts.guest",
+          "value": "0x5a9191871b9117218F83Ed43293E011667053F39",
+          "classification": "APPROVED_CANDIDATE_STATIC_OR_SNAPSHOT_INPUT"
+        },
+        {
+          "binding": "inputs.guestExpiry",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "inputs.guestExpiry"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "CredentialIssued",
+          "emitterBinding": "future.CredentialRegistrar",
+          "signature": "CredentialIssued(bytes32,uint256,address,uint64)",
+          "fields": [
+            {
+              "name": "labelHash",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "guest",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "expiry",
+              "type": "uint64",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "LabelRegistered",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R2",
+          "signature": "LabelRegistered(uint256,bytes32,string,address,uint64,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "labelHash",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "expiry",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "TransferSingle",
+          "emitterBinding": "future.R2",
+          "signature": "TransferSingle(address,address,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "operator",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "id",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "TokenResource",
+          "emitterBinding": "future.R2",
+          "signature": "TokenResource(uint256,uint256)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "LabelRegistered",
+        "TransferSingle",
+        "TokenResource",
+        "CredentialIssued"
+      ],
+      "labelStoreEvent": {
+        "name": "Label",
+        "signature": "Label(bytes32,string)",
+        "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+        "indexed": [
+          true,
+          false
+        ],
+        "condition": "T04/T08/T15 only: exactly one event if global getLabel(labelId) is empty immediately before registration; otherwise zero; compare source LibLabel.id, exact label and emitter",
+        "currentlyStoredLabelRead": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "execution": "DISABLED",
+      "candidateNonce": "0x40",
+      "conditionallyIncluded": true,
+      "liveReceipt": null,
+      "candidateArguments": [
+        "mira",
+        "0x5a9191871b9117218F83Ed43293E011667053F39",
+        null
+      ],
+      "candidateDestination": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+      "candidateCreationAddress": null,
+      "candidateValueWei": "0x0",
+      "candidateChainId": "0xaa36a7",
+      "candidateCalldata": null,
+      "candidateBlockers": [
+        "inputs.guestExpiry"
+      ]
+    }
+  ],
+  "candidateApproval": "OWNER_APPROVED_CANDIDATE_DEFAULTS_NOT_LIVE_AUTHORIZATION",
+  "snapshot": {
+    "number": "0xb83a77",
+    "hash": "0xa769c26b9f46fb3705fd61a53ca431f9769a3b5708dd62ddb84e2ab5ff08b766",
+    "timestamp": "0x6aed3a40",
+    "nonce": "0x32",
+    "pendingNonce": "0x32"
+  },
+  "preparationContext": "LIVE_REVIEW",
+  "usableForFreshLiveReview": true,
+  "reviewContext": {
+    "latest": {
+      "number": "0xb83a78",
+      "hash": "0x0d3ab41ed23c9d83e6712d54dddfccb32048cf829068a2eda45b7e57f48f4e7a",
+      "parentHash": "0xa769c26b9f46fb3705fd61a53ca431f9769a3b5708dd62ddb84e2ab5ff08b766",
+      "nonce": "0x0000000000000000",
+      "mixHash": "0xa771a81b92f284f25cebb7efa915d33fac684d0a66b1f6a760fbafe53baf44e9",
+      "sha3Uncles": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+      "logsBloom": "0x0438270c0080483210418c44ba5034404800014d4a29208b500062887b0e884a2a1c0474f09410409203482bceaa2021227aa81f4680a00c904007d80828290613c8f7c61d8201aa81a0409e1218deb824529040b1041d31208205d092e03904ec20d6a23e7c10183d0142d4514a484022496081043d8112d0808ad0908858d003d800c001b61104800807300684629841285b830c0690480c04904600d80488323541120218908a044c0070a56684a1018a00a9080a1009a8f0624564c30800228194e287810445a60be361244044c3281800429228851e4c121aa150a9b8428092e3206c124c35a18a1009a701600421d278292a26004313102e020684286c",
+      "stateRoot": "0xdef8d1c6fbeb7784bf71b959724ac77a1ba98c0c1b60fa298d2f3564f44e1ba6",
+      "miner": "0x421df94fe5cb177c666df6402e7de7d368319ec3",
+      "difficulty": "0x0",
+      "extraData": "0x726275696c6465722e6d6967616c6162732e657468",
+      "size": "0xf224",
+      "gasLimit": "0xbe8c711",
+      "gasUsed": "0x396bd53",
+      "timestamp": "0x6aed3a4c",
+      "transactionsRoot": "0x7ed116aec42dd3a3ea9914b574320d440526c6793ff4d6de84339ef46b429949",
+      "receiptsRoot": "0x74897be94cb2ea4db838a935e5e265c6d41f5527fcb1367ff7c532af9148311a",
+      "baseFeePerGas": "0xf",
+      "withdrawalsRoot": "0x3e1e30d9518371ad01172e76626bb602afcaaa0c46bc321e3e76040774d58ca8",
+      "blobGasUsed": "0x200000",
+      "excessBlobGas": "0x560000",
+      "parentBeaconBlockRoot": "0x75b7b1588ed8108dc646db90edc3e07a86a71049f2c21f3088227701956ce917",
+      "requestsHash": "0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "blockAccessListHash": "0xabe34a93ecc7d868be2596a5a0bd942d00bd5389326ee1149d510e5c1cd211fd",
+      "slotNumber": "0xafba69",
+      "uncles": [],
+      "transactions": [
+        "0xc7dd0fbb85be02ca1c99d9bf9e84cfc982f6651315ab4def185167a5b3c9b260",
+        "0xf9dd4842b7ad734878e969b13e5b1c44e4523d7fb5c77a81e6e0753f0e1ca415",
+        "0x9f7f17720d7dde0bab86cc17d03048bddb73ca760762ed06628676e2b9b149ee",
+        "0x84a346976a51e855b4e6a9de351f3ac58b2f7e310b3b7d4e91f0008ff625aced",
+        "0x87959b86b32ba89b73864114e63c1bb54ac7a32f652888c46330e157710d925a",
+        "0x83247ca0f9bbc2cc6544c076010ab840d7f7fe7224d64a77043798e70e495fa0",
+        "0x637011cb7f8418865e2546f01c8a100b4e67ef320c8d3efd0ef663c395e01f74",
+        "0x5b25a623aaf78a2a65f0e3ce3a5cce63a7c60f9aff06efc415f246919d270728",
+        "0x100768d7ea765882542c829f066692f00e33ba7bb9011d2ae79403864695a591",
+        "0xd0cd8610f2a2b36c1c50ca51e2aa6fac00a217b5a7b1120e6ef12b8b4c8a8c24",
+        "0xc64367342a9749463c1ac29f0c4165a94628d4324918439fce18b9fb9dfe38c4",
+        "0xe86f7a3b20198786299c3cc46a00652125677b0d0fbe07e26241bb9f4d630484",
+        "0xde1977ce0afaf8c857b1474cca0d1d943dbbacb5bd7949d732988dbef640535a",
+        "0xd76dae47fd577f412e3a692fa547fabd80672e3f7e21ed66d81335df319d4598",
+        "0xb185696b289d048693f49b811ace7cb2514fab6e7d8f3a4e5c60f48187f5a6ea",
+        "0x825995a38e8bbc528e561ad5b3df22bc13a7c2d222e58e06588f5d62eba6a1cf",
+        "0x7fd597441b5a22d153ed352b31fb8e1bdcb163f2f9696c492c88104a854fbd8f",
+        "0x7dca6c86af38c89a100fb63c779f42ba32108039a439270d2c8a43292763b05f",
+        "0x2cfc184454d2e1394a440c285d8e26662f60476bd95b5bafac785c897b163d41",
+        "0x224dc7cd363832c3e17c0a566a5b3ca79db9f107b0d7f5eae2690623366723ed",
+        "0xfa7df88832ff3fcb3abeed7c76052a201ba3d39e3df06479ad264a9a338d0dfa",
+        "0xefdab0b6191d05f5e01503f153bb7c97a81d7e488d249e32756f9dc034b2a6ec",
+        "0xebd1c8622fd0f48fa52374d98666df4294167cd1ef2892b460b7c831104f6bf0",
+        "0xe7a1d4698303a0b960d211e7335df5a300ad5f9b93e0596c655e5f3134510b13",
+        "0xc0982ecff8c7198fe951b71225308ed0d27d901a62d50505bb9ccb4a5d1a8531",
+        "0x9f9c1ec3af270d741fd8531eeb15410e414c65c779a17613a7d95cb0b2a78945",
+        "0x9f1bf66023ee86317c7303fbbb26be59e9cd31bf9f6d9ac49792c2ef6867e9d8",
+        "0x99f94b43e9af4f7586a1f884090a2f309b311d459889fa8233f1a1d6dba053cf",
+        "0x96a3127a9fe379086d1cd555817215c0aa3c7620d5e9c6c9258af0f85085bffa",
+        "0x8674e7fa57697208d2cb7952efeaf63001b965bc9fcd8005b026029e21fd089d",
+        "0x8083a3736ad56da5bf08d96dfec7ee2e5f061734177f8f11c73a990d44777047",
+        "0x7f30667efaf3a00cff74c08825f6171d877b0c969729fbf30f32f40d9ea3202a",
+        "0x76c5cd580c48f713f19089eb4dcc4f15e8b71722d77e27a4c79551b79fa04f6d",
+        "0x6cd41e56c189bf532b0f2e306bea8fa38ef8185e11fb0617710f593a7b9fa493",
+        "0x6818fd19dad9d817ae24d8f5419b73ac76ad6f6ae6fd3ac8cfdccfbf30b403cc",
+        "0x5a826dbc8e2795cf8fc33d42960d114e977246d5b776a5730d27e01a4edd3094",
+        "0x4d2541a01c1217a7b22fc4b41ed054c841b1d35f76d0de23ec4725a6b95141ef",
+        "0x48ec0cbd82ecf95d74815a7c0928f90cf597677b725febc65e445762ed41858c",
+        "0x32242c2f30e289455119810c19dcb648f9046dac5109d9af3e6ac485728eda38",
+        "0x2ffa44869eacf712a9bbff866a7bdcb2fdf0d54b4ac713af3eead78ea3d653ff",
+        "0x64d77cec897b694ee71ca18f149a8f3be260b888acc6806b23901dbf0716b62a",
+        "0x736312298ce3e4df3c17ecd24813bdbf0a6979e7be7a3153aaf4421291134a2b",
+        "0xb9c8d946d0f93c1b4dbc6979d32c6d761b265bf128d6769449e0a2f4fa163632",
+        "0x7b1df33d78bc4ef65fb96e492497d6965d30f5c0132b24dab4e0a6b66cd51bb5",
+        "0x513a901e92bc2bc82a92b8e18d86f38555f9fd59914987c6754dea7b63d55668",
+        "0xd4ccc4c9c2ec9b3896b9607350a91f5312354506230ad491a8ccadc234b43c16",
+        "0x7f59de00549cdcbc786f0447059ce0093647ecd488774ffd5772c03bf172de16",
+        "0x670fcdc0ee19f4493e831944bd598ea1ee4f9beca19aaca53ca3f24fa3be6ad5",
+        "0x2fff2795454a1230fa3bbec3d1dc9e7dd934e3d0741847e62c4965bdab14f98f",
+        "0x228410d66d882e2abb73a79af06b7024be39aac3977257540b5974cd8cb5291f",
+        "0x1b62f3612ff64ad14705ce76258d0d782539dfc30129b52374306d528300db06",
+        "0xc8609e3eb00c11ffc5f06d9c02f342ba42d0d4708daf60a6fcb75577b55f1150",
+        "0x91b9836b25352716663036d3c3f39747d4a097201681f5f6c313fd5bf53c3cad",
+        "0xa58aa2196e2a6d43d3a48c98df59f4249a6ded7070559c9bd9c61daeaff30cf1",
+        "0xe6030b4716124a187771802a4d59256824df5ad86a2924a8342d3925c195f0e2",
+        "0xd2a742f74c9763653d553600706caacfcc13510f606f152e2ca9dff54df279ad",
+        "0xd8c9062e462b58276ca4f2bffbb488ed7d103d6441a14bdeb8a634ed1fa5f366",
+        "0x5245879b900c754b87b11d4ae68ab96f160377bb51d02c2daf3bae0950244554",
+        "0x463d957cc9ad4c70a74179e28997100c842e1454ae99a145dd9b967f659ebe0a",
+        "0x840bf9db02010b272cfbb8fb14cde2f4856c7a51201ef452039e61908b7cdbe5",
+        "0xbe308b1a4865961d3b4a6168b336a1b5cbbbc8a38476d76c35daaadc35c624cc",
+        "0x7f13bdcd199e3eceaf17f5e67c7d4b778a7bb14c3b9a1d635990301362600f35",
+        "0x9cf331391adc0df78db224ce2131c973e3fa608dc4d080481d2325223750f962",
+        "0x784d22b45e2a8968d7e302fc5adbc60f65e2c91410f1cbfdc49a56f6332289ee",
+        "0x223fe922415fca98f6fa31c4441b6e3758002cb7d9217da66f28d5963253aaee",
+        "0x728e7a19264195f92ab7fdcfc412cd613b515c115ca3390370b80fdedd1ce1a1",
+        "0x54e16b70145b0b864397a49191856e6e2d0bbb59164b5562882431ca28b77636",
+        "0xf7eb964f9caa9f25713cd9c10a511c4c84ded3604f6c355e5ba1e06a3b5c8089",
+        "0xec1eada559d5be24238d5c86fd64de51d2fa606f10333d919772ff5592553b90",
+        "0xc1e0d73b383001f6ac57cbcbb134aba17dec3d510b7ccd0243bb8d2f4f8a1b61",
+        "0xbe52b4607e0a63b0741ee0fc30804a1646ba08e1572820a8739963285d9b4f99",
+        "0xb11ee85ec09d4b6928e819628404a3a22e92dfccd3560ec47dfade28a46910b7",
+        "0xed7556220666f9547ab2722b253665f8f9366a1140d0428355ecb0fc178efe94",
+        "0xa92a37d849cb3e419fb937e9368368707af9b3d23a0affdec5c3b2a233be13e2",
+        "0x8d4fb5c8d0cc568e6646687091b85f0d67a3af247a381f142219c65099b40b27",
+        "0x6e5620857281434e4343d820d58c35367bce668ddadbeaf5079a49692cde5186",
+        "0x67d4ccafcadd1d046f4356faf9c688346c368aa7dcf6b154de64671493a259b8",
+        "0x606d1d6393fee81c5dbe9f6dd36a06218e2dac1471d705c9478026f8eeb4f4e2",
+        "0x59d871f342272699e21e77aedab47ff35ff1df3fd6fb432f611de5d9459db87e",
+        "0xf91268961b5371a25d6bd7b1ab502a4cd0c6d3d5c575a2e6e3b8125b6cba44bb",
+        "0x5d57c8f31a9f1ec5de20a73c0c199f7c212d4448317d9df6b5c6912b86df1bbf",
+        "0xad23a1c912c2ee599161836dcf2b3a4605512b52ebf751caf66ee30fed65f847",
+        "0x4bdc149de01bf7bb6feb28b874903fc4fd5d7fbbd9504858203cf597c37e9560",
+        "0x4920e987f00cfa8b94404d04dab52545319751b0cfe7b729c19337569d6a795f",
+        "0x4072cc49ccafa7a487c1505dad86d64189202f43393cde6766e034a050724d55",
+        "0x3e21d949e0116e92da3791b593dae174c6fe68ff306506b1344daae2b9dc4f20",
+        "0x37eb239f5e8cf0e9a5d86944d8dc41827d225f4a46e616bfa8edf9943f69d221",
+        "0x3490ffdb28151fcbc9c4adb1fd2c9ed616ff176b591932ffd9eec880446498b3",
+        "0x34493cd5bb0e8d77e67cc5502747c85aafcc6a53c66e8ba067d1792eb8fe2525",
+        "0x30daf3072b895640dc10952a0c1d28e7c7f356da6d07f97d39f57cc6fa4d7041",
+        "0x268da7bdda91a5fcfe056c7a3f5f81f56ca658db162be0e6475c3e554af4d10f",
+        "0x7950b584975e311d2ca2254ed30acf31687c2f61439dbafaf94a5482a407dafa",
+        "0x21f3d2cb5e42b8a4c6bb515d223ac10112a797e991293355666bcdbfb34b2d77",
+        "0x1f12ed838a05765062ae7d68715b4d35eb70badf21c9941097f8ea34993dabd3",
+        "0x1a33251ef0a9d827249ca7086d242155b170388d27b9e9d127960f7637a809ce",
+        "0x193cfb11a129b168ba3084f4c14afad7dd8c865d5554944a2c9f7878ef08c55c",
+        "0xe3dd68490333588ebf848ec028e484073d6c7545a9dc69e68710bbd406270490",
+        "0x0ba2576552ec3abc010f51d459593614045553730906569e98a39e56d62c9895"
+      ],
+      "withdrawals": [
+        {
+          "address": "0x0000000000000000000000000000000000000000",
+          "amount": "0x32336e7",
+          "index": "0x8a92719",
+          "validatorIndex": "0x1000000000c"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a9271a",
+          "validatorIndex": "0x520"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x37987",
+          "index": "0x8a9271b",
+          "validatorIndex": "0x521"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a9271c",
+          "validatorIndex": "0x522"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x37987",
+          "index": "0x8a9271d",
+          "validatorIndex": "0x523"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x27c27",
+          "index": "0x8a9271e",
+          "validatorIndex": "0x524"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a9271f",
+          "validatorIndex": "0x525"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a92720",
+          "validatorIndex": "0x526"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a92721",
+          "validatorIndex": "0x527"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a92722",
+          "validatorIndex": "0x528"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a92723",
+          "validatorIndex": "0x529"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a92724",
+          "validatorIndex": "0x52a"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a92725",
+          "validatorIndex": "0x52b"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a92726",
+          "validatorIndex": "0x52c"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x37987",
+          "index": "0x8a92727",
+          "validatorIndex": "0x52d"
+        },
+        {
+          "address": "0x89bb1332db257b983ada216746903be808938da1",
+          "amount": "0x34cf3",
+          "index": "0x8a92728",
+          "validatorIndex": "0x52e"
+        }
+      ]
+    },
+    "reviewedAtSeconds": 1793931856.486
+  },
+  "preparationStatus": "FRESH_REVIEW_ONLY_NO_WRITE_AUTHORIZATION",
+  "liveExecutionAllowed": false,
+  "accountPermissionRequests": "ONLY_TRUSTED_CONNECT_CLICK",
+  "signatureRequestsEnabled": false,
+  "transactionRequestsEnabled": false,
+  "bindingPolicy": "Live use requires a fresh canonical snapshot/pending-nonce agreement, re-review and actual live receipt bindings. Historical/local fork state is not live review."
+}

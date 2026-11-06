@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "verified": {
+    "committed": {
+      "gas": "226795",
+      "commitmentAgeSeconds": "61",
+      "block": "0xb839e4",
+      "hash": "0x207eb2cc6a156788279d0502fe9aa514b96917104a155bf54901be39fb86ac26",
+      "chainId": 11155111,
+      "ownedListenersClosed": true
+    },
+    "absent": {
+      "status": 400,
+      "fixtureRevert": "CommitmentTooOld",
+      "redacted": true,
+      "block": "0xb839e4",
+      "hash": "0x207eb2cc6a156788279d0502fe9aa514b96917104a155bf54901be39fb86ac26",
+      "chainId": 11155111,
+      "ownedListenersClosed": true
+    }
+  },
+  "stats": {
+    "fixtureUpstreamReads": 42,
+    "estimatorIngress": {
+      "eth_getBlockByNumber": 4,
+      "blocked-or-invalid-method": 4,
+      "eth_getBalance": 10,
+      "eth_getTransactionCount": 10,
+      "eth_getCode": 10,
+      "eth_getStorageAt": 18
+    },
+    "estimatorUpstreamReads": 52,
+    "privateIngress": 0,
+    "privateEgress": 0
+  },
+  "fixtureStopped": true
+}

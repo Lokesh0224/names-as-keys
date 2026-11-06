@@ -1,0 +1,442 @@
+TAP version 13
+# Subtest: shipped adapter refuses every write, signature and permission prompt
+ok 1 - shipped adapter refuses every write, signature and permission prompt
+  ---
+  duration_ms: 22.677556
+  type: 'test'
+  ...
+# Subtest: execution defaults disabled even with fake provider
+ok 2 - execution defaults disabled even with fake provider
+  ---
+  duration_ms: 3.375293
+  type: 'test'
+  ...
+# Subtest: review displays account chain ABI types amount value nonce and fee limits
+ok 3 - review displays account chain ABI types amount value nonce and fee limits
+  ---
+  duration_ms: 5.71205
+  type: 'test'
+  ...
+# Subtest: correct lifecycle verifies raw receipt logs and state before advancing
+ok 4 - correct lifecycle verifies raw receipt logs and state before advancing
+  ---
+  duration_ms: 10.834631
+  type: 'test'
+  ...
+# Subtest: wrong network blocks before any request
+ok 5 - wrong network blocks before any request
+  ---
+  duration_ms: 0.878689
+  type: 'test'
+  ...
+# Subtest: wrong account blocks before any request
+ok 6 - wrong account blocks before any request
+  ---
+  duration_ms: 0.736567
+  type: 'test'
+  ...
+# Subtest: ENS read failure blocks before any request
+ok 7 - ENS read failure blocks before any request
+  ---
+  duration_ms: 1.544578
+  type: 'test'
+  ...
+# Subtest: runtime changed blocks before any request
+ok 8 - runtime changed blocks before any request
+  ---
+  duration_ms: 1.910538
+  type: 'test'
+  ...
+# Subtest: nonce churn blocks before any request
+ok 9 - nonce churn blocks before any request
+  ---
+  duration_ms: 1.830346
+  type: 'test'
+  ...
+# Subtest: stale header blocks before any request
+ok 10 - stale header blocks before any request
+  ---
+  duration_ms: 2.307327
+  type: 'test'
+  ...
+# Subtest: null inputs, bad calldata and wrong destination fail closed
+ok 11 - null inputs, bad calldata and wrong destination fail closed
+  ---
+  duration_ms: 2.726946
+  type: 'test'
+  ...
+# Subtest: unresolved prerequisite gate blocks
+ok 12 - unresolved prerequisite gate blocks
+  ---
+  duration_ms: 0.674544
+  type: 'test'
+  ...
+# Subtest: calldata cannot be swapped after frozen packet policy
+ok 13 - calldata cannot be swapped after frozen packet policy
+  ---
+  duration_ms: 1.683412
+  type: 'test'
+  ...
+# Subtest: fee and total budget ceilings block
+ok 14 - fee and total budget ceilings block
+  ---
+  duration_ms: 3.220514
+  type: 'test'
+  ...
+# Subtest: account change between review and submit invalidates acknowledgement
+ok 15 - account change between review and submit invalidates acknowledgement
+  ---
+  duration_ms: 1.396406
+  type: 'test'
+  ...
+# Subtest: provider changes without an event are detected in fresh preflight
+ok 16 - provider changes without an event are detected in fresh preflight
+  ---
+  duration_ms: 1.435152
+  type: 'test'
+  ...
+# Subtest: async preflight chain changes invalidate result
+ok 17 - async preflight chain changes invalidate result
+  ---
+  duration_ms: 1.480978
+  type: 'test'
+  ...
+# Subtest: explicit exact displayed review required
+ok 18 - explicit exact displayed review required
+  ---
+  duration_ms: 1.539746
+  type: 'test'
+  ...
+# Subtest: rejected requests remain recorded and never automatically retry
+ok 19 - rejected requests remain recorded and never automatically retry
+  ---
+  duration_ms: 2.591483
+  type: 'test'
+  ...
+# Subtest: unknown send error locks nonce as uncertain
+ok 20 - unknown send error locks nonce as uncertain
+  ---
+  duration_ms: 3.598044
+  type: 'test'
+  ...
+# Subtest: storage failure before request prevents provider submission
+ok 21 - storage failure before request prevents provider submission
+  ---
+  duration_ms: 2.280471
+  type: 'test'
+  ...
+# Subtest: pending timeout and duplicate submission never resend
+ok 22 - pending timeout and duplicate submission never resend
+  ---
+  duration_ms: 2.178718
+  type: 'test'
+  ...
+# Subtest: failed receipt is not confirmed
+ok 23 - failed receipt is not confirmed
+  ---
+  duration_ms: 2.410075
+  type: 'test'
+  ...
+# Subtest: wrong emitter blocks confirmation
+ok 24 - wrong emitter blocks confirmation
+  ---
+  duration_ms: 2.544818
+  type: 'test'
+  ...
+# Subtest: wrong event value blocks confirmation
+ok 25 - wrong event value blocks confirmation
+  ---
+  duration_ms: 2.713877
+  type: 'test'
+  ...
+# Subtest: unexpected extra log blocks confirmation
+ok 26 - unexpected extra log blocks confirmation
+  ---
+  duration_ms: 3.075224
+  type: 'test'
+  ...
+# Subtest: reorged receipt blocks confirmation
+ok 27 - reorged receipt blocks confirmation
+  ---
+  duration_ms: 2.643202
+  type: 'test'
+  ...
+# Subtest: wrong receipt sender blocks confirmation
+ok 28 - wrong receipt sender blocks confirmation
+  ---
+  duration_ms: 2.240352
+  type: 'test'
+  ...
+# Subtest: fee charged over cap blocks confirmation
+ok 29 - fee charged over cap blocks confirmation
+  ---
+  duration_ms: 2.188821
+  type: 'test'
+  ...
+# Subtest: missing receipt gas quantity blocks confirmation
+ok 30 - missing receipt gas quantity blocks confirmation
+  ---
+  duration_ms: 2.146747
+  type: 'test'
+  ...
+# Subtest: post-state changes block confirmation
+ok 31 - post-state changes block confirmation
+  ---
+  duration_ms: 3.17041
+  type: 'test'
+  ...
+# Subtest: insufficient latest confirmations remain pending
+ok 32 - insufficient latest confirmations remain pending
+  ---
+  duration_ms: 2.162147
+  type: 'test'
+  ...
+# Subtest: reorg of previously confirmed ancestor blocks successor
+ok 33 - reorg of previously confirmed ancestor blocks successor
+  ---
+  duration_ms: 3.659694
+  type: 'test'
+  ...
+# Subtest: reload never trusts previously confirmed journal state
+ok 34 - reload never trusts previously confirmed journal state
+  ---
+  duration_ms: 3.232746
+  type: 'test'
+  ...
+# Subtest: hash returned after chain change still retained as pending evidence
+ok 35 - hash returned after chain change still retained as pending evidence
+  ---
+  duration_ms: 1.894246
+  type: 'test'
+  ...
+# Subtest: replacement same frozen intent is reconciled without another request
+ok 36 - replacement same frozen intent is reconciled without another request
+  ---
+  duration_ms: 3.584208
+  type: 'test'
+  ...
+# Subtest: changed-intent or over-ceiling replacement is blocked
+ok 37 - changed-intent or over-ceiling replacement is blocked
+  ---
+  duration_ms: 2.222276
+  type: 'test'
+  ...
+# Subtest: verified mined cancellation recorded, no automatic resend
+ok 38 - verified mined cancellation recorded, no automatic resend
+  ---
+  duration_ms: 2.152749
+  type: 'test'
+  ...
+# Subtest: review and recovery journal do not disclose private registration preimage
+ok 39 - review and recovery journal do not disclose private registration preimage
+  ---
+  duration_ms: 2.194297
+  type: 'test'
+  ...
+# Subtest: live adapter submission seam stays disabled even with a forged GO flag
+ok 40 - live adapter submission seam stays disabled even with a forged GO flag
+  ---
+  duration_ms: 0.680754
+  type: 'test'
+  ...
+# Subtest: removed receipt log fails closed
+ok 41 - removed receipt log fails closed
+  ---
+  duration_ms: 2.086931
+  type: 'test'
+  ...
+# Subtest: chain change while verifying receipt cannot confirm
+ok 42 - chain change while verifying receipt cannot confirm
+  ---
+  duration_ms: 2.908011
+  type: 'test'
+  ...
+# Subtest: unresolved expected event blocks preparation, not just later reconciliation
+ok 43 - unresolved expected event blocks preparation, not just later reconciliation
+  ---
+  duration_ms: 0.777491
+  type: 'test'
+  ...
+# Subtest: commitment time window is enforced before request
+ok 44 - commitment time window is enforced before request
+  ---
+  duration_ms: 1.076233
+  type: 'test'
+  ...
+# Subtest: duplicate concurrent requests are refused
+ok 45 - duplicate concurrent requests are refused
+  ---
+  duration_ms: 7.950548
+  type: 'test'
+  ...
+# Subtest: browser journal persists public locks but rejects calldata and raw arguments
+ok 46 - browser journal persists public locks but rejects calldata and raw arguments
+  ---
+  duration_ms: 0.375034
+  type: 'test'
+  ...
+# Subtest: hierarchy builders use the retained deployed ABIs and forbid wrong-owner snapshots
+ok 47 - hierarchy builders use the retained deployed ABIs and forbid wrong-owner snapshots
+  ---
+  duration_ms: 40.668589
+  type: 'test'
+  ...
+# Subtest: direct CREATE review binds sender nonce constructor ABI and predicted address
+ok 48 - direct CREATE review binds sender nonce constructor ABI and predicted address
+  ---
+  duration_ms: 2.231307
+  type: 'test'
+  ...
+# Subtest: unreviewed transaction fields are rejected
+ok 49 - unreviewed transaction fields are rejected
+  ---
+  duration_ms: 0.615439
+  type: 'test'
+  ...
+# Subtest: noncanonical JSON-RPC integer encodings rejected
+ok 50 - noncanonical JSON-RPC integer encodings rejected
+  ---
+  duration_ms: 0.581172
+  type: 'test'
+  ...
+# Subtest: two event values cannot be reordered or duplicated
+ok 51 - two event values cannot be reordered or duplicated
+  ---
+  duration_ms: 1.976316
+  type: 'test'
+  ...
+# Subtest: insufficient ETH and estimate growth block the request
+ok 52 - insufficient ETH and estimate growth block the request
+  ---
+  duration_ms: 2.240685
+  type: 'test'
+  ...
+# Subtest: live submission flag cannot override the compiled disabled policy
+ok 53 - live submission flag cannot override the compiled disabled policy
+  ---
+  duration_ms: 0.465619
+  type: 'test'
+  ...
+# Subtest: token display cannot hide a different decoded amount or spender
+ok 54 - token display cannot hide a different decoded amount or spender
+  ---
+  duration_ms: 2.757416
+  type: 'test'
+  ...
+# Subtest: confirmation depth uses latest111 while finalized100 only covers receipt100
+ok 55 - confirmation depth uses latest111 while finalized100 only covers receipt100
+  ---
+  duration_ms: 3.531108
+  type: 'test'
+  ...
+# Subtest: finalized receipt coverage does not replace sufficient latest confirmations
+ok 56 - finalized receipt coverage does not replace sufficient latest confirmations
+  ---
+  duration_ms: 2.221034
+  type: 'test'
+  ...
+# Subtest: sufficient latest confirmations do not replace finalized receipt coverage
+ok 57 - sufficient latest confirmations do not replace finalized receipt coverage
+  ---
+  duration_ms: 2.015227
+  type: 'test'
+  ...
+# Subtest: valid finalized state cannot hide invalid latest currentPostconditions
+ok 58 - valid finalized state cannot hide invalid latest currentPostconditions
+  ---
+  duration_ms: 2.773466
+  type: 'test'
+  ...
+# Subtest: currentPostconditions use valid latest state, not divergent finalized state
+ok 59 - currentPostconditions use valid latest state, not divergent finalized state
+  ---
+  duration_ms: 2.442932
+  type: 'test'
+  ...
+# Subtest: current state snapshot is identified freshly after historical receipt checks
+ok 60 - current state snapshot is identified freshly after historical receipt checks
+  ---
+  duration_ms: 3.173642
+  type: 'test'
+  ...
+# Subtest: latest state block reorg blocks confirmation even if receipt block is unchanged
+ok 61 - latest state block reorg blocks confirmation even if receipt block is unchanged
+  ---
+  duration_ms: 2.367859
+  type: 'test'
+  ...
+# Subtest: latest head regression during historical verification invalidates confirmation count
+ok 62 - latest head regression during historical verification invalidates confirmation count
+  ---
+  duration_ms: 2.468744
+  type: 'test'
+  ...
+# Subtest: constructor/page-load equivalent never requests accounts
+ok 63 - constructor/page-load equivalent never requests accounts
+  ---
+  duration_ms: 0.236799
+  type: 'test'
+  ...
+# Subtest: no user click or untrusted synthetic DOM click cannot request permission
+ok 64 - no user click or untrusted synthetic DOM click cannot request permission
+  ---
+  duration_ms: 0.263633
+  type: 'test'
+  ...
+# Subtest: provider testOnly claims cannot authorize a synthetic click
+ok 65 - provider testOnly claims cannot authorize a synthetic click
+  ---
+  duration_ms: 0.143766
+  type: 'test'
+  ...
+# Subtest: connection accepts selected owner/Sepolia without signing or sending
+ok 66 - connection accepts selected owner/Sepolia without signing or sending
+  ---
+  duration_ms: 0.287573
+  type: 'test'
+  ...
+# Subtest: wrong selected owner fails connection verification
+ok 67 - wrong selected owner fails connection verification
+  ---
+  duration_ms: 0.124372
+  type: 'test'
+  ...
+# Subtest: wrong network fails without requesting a network switch
+ok 68 - wrong network fails without requesting a network switch
+  ---
+  duration_ms: 0.141563
+  type: 'test'
+  ...
+# Subtest: permission rejection is recorded without retry
+ok 69 - permission rejection is recorded without retry
+  ---
+  duration_ms: 0.094281
+  type: 'test'
+  ...
+# Subtest: context changes invalidate previously verified connection without more RPC
+ok 70 - context changes invalidate previously verified connection without more RPC
+  ---
+  duration_ms: 0.219591
+  type: 'test'
+  ...
+# Subtest: chain change during identity reads cannot verify stale context
+ok 71 - chain change during identity reads cannot verify stale context
+  ---
+  duration_ms: 0.168676
+  type: 'test'
+  ...
+# Subtest: concurrent connect clicks produce one permission request
+ok 72 - concurrent connect clicks produce one permission request
+  ---
+  duration_ms: 0.236688
+  type: 'test'
+  ...
+1..72
+# tests 72
+# suites 0
+# pass 72
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 219.917735

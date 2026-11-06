@@ -1,0 +1,14 @@
+{
+  "classification": "OWNER_REPORTED_CONNECTION_ONLY_NOT_INDEPENDENTLY_OBSERVED",
+  "recordedDate": "2026-11-06",
+  "testTimestamp": "NOT_SUPPLIED",
+  "owner": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+  "ownerMatched": true,
+  "chainId": 11155111,
+  "execution": "DISABLED",
+  "walletControlProof": "NO_SIGNATURE_REQUESTED",
+  "source": "Owner report in this chat; no extension telemetry or signed challenge supplied",
+  "signingControlProven": false,
+  "liveExecutionAllowed": false,
+  "stage3F": "NO_GO"
+}

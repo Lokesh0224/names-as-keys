@@ -1,0 +1,160 @@
+{
+  "classification": "PUBLIC_READ_ONLY_CANDIDATE_SNAPSHOT_NOT_EXECUTION_AUTHORIZATION",
+  "block": "0xb838f7",
+  "blockNumber": "12073207",
+  "blockHash": "0x9b3982ff5b8e962aaa1e658583dc3f33e7e0e997be3228fd4fe7a331189ecf07",
+  "timestamp": "0x6aed2804",
+  "observedUTC": "2026-11-06T01:12:49.882Z",
+  "root": "nak-lokesh-20261105.eth",
+  "available": true,
+  "state": [
+    "0",
+    "0",
+    "0x0000000000000000000000000000000000000000",
+    "80528888745245994281891050364927917536355893854608130930097487246952469889024",
+    "80528888745245994281891050364927917536355893854608130930097487246952469889025"
+  ],
+  "priceUnits": "8000021",
+  "baseUnits": "8000021",
+  "premiumUnits": "0",
+  "tokenBalanceUnits": "0",
+  "allowanceUnits": "0",
+  "nonce": "0x32",
+  "pendingNonce": "0x32",
+  "nonceStableAtObservation": true,
+  "accounts": {
+    "owner": {
+      "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+      "code": "0x",
+      "balanceWei": "0xc4b4334f8400dec"
+    },
+    "mira": {
+      "address": "0x5a9191871b9117218F83Ed43293E011667053F39",
+      "code": "0x",
+      "balanceWei": "0x1fdccda0a4f168"
+    }
+  },
+  "upstream": {
+    "RootRegistry": {
+      "address": "0xb458d6a3a77919449d03e7a6903c26827c1ec43f",
+      "codeHash": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98",
+      "nonempty": true
+    },
+    "ETHRegistry": {
+      "address": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+      "codeHash": "0xddb7698fc2857f7a9e726491025fead241791f113a19714149db8cbf87688e98",
+      "nonempty": true
+    },
+    "ETHRegistrar": {
+      "address": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+      "codeHash": "0xb025a7edb8e81862c2d28857211a7a91c1fb2b17c5bcf28b983987067f083c2a",
+      "nonempty": true
+    },
+    "VerifiableFactory": {
+      "address": "0xda70306c98e97ece36f997a21368e53298572991",
+      "codeHash": "0x141dc0d5ee8c60ae9b9cce12c870d3babc28719602238ee0f77016a9f1916265",
+      "nonempty": true
+    },
+    "UserRegistryImpl": {
+      "address": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+      "codeHash": "0xed6d71bc90b0882fa63ef78a8dddabff2730b4c1cab9eab2ad91fa2aacd269f7",
+      "nonempty": true
+    },
+    "MockUSDC": {
+      "address": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+      "codeHash": "0xa9a4749f886f5035336f6e16dce5ca6f339ae73f76e94ad4b8f46a447dc335f3",
+      "nonempty": true
+    }
+  },
+  "predictions": {
+    "R1": "0x9EeE3b2A2C47C458BCEfb475679330fC1C76bD4C",
+    "R2": "0x5D86d3AF67103091e3Ba85A77405c1074D394849",
+    "CredentialRegistrar": "0x4F5F652308F19386cEC8876f9B3F34385C5724A2",
+    "DoorKeys": "0x93ac7E046AcdE7BBFb3F5086775bcA5032c6c7e6"
+  },
+  "predictedRegistryCode": {
+    "R1": "0x",
+    "R2": "0x"
+  },
+  "sequence": [
+    {
+      "id": "T01",
+      "included": true,
+      "nonce": "0x32"
+    },
+    {
+      "id": "T02",
+      "included": true,
+      "nonce": "0x33"
+    },
+    {
+      "id": "T03",
+      "included": true,
+      "nonce": "0x34"
+    },
+    {
+      "id": "T04",
+      "included": true,
+      "nonce": "0x35"
+    },
+    {
+      "id": "T05",
+      "included": true,
+      "nonce": "0x36"
+    },
+    {
+      "id": "T06",
+      "included": true,
+      "nonce": "0x37"
+    },
+    {
+      "id": "T07",
+      "included": true,
+      "nonce": "0x38"
+    },
+    {
+      "id": "T08",
+      "included": true,
+      "nonce": "0x39"
+    },
+    {
+      "id": "T09",
+      "included": true,
+      "nonce": "0x3a"
+    },
+    {
+      "id": "T10",
+      "included": true,
+      "nonce": "0x3b"
+    },
+    {
+      "id": "T11",
+      "included": true,
+      "nonce": "0x3c"
+    },
+    {
+      "id": "T12",
+      "included": true,
+      "nonce": "0x3d"
+    },
+    {
+      "id": "T13",
+      "included": true,
+      "nonce": "0x3e"
+    },
+    {
+      "id": "T14",
+      "included": true,
+      "nonce": "0x3f"
+    },
+    {
+      "id": "T15",
+      "included": true,
+      "nonce": "0x40"
+    }
+  ],
+  "includeMint": true,
+  "includeApprove": true,
+  "directCreateCondition": "Exact starting nonce/prefix, no extra owner transactions, no replacement/cancellation changes; actual receipts must confirm every address",
+  "stage3F": "NO_GO"
+}

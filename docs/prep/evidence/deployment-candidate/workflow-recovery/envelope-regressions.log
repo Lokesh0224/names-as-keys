@@ -1,0 +1,124 @@
+TAP version 13
+# Subtest: T01 partial token balance is the exact deficit in every display and calldata representation
+ok 1 - T01 partial token balance is the exact deficit in every display and calldata representation
+  ---
+  duration_ms: 17.996024
+  type: 'test'
+  ...
+# Subtest: candidate preparation rejects nonce disagreement even if the recorded stability boolean lies
+ok 2 - candidate preparation rejects nonce disagreement even if the recorded stability boolean lies
+  ---
+  duration_ms: 0.470754
+  type: 'test'
+  ...
+# Subtest: old fork snapshot is explicitly not usable as a fresh live review
+ok 3 - old fork snapshot is explicitly not usable as a fresh live review
+  ---
+  duration_ms: 8.41533
+  type: 'test'
+  ...
+# Subtest: freshness uses approved block and second limits including stricter custom values
+ok 4 - freshness uses approved block and second limits including stricter custom values
+  ---
+  duration_ms: 0.370985
+  type: 'test'
+  ...
+# Subtest: guest margin enforces configured600 seconds, and a changed approved margin is honored
+ok 5 - guest margin enforces configured600 seconds, and a changed approved margin is honored
+  ---
+  duration_ms: 0.309811
+  type: 'test'
+  ...
+# Subtest: gas multiplier comes from approved configuration rather than a hardcoded120 percent
+ok 6 - gas multiplier comes from approved configuration rather than a hardcoded120 percent
+  ---
+  duration_ms: 0.212363
+  type: 'test'
+  ...
+# Subtest: security policy agrees with source and rejects a broadened owner grant
+ok 7 - security policy agrees with source and rejects a broadened owner grant
+  ---
+  duration_ms: 5.804186
+  type: 'test'
+  ...
+# Subtest: plan comparison rejects inclusion, nonce, destination and value drift
+ok 8 - plan comparison rejects inclusion, nonce, destination and value drift
+  ---
+  duration_ms: 5.425525
+  type: 'test'
+  ...
+# Subtest: a consistently re-encoded but different amount cannot pass a frozen plan
+ok 9 - a consistently re-encoded but different amount cannot pass a frozen plan
+  ---
+  duration_ms: 6.720715
+  type: 'test'
+  ...
+# Subtest: deferred input requires the exact allowed fork provenance and exports no private value
+ok 10 - deferred input requires the exact allowed fork provenance and exports no private value
+  ---
+  duration_ms: 6.609099
+  type: 'test'
+  ...
+# Subtest: all mined envelope fields are checked against submitted values
+ok 11 - all mined envelope fields are checked against submitted values
+  ---
+  duration_ms: 0.339775
+  type: 'test'
+  ...
+# Subtest: mined to mutation fails closed
+ok 12 - mined to mutation fails closed
+  ---
+  duration_ms: 0.114844
+  type: 'test'
+  ...
+# Subtest: mined value mutation fails closed
+ok 13 - mined value mutation fails closed
+  ---
+  duration_ms: 0.056478
+  type: 'test'
+  ...
+# Subtest: mined chainId mutation fails closed
+ok 14 - mined chainId mutation fails closed
+  ---
+  duration_ms: 0.044553
+  type: 'test'
+  ...
+# Subtest: mined gas mutation fails closed
+ok 15 - mined gas mutation fails closed
+  ---
+  duration_ms: 0.04145
+  type: 'test'
+  ...
+# Subtest: mined maxFeePerGas mutation fails closed
+ok 16 - mined maxFeePerGas mutation fails closed
+  ---
+  duration_ms: 0.0401
+  type: 'test'
+  ...
+# Subtest: mined maxPriorityFeePerGas mutation fails closed
+ok 17 - mined maxPriorityFeePerGas mutation fails closed
+  ---
+  duration_ms: 0.041704
+  type: 'test'
+  ...
+# Subtest: plan signer and owner must independently match transaction sender
+ok 18 - plan signer and owner must independently match transaction sender
+  ---
+  duration_ms: 6.193494
+  type: 'test'
+  ...
+# Subtest: CREATE prediction and mined creation address are bound to the plan
+ok 19 - CREATE prediction and mined creation address are bound to the plan
+  ---
+  duration_ms: 8.642414
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 74.478693

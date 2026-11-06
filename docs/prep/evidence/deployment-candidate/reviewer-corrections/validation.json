@@ -1,0 +1,22 @@
+{
+  "gitDiffCheck": 0,
+  "untrackedWhitespaceFindings": [],
+  "secretPatternFindings": [],
+  "secretScanScope": "untracked UTF-8 files; private-key headers and credential-bearing URLs; pattern scan is not proof of absence",
+  "productionContractDiffEmpty": true,
+  "indexEmpty": true,
+  "focusedChangedFiles": [
+    "contracts/scripts/deployment_candidate/common.mjs",
+    "contracts/scripts/deployment_candidate/prepare.mjs",
+    "contracts/scripts/deployment_candidate/derive.mjs",
+    "contracts/scripts/deployment_candidate/simulate.mjs",
+    "contracts/scripts/deployment_workflow/connection.mjs",
+    "contracts/scripts/deployment_workflow/test/connection.test.mjs",
+    "docs/prep/deployment-candidate/review-plan.json",
+    "docs/prep/deployment-candidate/CANDIDATE_REPORT.md",
+    "contracts/scripts/deployment_candidate/validation.mjs",
+    "contracts/scripts/deployment_candidate/security_policy.mjs",
+    "contracts/scripts/deployment_candidate/review_regressions.mjs"
+  ],
+  "untrackedFileCount": 72
+}
