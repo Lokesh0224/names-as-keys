@@ -6,22 +6,6 @@ const show = (id, value) => {
   element(id).textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
 };
 
-// Read native event fields so a direct handler call cannot supply its own values.
-const eventPrototype = Event.prototype;
-const eventType = Object.getOwnPropertyDescriptor(eventPrototype, 'type').get;
-const eventCurrentTarget = Object.getOwnPropertyDescriptor(eventPrototype, 'currentTarget').get;
-const eventIsTrusted = (Object.getOwnPropertyDescriptor(new Event('click'), 'isTrusted') ??
-  Object.getOwnPropertyDescriptor(eventPrototype, 'isTrusted')).get;
-
-function isConfirmationClick(event, button) {
-  try {
-    return eventType.call(event) === 'click' && eventCurrentTarget.call(event) === button &&
-      eventIsTrusted.call(event) === true;
-  } catch {
-    return false;
-  }
-}
-
 async function load() {
   const response = await fetch('./candidate-bundle.json');
   if (!response.ok) throw new Error('Candidate bundle unavailable');
@@ -35,29 +19,55 @@ async function load() {
     option.textContent = step.id + ' — ' + step.label + (step.conditionallyIncluded ? '' : ' (excluded)');
     element('step').append(option);
   }
+  show('steps', plan.transactions.map(step => step.id + ' · ' + step.label).join('\n'));
   if (!window.ethereum?.isMetaMask) {
     show('status', 'MetaMask provider unavailable.');
     return;
   }
   let displayed;
+  function dashboard() {
+    const journal = candidate.journal();
+    const ready = plan.transactions.find(step => step.conditionallyIncluded && journal.entries[step.id]?.status !== 'CONFIRMED');
+    show('steps', plan.transactions.map(step => {
+      const entry = journal.entries[step.id];
+      return [step.id, step.label, !step.conditionallyIncluded ? 'EXCLUDED' : entry?.status ??
+        (step === ready ? 'READY FOR CHECKS' : 'BLOCKED'), step === ready ? '← next' : '',
+        entry?.bindings?.address ?? ''].filter(Boolean).join(' · ');
+    }).join('\n'));
+    show('journal', journal);
+  }
+  function confirmationLabel() {
+    if (!displayed) return;
+    element('t01-validate').textContent = (candidate.canSubmit(displayed) ? 'Request ' + displayed.step + ' in MetaMask' :
+      'Revalidate ' + displayed.step + ' confirmation');
+  }
   function resetConfirmation() {
     element('t01-confirmation').hidden = true;
     element('t01-confirmed').checked = false;
     element('t01-validate').disabled = true;
   }
-  const candidate = new CandidateReview({ provider: window.ethereum, bundle, storage: localStorage, privateEstimate: privateEstimator(window.location), update: () => {
+  const candidate = new CandidateReview({ provider: window.ethereum, bundle, storage: localStorage, privateEstimate: privateEstimator(window.location), update: kind => {
+    if (kind === 'REQUESTING') {
+      show('status', 'Waiting for the owner to respond in MetaMask…');
+      dashboard();
+      return;
+    }
     displayed = undefined;
     resetConfirmation();
     show('review', 'Wallet context changed. Prepare a new review.');
-    show('journal', candidate.journal());
+    dashboard();
   } });
   function selected() {
     displayed = undefined;
     resetConfirmation();
     const step = plan.transactions.find(s => s.id === element('step').value);
-    show('review', { step: step.id, reviewedArguments: step.arguments, deferred: step.remainingBindings, execution: 'DISABLED' });
+    element('hash').value = candidate.journal().entries[step.id]?.receiptHash ?? '';
+    show('review', { step: step.id, reviewedArguments: step.arguments, deferred: step.remainingBindings,
+      prerequisiteReceipts: plan.transactions.slice(0, plan.transactions.indexOf(step))
+        .filter(prior => prior.conditionallyIncluded).map(prior => prior.id), execution: 'DISABLED' });
   }
   async function action(fn) {
+    element('step').disabled = true;
     element('prepare').disabled = true;
     element('receipt').disabled = true;
     element('t01-validate').disabled = true;
@@ -67,10 +77,17 @@ async function load() {
       show('status', error instanceof Error && !('code' in error) && !/0x[\da-f]{64}/i.test(error.message)
         ? error.message : 'Review blocked by provider or prerequisite checks.');
     } finally {
+      element('step').disabled = false;
       element('prepare').disabled = false;
       element('receipt').disabled = false;
-      element('t01-validate').disabled = displayed?.step !== 'T01' || !element('t01-confirmed').checked;
-      show('journal', candidate.journal());
+      element('t01-validate').disabled = !displayed || !element('t01-confirmed').checked;
+      const current = candidate.journal().entries[displayed?.step];
+      if (current && current.status !== 'PREPARED') {
+        element('hash').value = current.receiptHash ?? '';
+        displayed = undefined;
+        resetConfirmation();
+      } else confirmationLabel();
+      dashboard();
     }
   }
   element('step').onchange = selected;
@@ -83,32 +100,37 @@ async function load() {
     if (step === element('step').value) {
       displayed = review;
       show('review', displayed);
-      element('t01-confirmation').hidden = step !== 'T01';
-      const canSubmit = candidate.canSubmitT01(review);
-      element('t01-validate').textContent = canSubmit ? 'Request T01 in MetaMask' : 'Revalidate T01 confirmation';
-      show('status', canSubmit ? 'Exact T01 authorization matched. Confirm the envelope before requesting MetaMask.' :
+      element('t01-confirmation').hidden = false;
+      await candidate.refreshAuthorization();
+      confirmationLabel();
+      show('status', step === 'T04' ? 'T04 unsigned review only. Wallet execution is blocked pending reveal privacy verification.' :
+        candidate.canSubmit(displayed) ? 'Exact ' + step + ' authorization matched. Confirm the envelope before requesting MetaMask.' :
         'Unsigned review prepared. Execution disabled.');
     }
   });
   element('t01-confirmed').onchange = () => {
-    element('t01-validate').disabled = displayed?.step !== 'T01' || !element('t01-confirmed').checked;
+    element('t01-validate').disabled = !displayed || !element('t01-confirmed').checked;
   };
   element('t01-validate').onclick = event => action(async () => {
     const confirmation = element('t01-confirmed').checked;
     element('t01-confirmed').checked = false;
     const review = displayed;
-    if (candidate.canSubmitT01(review)) {
-      if (!isConfirmationClick(event, element('t01-validate'))) throw new Error('Use the T01 confirmation button directly');
-      const hash = await candidate.submitT01(review, confirmation, event);
+    if (candidate.canSubmit(review)) {
+      const hash = await candidate.submitStep(review, confirmation, event);
       element('hash').value = hash;
       displayed = undefined;
       resetConfirmation();
-      show('status', 'T01 pending. Verify the returned hash in Receipt review.');
+      show('status', review.step + ' pending. Verify the returned hash in Receipt review.');
       return;
     }
-    const result = await candidate.validateT01Confirmation(review, confirmation);
+    const result = await candidate.validateConfirmation(review, confirmation);
+    await candidate.refreshAuthorization();
+    confirmationLabel();
     if (displayed === review) {
-      show('status', 'T01 confirmation revalidated. Separate execution authorization required. Execution disabled.');
+      show('status', review.step === 'T04' ? 'T04 confirmation revalidated. Wallet execution remains blocked.' :
+        candidate.canSubmit(review)
+        ? 'Exact authorization matched. Confirm again to request this step in MetaMask.'
+        : review.step + ' confirmation revalidated. Separate execution authorization required. Execution disabled.');
       show('review', { ...review, confirmation: result });
     }
   });
@@ -120,7 +142,7 @@ async function load() {
   });
   window.addEventListener('pagehide', () => candidate.close(), { once: true });
   show('status', 'Uses existing account access only. Select the approved owner and Sepolia in MetaMask.');
-  show('journal', candidate.journal());
+  dashboard();
   selected();
   element('prepare').disabled = false;
   element('receipt').disabled = false;

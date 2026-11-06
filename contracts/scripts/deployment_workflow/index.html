@@ -8,19 +8,23 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body><main>
-  <h1>Unsigned deployment review</h1>
-  <p class="warning">Stage 3F NO-GO · Execution disabled</p>
+  <h1>Sequential Sepolia deployment review</h1>
+  <p class="warning">Stage 3F defaults to NO-GO · Each request requires exact step authorization and owner confirmation</p>
   <pre id="identity">Loading reviewed candidate…</pre>
   <p id="status" role="status">Loading…</p>
+  <section>
+    <h2>Deployment steps</h2>
+    <pre id="steps"></pre>
+  </section>
   <section>
     <h2>Current step</h2>
     <label>Step <select id="step"></select></label>
     <button id="prepare" disabled>Prepare unsigned review</button>
     <pre id="review"></pre>
     <fieldset id="t01-confirmation" hidden>
-      <legend>T01 unsigned handoff</legend>
-      <label><input id="t01-confirmed" type="checkbox"> I confirm the displayed recipient, destination, mint of 8.000021 MockUSDC and maximum network fee (reservedWei).</label>
-      <button id="t01-validate" type="button" disabled>Revalidate T01 confirmation</button>
+      <legend>Per-step owner confirmation</legend>
+      <label><input id="t01-confirmed" type="checkbox"> I confirm this step’s displayed sender, destination or CREATE address, arguments, nonce, gas and maximum network fee (reservedWei).</label>
+      <button id="t01-validate" type="button" disabled>Revalidate confirmation</button>
     </fieldset>
   </section>
   <section>
