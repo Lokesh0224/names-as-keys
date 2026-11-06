@@ -717,3 +717,55 @@ test('durable T01 intent requires fresh local confirmation and permits one reque
   await assert.rejects(reload.prepare('T01'), /Prior T01 attempt/);
   assert.equal(sends, 1);
 });
+
+for (const { change, expectedError } of [
+  { change: 'head advances', expectedError: /Review snapshot expired/ },
+  { change: 'anchor reorgs', expectedError: /Review block lost canonicality/ },
+]) {
+  test('T01 blocks wallet handoff when the ' + change + ' during final account verification', async t => {
+    const f = fixture();
+    const draft = open(f);
+    const initial = await draft.prepare('T01');
+    const { intentDigest } = await draft.validateT01Confirmation(initial, true);
+    draft.close();
+
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async () => ({ ok: true, json: async () => ({
+      stage: 'GO', step: 'T01', kind: 'T01_INTENT_V1', intentDigest,
+    }) });
+    t.after(() => { globalThis.fetch = originalFetch; });
+    const { CandidateReview: ActiveCandidate } = await activatedBuild();
+    const active = new ActiveCandidate({ provider: f.provider, bundle: f.data, storage: f.storage, now: f.now,
+      locks: { request: (_key, _options, callback) => callback({}) } });
+    t.after(() => active.close());
+    await active.refreshAuthorization();
+    const review = await active.prepare('T01');
+    await active.validateT01Confirmation(review, true);
+    assert.equal(review.snapshot.number, '0x64');
+    assert.equal(active.canSubmit(review), true);
+
+    let head = '0x66', anchorHash = block.hash, accountReads = 0, sends = 0;
+    const request = f.provider.request.bind(f.provider);
+    f.provider.request = async input => {
+      if (input.method === 'eth_getBlockByNumber') {
+        if (input.params[0] === 'latest') return { ...block, number: head };
+        if (input.params[0] === block.number) return { ...block, hash: anchorHash };
+      }
+      if (input.method === 'eth_accounts' && ++accountReads === 3) {
+        await Promise.resolve();
+        if (change === 'head advances') head = '0x67';
+        else anchorHash = txHash;
+      }
+      if (input.method === 'eth_sendTransaction') {
+        sends++;
+        return txHash;
+      }
+      return request(input);
+    };
+    await assert.rejects(active.submitT01(review, true), expectedError);
+    assert.equal(accountReads, 3);
+    assert.equal(sends, 0);
+    assert.equal(active.journal().entries.T01.status, 'PREPARED');
+    assert.equal([...f.records.keys()].some(key => key.startsWith('nak-t01-attempt:')), false);
+  });
+}

@@ -160,7 +160,7 @@ export class CandidateReview {
       await this.#verify(prior.id, receiptHash);
     }
   }
-  async #fresh(header, epoch) {
+  async #checkSnapshotFreshness(header, epoch) {
     const { expiry } = this.bundle.inputs;
     const [latest, canonical] = await Promise.all([
       this.read('eth_getBlockByNumber', ['latest', false]),
@@ -170,9 +170,12 @@ export class CandidateReview {
     const lag = BigInt(latest.number) - BigInt(header.number);
     const age = this.now() / 1000 - Number(BigInt(header.timestamp));
     need(lag >= 0n && lag <= BigInt(expiry.maxAgeBlocks) && age >= -15 && age <= expiry.maxAgeSeconds, 'Review snapshot expired');
-    await this.identity();
     need(epoch === this.#epoch, 'Wallet context changed');
     return latest;
+  }
+  async #fresh(header, epoch) {
+    await this.identity();
+    return this.#checkSnapshotFreshness(header, epoch);
   }
   async prepare(stepId) {
     this.#validatedIntentReview = undefined;
@@ -257,13 +260,16 @@ export class CandidateReview {
       stepId === 'T08' || stepId === 'T15' ? packet.arguments.at(-1) : undefined, review.snapshot);
     need(digest(fresh.packet) === saved.packetDigest && fresh.review.estimate === review.estimate,
       stepId + ' state, estimate or fee changed. Prepare a new review.');
-    const [latest, latestNonce, pendingNonce] = await Promise.all([
-      this.#fresh(review.snapshot, epoch),
+    const [, latestNonce, pendingNonce] = await Promise.all([
+      this.identity(),
       this.read('eth_getTransactionCount', [this.owner, 'latest']),
       this.read('eth_getTransactionCount', [this.owner, 'pending']),
     ]);
     need(epoch === this.#epoch && [latestNonce, pendingNonce].every(n => BigInt(n) === BigInt(packet.tx.nonce)),
       'Wallet context or owner nonce changed during confirmation');
+    // Finish wallet and nonce reads before the last chain snapshot check.
+    // Submission persists the attempt and calls the wallet without another RPC read.
+    const latest = await this.#checkSnapshotFreshness(review.snapshot, epoch);
     need(BigInt(packet.tx.maxFeePerGas) >= BigInt(latest.baseFeePerGas) + BigInt(packet.tx.maxPriorityFeePerGas),
       'Base fee moved outside reviewed envelope');
     return { saved, packet };
