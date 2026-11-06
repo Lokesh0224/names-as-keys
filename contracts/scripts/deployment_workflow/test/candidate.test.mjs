@@ -491,3 +491,129 @@ test('a lost registration record blocks a new commitment across candidate keys w
   assert.equal(f.calls.some(call => call.method === 'eth_estimateGas'), false);
   reloaded.close();
 });
+
+test('generic T02 runner binds exact approval, rechecks T01 and recovers a reverted request', async t => {
+  const f = fixture();
+  const draft = open(f);
+  await assert.rejects(draft.prepare('T15'), /Verified prerequisite receipt required: T01/);
+  await draft.prepare('T01');
+  f.confirm('0x65');
+  const initialRequest = f.provider.request.bind(f.provider);
+  f.provider.request = async input => input.method === 'eth_getBlockByNumber' &&
+    ['0x65', 'finalized'].includes(input.params[0]) ? { ...block, number: '0x65' } : initialRequest(input);
+  await draft.reconcile('T01', txHash);
+  f.setNonce('0x33');
+  const unsigned = await draft.prepare('T02');
+  const { planDigest, packetDigest } = await draft.validateConfirmation(unsigned, true);
+  draft.close();
+
+  const originalRequest = f.provider.request.bind(f.provider);
+  f.provider.request = async input => input.method === 'eth_getTransactionCount' && input.params[1] === block.number
+    ? '0x32' : originalRequest(input);
+
+  const auth = { stage: 'GO', step: 'T02', planDigest, packetDigest };
+  let served = { ...auth, planDigest: txHash };
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async path => {
+    assert.equal(path, '/step-authorization.json');
+    return { ok: true, json: async () => served };
+  };
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const { CandidateReview: ActiveCandidate } = await activatedBuild();
+  const args = { provider: f.provider, bundle: f.data, storage: f.storage, now: f.now,
+    locks: { request: (_key, _options, callback) => callback({}) } };
+  const active = new ActiveCandidate(args);
+  const review = await active.prepare('T02');
+  await active.refreshAuthorization();
+  await assert.rejects(active.submitStep(review, true), /authorization missing/);
+  served = { ...auth, step: 'T03' };
+  await active.refreshAuthorization();
+  assert.equal(active.canSubmit(review), false);
+  served = { ...auth, packetDigest: txHash };
+  await active.refreshAuthorization();
+  assert.equal(active.canSubmit(review), false);
+  served = auth;
+  await active.refreshAuthorization();
+  assert.equal(active.canSubmit(review), true);
+
+  const nextHash = '0x' + '34'.repeat(32);
+  let sends = 0, priorMissing = false, reverted = false;
+  const request = f.provider.request.bind(f.provider);
+  f.provider.request = async input => {
+    const { method, params } = input;
+    if (method === 'eth_sendTransaction') {
+      sends++;
+      assert.deepEqual(params, [review.unsignedTransaction]);
+      const attempt = [...f.records].find(([key]) => key.startsWith('nak-t02-attempt:'));
+      assert.equal(JSON.parse(attempt[1]).status, 'REQUESTING');
+      return nextHash;
+    }
+    if (method === 'eth_getTransactionReceipt' && params[0] === txHash && priorMissing) return null;
+    if (params?.[0] === nextHash) {
+      if (method === 'eth_getTransactionReceipt') return reverted ? {
+        status: '0x0', transactionHash: nextHash, blockNumber: '0x70', blockHash: block.hash,
+        from: inputs.owner, to: addresses.MockUSDC,
+      } : null;
+      if (method === 'eth_getTransactionByHash') return {
+        ...review.unsignedTransaction, hash: nextHash, blockHash: block.hash, input: review.unsignedTransaction.data,
+      };
+    }
+    return request(input);
+  };
+
+  globalThis.window = {};
+  try {
+    for (const event of [{ isTrusted: true }, new Event('click')]) {
+      await assert.rejects(active.submitStep(review, true, event), /Use the T02 confirmation button directly/);
+    }
+  } finally { delete globalThis.window; }
+  served = null;
+  await assert.rejects(active.submitStep(review, true), /authorization missing/);
+  served = auth;
+  await active.refreshAuthorization();
+  priorMissing = true;
+  await assert.rejects(active.submitStep(review, true), /Receipt pending/);
+  priorMissing = false;
+  assert.equal(sends, 0);
+  const conflictingKey = 'nak-t03-attempt:11155111:' + inputs.owner.toLowerCase();
+  f.records.set(conflictingKey, JSON.stringify({ nonce: review.nonce, status: 'UNCERTAIN' }));
+  await assert.rejects(active.submitStep(review, true), /Owner nonce already has a durable attempt for T03/);
+  f.records.delete(conflictingKey);
+  assert.equal(await active.submitStep(review, true), nextHash);
+  assert.equal(active.journal().entries.T02.status, 'PENDING');
+  active.close();
+
+  // A reload must recover the hash even if only the attempt record was written.
+  const journalKey = 'nak-candidate:' + planDigest;
+  const interrupted = JSON.parse(f.records.get(journalKey));
+  delete interrupted.entries.T02.receiptHash;
+  interrupted.entries.T02.status = 'REQUESTING';
+  f.records.set(journalKey, JSON.stringify(interrupted));
+  const reload = new ActiveCandidate(args);
+  assert.equal(reload.journal().entries.T02.receiptHash, nextHash);
+  await assert.rejects(reload.prepare('T02'), /Prior T02 attempt/);
+  await assert.rejects(reload.prepare('T03'), /Receipt pending/);
+  reverted = true;
+  await assert.rejects(reload.reconcile('T02'), /T02 reverted/);
+  assert.equal(reload.journal().entries.T02.status, 'REVERTED');
+  await assert.rejects(reload.prepare('T03'), /T02 reverted/);
+  assert.equal(sends, 1);
+  reload.close();
+});
+
+test('T04 privacy block applies even in the activated wallet build', async t => {
+  const f = fixture();
+  const { CandidateReview: ActiveCandidate } = await activatedBuild();
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, json: async () => ({
+    stage: 'GO', step: 'T04', planDigest: digest(f.data), packetDigest: txHash,
+  }) });
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const active = new ActiveCandidate({ provider: f.provider, bundle: f.data, storage: f.storage, now: f.now });
+  t.after(() => active.close());
+  await active.refreshAuthorization();
+  assert.equal(active.canSubmit({ step: 'T04' }), false);
+  await assert.rejects(active.submitStep({ step: 'T04' }, true), /T04 execution blocked.*reveal boundary/);
+  assert.deepEqual(f.calls, []);
+  assert.equal(f.records.size, 0);
+});
