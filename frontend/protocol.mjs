@@ -24,4 +24,8 @@ export function describeUnlock(args, at, hash) {
   };
 }
 
+export function doorIsOpen(event, holdMs, now) {
+  return Boolean(event && now < (event.openAt ?? event.at) + holdMs);
+}
+
 export { doorABI, registrarABI };

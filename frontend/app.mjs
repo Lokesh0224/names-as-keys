@@ -1,11 +1,13 @@
+import { requestLiveAction, waitForLiveReceipt } from '/live-wallet.mjs';
 import { ConnectionOnlyMetaMask } from '/connection.mjs';
-import { LABEL, doorInterface, registrarInterface } from '/protocol.mjs';
+import { LABEL, doorInterface, registrarInterface, doorIsOpen } from '/protocol.mjs';
 
 const view = location.pathname === '/guest' ? 'guest' : location.pathname === '/door' ? 'door' : 'owner';
 const content = document.querySelector('#content');
 const announcement = document.querySelector('#announcement');
 let state, account, connector, busy = false, feedback = '', tone = '', offline = false;
 let request = 0;
+let pendingLiveHash;
 let doorOpen = false;
 
 const escape = value => String(value ?? '—').replace(/[&<>"']/g, char => ({
@@ -75,10 +77,11 @@ function ownerView() {
       <li><small>GUEST</small><code>mira.lock.${escape(state.root)}.eth</code></li></ol>
       ${credential()}
       <div class="actions">
-        <button data-action="issue" ${disabled(!demo() || !account || busy || offline || state.status !== 'Unissued')}>Issue 5-minute credential</button>
-        <button class="secondary" data-action="revoke" ${disabled(!demo() || !account || busy || offline || state.status !== 'Active')}>Revoke</button>
+        <button data-action="issue" ${disabled(pendingLiveHash || !account || busy || offline || state.status !== 'Unissued')}>Issue 5-minute credential</button>
+        <button class="secondary" data-action="revoke" ${disabled(pendingLiveHash || !account || busy || offline || state.status !== 'Active')}>Revoke</button>
       </div>
-      ${demo() ? '' : '<p class="muted">Sepolia read-only · wallet writes disabled.</p>'}
+      ${demo() ? '' : `<div class="spread"><span>Credential owner</span><code>${escape(state.credentialOwner)}</code></div>
+      <div class="spread"><span>DoorKeys eligibility</span><strong>${escape(state.eligibility ?? 'Unavailable')}</strong></div>`}
       ${feedbackMarkup()}
     </section>
     <section class="panel"><div class="eyebrow">EVENT FEED</div><h2>Recent activity</h2>${activity()}
@@ -102,8 +105,7 @@ function guestView() {
     ${credential()}
     <div class="spread"><span>Wallet access</span><strong>${escape(account ?
       state.eligibility ?? 'Checking…' : 'Connect to check')}</strong></div>
-    <button class="unlock" data-action="unlock" ${disabled(!account || busy || offline || !demo())}>${busy && tone === 'pending' ? 'Unlocking…' : 'Unlock'}</button>
-    ${demo() ? '' : '<p class="muted">Live unlock transactions are disabled. Wallet eligibility is checked against DoorKeys.</p>'}
+    <button class="unlock" data-action="unlock" ${disabled(pendingLiveHash || !account || busy || offline || (!demo() && state.eligibility !== 'Eligible'))}>${busy && tone === 'pending' ? 'Unlocking…' : 'Unlock'}</button>
     ${feedbackMarkup()}
   </section>`;
 }
@@ -130,7 +132,7 @@ function kiosk() {
 function tick() {
   if (!state) return;
   const latest = state.latest;
-  doorOpen = !offline && !!latest && Date.now() < latest.at + state.holdMs;
+  doorOpen = !offline && doorIsOpen(latest, state.holdMs, Date.now());
   const kioskEl = document.querySelector('#kiosk');
   kioskEl?.classList.toggle('open', doorOpen);
   const status = document.querySelector('[data-door-status]');
@@ -153,11 +155,16 @@ function render() {
   }
   const focused = document.activeElement?.dataset.action;
   const badge = document.querySelector('#mode');
-  badge.textContent = demo() ? 'DEMO MODE' : 'SEPOLIA · READ ONLY';
+  badge.textContent = demo() ? 'DEMO MODE' : 'SEPOLIA';
   badge.classList.toggle('demo', demo());
   const guestLink = document.querySelector('#guest-link');
-  guestLink.href = state.guestPath;
-  guestLink.hidden = false;
+  if (state.guestPath) guestLink.href = state.guestPath;
+  guestLink.hidden = !state.guestPath;
+  if (state.ready === false) {
+    content.setAttribute('aria-busy', 'false');
+    content.innerHTML = `<section class="panel"><h1>Sepolia deployment required</h1><p>${escape(state.prerequisites)}</p></section>`;
+    return;
+  }
   document.querySelector('#' + view + '-link').setAttribute('aria-current', 'page');
   document.body.dataset.view = view;
   content.setAttribute('aria-busy', 'false');
@@ -234,6 +241,38 @@ async function simulate(action) {
   report(result.message ?? result.error, response.ok ? 'good' : 'bad');
 }
 
+async function liveAction(action, event) {
+  const sender = account;
+  try {
+    const wallet = window.ethereum;
+    report('Checking contract and wallet…', 'pending');
+    pendingLiveHash = await requestLiveAction({
+      wallet, account: sender, action, state, event, stillConnected: () => account === sender,
+      async prepare(name, address) {
+        const query = new URLSearchParams({ action: name, account: address });
+        const response = await fetch('/api/prepare?' + query, { cache: 'no-store' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+        report('Confirm the transaction in MetaMask.', 'pending');
+        return result;
+      },
+    });
+  } catch (error) {
+    report(error.code === 4001 ? 'Transaction rejected in MetaMask.' :
+      error.code ? 'Wallet request failed. Check MetaMask activity before retrying.' : error.message, 'bad');
+    return;
+  }
+  const hash = pendingLiveHash;
+  report('Awaiting two confirmations · ' + hash, 'pending');
+  let receipt;
+  try { receipt = await waitForLiveReceipt(window.ethereum, hash); } catch { /* Keep the attempt visible. */ }
+  if (receipt) {
+    pendingLiveHash = undefined;
+    report(receipt.status === 1 ? 'Transaction confirmed · ' + hash : 'Transaction reverted · ' + hash,
+      receipt.status === 1 ? 'good' : 'bad');
+  } else report('Confirmation unavailable. Check this transaction in MetaMask before reloading · ' + hash, 'bad');
+}
+
 content.addEventListener('click', async event => {
   const button = event.target.closest('button[data-action]');
   if (!button || button.disabled || busy) return;
@@ -244,6 +283,7 @@ content.addEventListener('click', async event => {
   try {
     if (action === 'connect') await connect(event);
     else if (demo() && account) await simulate(action);
+    else if (event.isTrusted && account && state.ready && !pendingLiveHash) await liveAction(action, event);
   } catch {
     report('Request failed. Check the door state before trying again.', 'bad');
   } finally {

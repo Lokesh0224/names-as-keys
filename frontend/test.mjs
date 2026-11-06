@@ -1,9 +1,12 @@
+import { id, ZeroAddress } from 'ethers';
+import { requestLiveAction } from './live-wallet.mjs';
+import { credentialStatus, confirmedThrough, assertConfirmedDoorEvent } from './sepolia.mjs';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import { test } from 'node:test';
 import { createApp } from './serve.mjs';
 import { createDemo } from './demo.mjs';
-import { LABEL, DEMO_OWNER, DEMO_GUEST, DEMO_DOOR, doorInterface, registrarInterface, guestPath } from './protocol.mjs';
+import { LABEL, DEMO_OWNER, DEMO_GUEST, DEMO_DOOR, doorInterface, registrarInterface, guestPath, doorIsOpen } from './protocol.mjs';
 
 const unlock = account => ({ account, target: 'door', data: doorInterface.encodeFunctionData('unlock', [LABEL]) });
 const issue = (now, guest = DEMO_GUEST) => ({
@@ -71,9 +74,80 @@ test('guest route, QR and cross-view issue → unlock → revoke → deny', asyn
   assert.equal((await state()).latest, null);
 });
 
-test('Sepolia fails closed without deployment configuration', async () => {
-  await assert.rejects(createApp({ NAK_MODE: 'sepolia' }), /HTTPS origin/);
-  await assert.rejects(createApp({
-    NAK_MODE: 'sepolia', NAK_PUBLIC_ORIGIN: 'https://door.example', NAK_SEPOLIA_RPC_URL: 'http://127.0.0.1:1',
-  }), /invalid address/);
+test('Sepolia without a deployment keeps pages available and disables actions and QR', async t => {
+  const server = await createApp({ NAK_MODE: 'sepolia' });
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  t.after(() => server.close());
+  const base = 'http://127.0.0.1:' + server.address().port;
+  const response = await fetch(base + '/api/state');
+  const state = await response.json();
+  assert.equal(state.ready, false);
+  assert.match(state.prerequisites, /HTTPS origin and Sepolia RPC/);
+  assert.equal((await fetch(base + '/owner')).status, 200);
+  assert.equal((await fetch(base + '/api/prepare?action=unlock')).status, 403);
+  assert.equal((await fetch(base + '/qr.svg')).status, 404);
+});
+
+test('Sepolia maps actual ENS owner and expiry to active, expired or revoked state', () => {
+  const tokenId = BigInt(id(LABEL)) & ~0xffffffffn;
+  const active = { status: 2n, expiry: 200n, latestOwner: DEMO_GUEST, tokenId, resource: tokenId + 1n };
+  assert.equal(credentialStatus(active, DEMO_GUEST, 199n), 'Active');
+  assert.equal(credentialStatus({ ...active, status: 0n }, ZeroAddress, 200n), 'Expired');
+  assert.equal(credentialStatus({ ...active, status: 0n, latestOwner: ZeroAddress, tokenId: tokenId + 1n }, ZeroAddress, 200n), 'Revoked');
+});
+
+test('kiosk excludes head events and rejects missing or reorged confirmed events', () => {
+  assert.equal(confirmedThrough(101), 100);
+  const log = { blockNumber: 100, blockHash: 'canonical', args: { requestNonce: 2n } };
+  assert.doesNotThrow(() => assertConfirmedDoorEvent(log, 2n, 'canonical'));
+  assert.throws(() => assertConfirmedDoorEvent(log, 2n, 'reorg'));
+  assert.throws(() => assertConfirmedDoorEvent(undefined, 2n));
+  assert.equal(doorIsOpen(null, 8000, 20000), false);
+  assert.equal(doorIsOpen({ at: 1000, openAt: 20000 }, 8000, 27999), true);
+  assert.equal(doorIsOpen({ at: 1000, openAt: 20000 }, 8000, 28000), false);
+});
+
+test('wallet uses explicit clicks, rejects wrong chain and handles rejection without retry', async () => {
+  const contract = '0x0000000000000000000000000000000000000001';
+  const registrar = '0x0000000000000000000000000000000000000002';
+  const state = { ready: true, owner: DEMO_OWNER, guest: DEMO_GUEST, contract, registrar };
+  const data = doorInterface.encodeFunctionData('unlock', [LABEL]);
+  let chain = '0x1', sent = 0;
+  const wallet = { isMetaMask: true, async request({ method, params }) {
+    if (method === 'eth_chainId') return chain;
+    if (method === 'eth_accounts') return [DEMO_GUEST];
+    assert.equal(method, 'eth_sendTransaction');
+    assert.deepEqual(params, [{ from: DEMO_GUEST, to: contract, data, chainId: '0xaa36a7', value: '0x0' }]);
+    sent++;
+    throw Object.assign(new Error('Rejected'), { code: 4001 });
+  } };
+  const input = { wallet, state, account: DEMO_GUEST, action: 'unlock',
+    event: { type: 'click', isTrusted: true }, prepare: async () => ({ to: contract, data }), stillConnected: () => true };
+  await assert.rejects(requestLiveAction({ ...input, event: { type: 'click', isTrusted: false } }), /unavailable/);
+  await assert.rejects(requestLiveAction(input), /network changed/);
+  assert.equal(sent, 0);
+  chain = '0xaa36a7';
+  await assert.rejects(requestLiveAction({ ...input, prepare: async () => { throw new Error('Denied by DoorKeys'); } }), /Denied/);
+  assert.equal(sent, 0);
+  await assert.rejects(requestLiveAction(input), { code: 4001 });
+  assert.equal(sent, 1);
+});
+
+test('owner wallet sends only prepared registrar issue and revoke transactions', async () => {
+  const registrar = '0x0000000000000000000000000000000000000002';
+  const state = { ready: true, owner: DEMO_OWNER, guest: DEMO_GUEST, registrar };
+  for (const [action, args] of [['issue', [LABEL, DEMO_GUEST, 12345]], ['revoke', [LABEL, 123n]]]) {
+    const data = registrarInterface.encodeFunctionData(action, args);
+    const hash = '0x' + '11'.repeat(32);
+    const wallet = { isMetaMask: true, async request({ method, params }) {
+      if (method === 'eth_accounts') return [DEMO_OWNER];
+      if (method === 'eth_chainId') return '0xaa36a7';
+      assert.equal(method, 'eth_sendTransaction');
+      assert.deepEqual(params, [{ from: DEMO_OWNER, to: registrar, data, chainId: '0xaa36a7', value: '0x0' }]);
+      return hash;
+    } };
+    assert.equal(await requestLiveAction({ wallet, state, action, account: DEMO_OWNER,
+      event: { type: 'click', isTrusted: true }, prepare: async () => ({ to: registrar, data }), stillConnected: () => true }), hash);
+  }
 });

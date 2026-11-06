@@ -3,9 +3,11 @@ import { readFile } from 'node:fs/promises';
 import { isAddress, getAddress } from 'ethers';
 import QRCode from 'qrcode';
 import { createDemo } from './demo.mjs';
+import { ROOT } from './protocol.mjs';
 import { createSepolia } from './sepolia.mjs';
 
 const assets = {
+  '/live-wallet.mjs': ['./live-wallet.mjs', 'text/javascript'],
   '/app.mjs': ['./app.mjs', 'text/javascript'],
   '/styles.css': ['./styles.css', 'text/css'],
   '/ethers.js': ['./node_modules/ethers/dist/ethers.min.js', 'text/javascript'],
@@ -23,12 +25,18 @@ export async function createApp(env = process.env) {
   }
   const publicOrigin = env.NAK_PUBLIC_ORIGIN && new URL(env.NAK_PUBLIC_ORIGIN);
   if (publicOrigin && !['http:', 'https:'].includes(publicOrigin.protocol)) throw new Error('Use an HTTP(S) public origin.');
-  if (mode === 'sepolia' && (publicOrigin?.protocol !== 'https:' || !env.NAK_SEPOLIA_RPC_URL)) {
-    throw new Error('Sepolia mode requires a public HTTPS origin and a read-only Sepolia RPC URL.');
+  let adapter, prerequisites;
+  if (mode === 'demo') adapter = createDemo();
+  else if (publicOrigin?.protocol !== 'https:' || !env.NAK_SEPOLIA_RPC_URL) {
+    prerequisites = 'Configure the public HTTPS origin and Sepolia RPC.';
+  } else {
+    try { adapter = await createSepolia(env); }
+    catch {
+      prerequisites = 'Verify the T14 receipt, DoorKeys and registrar addresses and runtime hashes, owner and guest wallets, and exact guest URL.';
+    }
   }
-  const adapter = mode === 'demo' ? createDemo() : await createSepolia(env);
-  const path = mode === 'demo' ? adapter.state().guestPath : adapter.path;
-  const expected = new URL(path, 'http://localhost').searchParams;
+  const path = mode === 'demo' ? adapter.state().guestPath : adapter?.path;
+  const expected = path && new URL(path, 'http://localhost').searchParams;
   const loaded = new Map(await Promise.all(Object.entries(assets).map(async ([key, [file, type]]) =>
     [key, [await readFile(new URL(file, import.meta.url)), type]])));
   const html = await readFile(new URL('./index.html', import.meta.url));
@@ -46,15 +54,27 @@ export async function createApp(env = process.env) {
         if (url.pathname === '/api/state') {
           const account = url.searchParams.get('account');
           if (account && !isAddress(account)) return json(400, { error: 'Invalid wallet address.' });
-          return json(200, { ...await adapter.state(account && getAddress(account)), holdMs });
+          if (!adapter) return json(200, { mode, root: ROOT, ready: false, prerequisites, activity: [], holdMs });
+          return json(200, { ...await adapter.state(account && getAddress(account)), ...(mode === 'sepolia' ? { ready: true } : {}), holdMs });
+        }
+        if (url.pathname === '/api/prepare') {
+          if (mode !== 'sepolia' || !adapter) return json(403, { error: 'Verified Sepolia deployment required.' });
+          const account = url.searchParams.get('account');
+          const action = url.searchParams.get('action');
+          if (!isAddress(account) || !['issue', 'revoke', 'unlock'].includes(action)) {
+            return json(400, { error: 'Invalid wallet action.' });
+          }
+          try { return json(200, await adapter.prepare(action, account)); }
+          catch { return json(409, { error: 'The contract preflight failed. Check wallet and credential state.' }); }
         }
         if (url.pathname === '/qr.svg') {
+          if (!path) return json(404, { error: 'Verified deployment and guest URL required.' });
           const qr = await QRCode.toString(new URL(path, publicOrigin ?? origin).href, {
             type: 'svg', errorCorrectionLevel: 'M', margin: 4,
           });
           return send(200, 'image/svg+xml', qr);
         }
-        if (url.pathname === '/guest' &&
+        if (url.pathname === '/guest' && expected &&
             ([...expected].some(([key, value]) => url.searchParams.get(key) !== value) ||
              url.searchParams.size !== expected.size)) {
           return send(404, 'text/plain', 'Door context does not match this server. Scan the current door QR.');
