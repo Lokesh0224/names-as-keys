@@ -1,0 +1,1 @@
+Final validation stopped with AssertionError when checking PNG magic bytes for test-only-ui.png. Native browser screenshot bytes are JPEG (JFIF),1265x712; only the filename/metadata were wrong. Renamed the same unchanged bytes to test-only-ui.jpg and updated references. No screenshot content was edited.

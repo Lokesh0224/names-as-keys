@@ -1,0 +1,14 @@
+PASS: approved HEAD unchanged 3c6240f84d6010ac7dfcefb9f5f626655f22f767
+PASS: all 293 previously tracked files byte-identical []
+PASS: index empty
+PASS: new paths limited to gate audit
+PASS: git diff --check
+PASS: git diff --cached --check
+PASS: untracked whitespace []
+PASS: secret-pattern scan {"patterns": {"private_key_literal": "(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase)\\s*[=:]\\s*[\\\"\\'](?:0x)?[a-zA-Z0-9 ]{32,}[\\\"\\']", "credentialed_url": "https?://[^\\s/\\\"<>]+:[^\\s/@\\\"<>]+@", "rpc_api_key_url": "https?://[^\\s\\\"<>]*(?:alchemy\\.com/v2/|infura\\.io/v3/|[?&](?:api[_-]?key|token|key)=)[a-zA-Z0-9_-]{12,}", "pem_private_key": "-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"}, "findings": [], "limit": "Pattern inspection of public artifacts; no absolute absence-of-secrets claim."}
+PASS: Python syntax and indentation No configured Python formatter; AST/indentation and Git whitespace checked; no Solidity modifications.
+PASS: committed Stage 3E current checksums 81 verified; historical snapshots preserved unchanged
+PASS: new audit tests
+PASS: Stage 3E offline tests
+PASS: committed offline manifest checker
+PASS: all final transaction payloads remain blocked

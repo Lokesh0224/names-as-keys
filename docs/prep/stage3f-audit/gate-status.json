@@ -1,0 +1,220 @@
+{
+  "stage3F": "NO_GO",
+  "checkpoint": "3c6240f84d6010ac7dfcefb9f5f626655f22f767",
+  "block": 12071963,
+  "blockHash": "0x58bfa2bb15174e49b537d0d645c589e07adab37b8ede60ad6be5f1ab7ffc8caf",
+  "gates": [
+    {
+      "id": "G01",
+      "status": "PASS",
+      "gate": "Approved HEAD and initially clean tree",
+      "evidence": "HEAD 3c6240f84d6010ac7dfcefb9f5f626655f22f767; initial git status empty; 293 tracked files."
+    },
+    {
+      "id": "G02",
+      "status": "PASS",
+      "gate": "Historical evidence and production source integrity",
+      "evidence": "All HEAD-tracked file bytes unchanged; Stage 3E current 81 checksums validated; original 43-entry snapshot resolves six archived prior versions."
+    },
+    {
+      "id": "G03",
+      "status": "PASS",
+      "gate": "Sepolia identity and stable observation",
+      "evidence": "Chain 11155111; block 12071963; canonical block hash checked again at end. This is not a finality or multi-provider proof."
+    },
+    {
+      "id": "G04",
+      "status": "PASS",
+      "gate": "Exact intended root available and initially unused",
+      "evidence": "isAvailable true; getState AVAILABLE, expiry 0, latestOwner zero; tokenVersion0/resourceVersion1; getOwner zero. No project ownership or reservation."
+    },
+    {
+      "id": "G05",
+      "status": "PASS",
+      "gate": "Ordinary registration mechanism and timing",
+      "evidence": "Direct commit/reveal; min 60s, max 86400s (strict upper bound); min duration/grace 2419200s; no mainnet ownership prerequisite in reviewed available-label path."
+    },
+    {
+      "id": "G06",
+      "status": "PASS",
+      "gate": "Address, code and consumed ABI identities",
+      "evidence": "All 16 runtime hashes unchanged from Stage 3E; eth forward link, registrar ETH_REGISTRY/oracle/BENEFICIARY and timing getters match; eight original creation receipts rechecked."
+    },
+    {
+      "id": "G07",
+      "status": "PASS",
+      "gate": "Reproducible source compiler evidence",
+      "evidence": "Retained source closure/solc binary/settings reproduced offline; AST mapping reproduced; eight compiled creation+args match original transaction inputs; ABIs equal retained ABIs."
+    },
+    {
+      "id": "G08",
+      "status": "PASS",
+      "gate": "Semantic immutable/full-runtime equality (technical)",
+      "evidence": "Eight main runtimes match all bytes after source-derived immutable reconciliation; additional UUPSProxyLogic matches full runtime and factory/derived CREATE address. Independent review is separate G23."
+    },
+    {
+      "id": "G09",
+      "status": "PASS",
+      "gate": "LabelStore runtime and conditional log behavior",
+      "evidence": "Pinned official artifact reproduced; CONTRACT_NAMER derived from sole constructor argument and AST-mapped; full runtime exact. setLabel has no external calls and emits Label(bytes32,string) only if absent."
+    },
+    {
+      "id": "G10",
+      "status": "PASS",
+      "gate": "Existing ENS administrator/operator census at observation",
+      "evidence": "ETHRegistry, RootRegistry, oracle creation-to-block root-role logs replayed, current roles and packed counts/getAssigneeCount agree. RootRegistry eth-token resource and relevant operator histories inspected; no active relevant operators."
+    },
+    {
+      "id": "G11",
+      "status": "PASS",
+      "gate": "Selected public accounts",
+      "evidence": "Owner 0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7; Mira 0x5a9191871b9117218F83Ed43293E011667053F39; supplied explicitly and distinct; no secrets requested."
+    },
+    {
+      "id": "G12",
+      "status": "PASS",
+      "gate": "EOA/no callback code condition at observation",
+      "evidence": "eth_getCode returns 0x for both selected addresses. Recheck before issuance; delegated/smart-account code changes invalidate this observation."
+    },
+    {
+      "id": "G13",
+      "status": "UNRESOLVED",
+      "gate": "MetaMask account/signing control",
+      "evidence": "No wallet connection or signatures requested. Future authorized workflow must show selected owner on Sepolia; owner attestation/control confirmation remains required."
+    },
+    {
+      "id": "G14",
+      "status": "PASS",
+      "gate": "Accounts currently funded with Sepolia ETH",
+      "evidence": "Owner 0.885875646490742252 ETH; Mira 0.008968499999601 ETH. Positive balance only; entire deployment budget sufficiency is G21."
+    },
+    {
+      "id": "G15",
+      "status": "FAIL",
+      "gate": "Owner mock-rent balance currently sufficient",
+      "evidence": "MockUSDC balance 0; snapshot one-year quote 8000021 units, premium0. Future T01 needed unless balance changes; no mint executed."
+    },
+    {
+      "id": "G16",
+      "status": "FAIL",
+      "gate": "Registrar allowance currently sufficient",
+      "evidence": "Owner allowance to ETHRegistrar 0; future T02 bounded approval needed after explicit spend review. No approval executed."
+    },
+    {
+      "id": "G17",
+      "status": "UNRESOLVED",
+      "gate": "Exact owner deployment inputs and policy decisions",
+      "evidence": "Durations/payment retained as proposals, not final transaction approval. Need salts, epoch confirmation, spend cap/quote-slippage handling, absolute expiry reference policy, secret lifecycle/recovery policy, gas/fee ceiling and confirmation/reorg policy."
+    },
+    {
+      "id": "G18",
+      "status": "UNRESOLVED",
+      "gate": "Future addresses and initialization on chain",
+      "evidence": "Initializer bytes now known offline for actual owner/restricted bitmap; salts null; R1/R2, registrar and DoorKeys null. Prediction/receipt/code/implementation checks required; no substitutes."
+    },
+    {
+      "id": "G19",
+      "status": "UNRESOLVED",
+      "gate": "Live hierarchy, ancestor generations and project roles",
+      "evidence": "Root/lock unregistered; no R1/R2 to inspect. Both forward/back links, owners, expiries, generation IDs, owner grants, registrar4097, guest/door zero roles must be checked per step."
+    },
+    {
+      "id": "G20",
+      "status": "UNRESOLVED",
+      "gate": "Full exact-manifest ordered fork simulation",
+      "evidence": "Only T01/T02 snapshot candidates simulated non-persistently; other inputs unresolved. No full manifest execution, state override or placeholder-based deployment claimed."
+    },
+    {
+      "id": "G21",
+      "status": "UNRESOLVED",
+      "gate": "Complete exact gas/fee and ETH budget review",
+      "evidence": "T01 snapshot estimate141730; T02 estimate129366. Remaining 13 gas values unknown; no total or approved max fee/tip/budget. Estimates are not charged gas or limits."
+    },
+    {
+      "id": "G22",
+      "status": "FAIL",
+      "gate": "Safe MetaMask execution workflow implemented",
+      "evidence": "Stage 3E has a specification only. No account/chain listeners, nonce locks, duplicate/retry guards, receipt/reorg state machine or reviewed submission UI implemented. Not implemented in this audit."
+    },
+    {
+      "id": "G23",
+      "status": "UNRESOLVED",
+      "gate": "Independent architecture/security review",
+      "evidence": "New semantic proofs, role/operator census, conditional LabelStore events and candidate simulations require independent review; technical PASS does not self-approve deployment."
+    },
+    {
+      "id": "G24",
+      "status": "UNRESOLVED",
+      "gate": "Explicit authorization for live actions",
+      "evidence": "Stage 3F explicitly NO-GO. No current registration, mint, allowance, deployment, grant, issuance, unlock or wallet request authorized."
+    },
+    {
+      "id": "G25",
+      "status": "PASS",
+      "gate": "Approved trusted-administrator model preserved",
+      "evidence": "No production changes, privileges broadened or local guest list. Global renewers and eth ancestor owner documented; future R2 owner can renew expired unburned credentials; current-state restoration semantics retained."
+    },
+    {
+      "id": "G26",
+      "status": "UNRESOLVED",
+      "gate": "Actual receipt/state reconciliation and finality",
+      "evidence": "No deployment receipts exist. Public per-step receipt/header/event/state journal and chosen confirmation/finality/reorg policy are required during controlled execution."
+    },
+    {
+      "id": "G27",
+      "status": "UNRESOLVED",
+      "gate": "Non-authorizing URI renderer provenance review",
+      "evidence": "Bound URI renderer has nonempty code at 0x0f5b101b6fc626b9b210bb5e70f60f3dd9ca0d96. No source reproduction performed; source proves initialization stores pointer/emits it, and reviewed authorization path does not call renderer. Independent review must explicitly accept limited scope or require full renderer verification."
+    }
+  ],
+  "originalStage3EGates": [
+    {
+      "gate": "Approved checkpoint / unchanged contracts",
+      "status": "PASS"
+    },
+    {
+      "gate": "Sepolia root mechanism / current availability",
+      "status": "PASS"
+    },
+    {
+      "gate": "ENS address and consumed ABI identities",
+      "status": "PASS"
+    },
+    {
+      "gate": "Reproducible published templates",
+      "status": "PASS"
+    },
+    {
+      "gate": "Complete source/live-runtime attestation including independent review",
+      "status": "UNRESOLVED"
+    },
+    {
+      "gate": "Owner/guest accounts and signing control",
+      "status": "UNRESOLVED"
+    },
+    {
+      "gate": "Balances/allowances/total gas sufficiency",
+      "status": "FAIL"
+    },
+    {
+      "gate": "Future addresses and initialization",
+      "status": "UNRESOLVED"
+    },
+    {
+      "gate": "Full administrator inventory and accepted trust boundaries",
+      "status": "UNRESOLVED"
+    },
+    {
+      "gate": "Exact gas/fees/manifest simulation",
+      "status": "UNRESOLVED"
+    },
+    {
+      "gate": "Safe execution workflow",
+      "status": "FAIL"
+    },
+    {
+      "gate": "Owner approval of exact writes",
+      "status": "UNRESOLVED"
+    }
+  ]
+}

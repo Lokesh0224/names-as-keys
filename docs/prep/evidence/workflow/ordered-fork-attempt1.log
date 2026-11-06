@@ -1,0 +1,28 @@
+No files changed, compilation skipped
+2026-11-06T00:27:58.580197Z  WARN traces::etherscan: etherscan config not found
+2026-11-06T00:27:59.114843Z  WARN foundry_fork_db::cache: Failed to read cache file err=Os { code: 2, kind: NotFound, message: "No such file or directory" } path="/home/l/.foundry/cache/rpc/sepolia/12071963"
+
+Ran 1 test for test/workflow/OrderedDeploymentWorkflow.t.sol:OrderedDeploymentWorkflowTest
+[PASS] testTestOnlyOrderedFifteenActionsAndHierarchy() (gas: 4721743)
+Logs:
+  TEST_ONLY ordered action 1
+  TEST_ONLY ordered action 2
+  TEST_ONLY ordered action 3
+  TEST_ONLY ordered action 4
+  TEST_ONLY ordered action 5
+  TEST_ONLY ordered action 6
+  TEST_ONLY ordered action 7
+  TEST_ONLY ordered action 8
+  TEST_ONLY ordered action 9
+  TEST_ONLY ordered action 10
+  TEST_ONLY ordered action 11
+  TEST_ONLY ordered action 12
+  TEST_ONLY ordered action 13
+  TEST_ONLY ordered action 14
+  TEST_ONLY ordered action 15
+  TEST ONLY: 15 ordered EVM actions, exact log sequences and complete hierarchy verified
+  NOT final deployment simulation; no live ownership, transactions or receipts created
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 18.12s (11.02s CPU time)
+
+Ran 1 test suite in 18.66s (18.12s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)

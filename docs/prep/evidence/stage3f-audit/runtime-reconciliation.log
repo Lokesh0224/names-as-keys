@@ -1,0 +1,9 @@
+ETHRegistrar {'allImmutablesDerivedAndMatched': True, 'fullRuntimeByteEqual': True, 'creationInputExact': True, 'canonicalReceiptRechecked': True, 'abiEqualsRetainedABI': True}
+ETHRegistry {'allImmutablesDerivedAndMatched': True, 'fullRuntimeByteEqual': True, 'creationInputExact': True, 'canonicalReceiptRechecked': True, 'abiEqualsRetainedABI': True}
+MockDAI {'allImmutablesDerivedAndMatched': True, 'fullRuntimeByteEqual': True, 'creationInputExact': True, 'canonicalReceiptRechecked': True, 'abiEqualsRetainedABI': True}
+MockUSDC {'allImmutablesDerivedAndMatched': True, 'fullRuntimeByteEqual': True, 'creationInputExact': True, 'canonicalReceiptRechecked': True, 'abiEqualsRetainedABI': True}
+RootRegistry {'allImmutablesDerivedAndMatched': True, 'fullRuntimeByteEqual': True, 'creationInputExact': True, 'canonicalReceiptRechecked': True, 'abiEqualsRetainedABI': True}
+StandardRentPriceOracle {'allImmutablesDerivedAndMatched': True, 'fullRuntimeByteEqual': True, 'creationInputExact': True, 'canonicalReceiptRechecked': True, 'abiEqualsRetainedABI': True}
+UserRegistryImpl {'allImmutablesDerivedAndMatched': True, 'fullRuntimeByteEqual': True, 'creationInputExact': True, 'canonicalReceiptRechecked': True, 'abiEqualsRetainedABI': True}
+VerifiableFactory {'allImmutablesDerivedAndMatched': True, 'fullRuntimeByteEqual': True, 'creationInputExact': True, 'canonicalReceiptRechecked': True, 'abiEqualsRetainedABI': True}
+UUPSProxyLogic {'derivedCreateAddressMatchesGetter': True, 'fullRuntimeByteEqual': True, 'factoryGetterMatches': True}

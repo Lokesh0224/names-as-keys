@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/l/EthMumbai2026/names-as-keys/contracts/scripts/stage3f_audit/labelstore.py", line 48, in <module>
+    main()
+  File "/home/l/EthMumbai2026/names-as-keys/contracts/scripts/stage3f_audit/labelstore.py", line 36, in main
+    assert not references, 'Additional immutable reconciliation required'
+           ^^^^^^^^^^^^^^
+AssertionError: Additional immutable reconciliation required

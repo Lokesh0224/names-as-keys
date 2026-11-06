@@ -1,0 +1,15 @@
+PASS: HEAD unchanged 3c6240f84d6010ac7dfcefb9f5f626655f22f767
+PASS: all 293 tracked files byte-identical []
+PASS: index empty
+PASS: git diff --check
+PASS: git diff --cached --check
+PASS: prior readiness-audit artifacts preserved 42 prior checksums verified; prior manifest unchanged; 43 pre-existing untracked paths retained
+PASS: workflow changes isolated
+PASS: JS syntax checks []
+PASS: Solidity formatting
+PASS: final workflow tests
+PASS: ordered local-fork fixture 15 disposable EVM calls; not final deployment simulation
+PASS: local bundle build
+PASS: dependency lock generated without scripts
+PASS: secret-pattern scan {"patterns": {"private_key_literal": "(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase)\\s*[=:]\\s*[\\\"\\'](?:0x)?[a-zA-Z0-9 ]{32,}[\\\"\\']", "credentialed_url": "https?://[^\\s/\\\"<>]+:[^\\s/@\\\"<>]+@", "rpc_api_key_url": "https?://[^\\s\\\"<>]*(?:alchemy\\.com/v2/|infura\\.io/v3/|[?&](?:api[_-]?key|token|key)=)[a-zA-Z0-9_-]{12,}", "pem_private_key": "-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"}, "findings": [], "binary": "One manually reviewed test-only JPEG; no other binary artifacts", "limits": "Pattern scan, not mathematical absence-of-secrets proof. Public test preimages/hashes/salts intentionally retained."}
+PASS: all new-file whitespace checks []

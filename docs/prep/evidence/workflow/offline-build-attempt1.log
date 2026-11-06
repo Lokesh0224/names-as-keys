@@ -1,0 +1,268 @@
+Compiling 1 files with Solc 0.8.25
+Solc 0.8.25 finished in 2.69s
+Compiler run successful!
+2026-11-06T00:27:49.864048Z  WARN evm::traces: failed to flush signature cache err=failed to create file "/home/l/.foundry/cache/signatures": Read-only file system (os error 30)
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/interfaces/IUniversalResolver.sol:13:14
+   |
+13 |     function isENSv2() external view returns (bool);
+   |              -------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/access-control/interfaces/IEnhancedAccessControl.sol:92:14
+   |
+92 |     function ROOT_RESOURCE() external view returns (uint256);
+   |              -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/DoorKeys.sol:20:30
+   |
+20 |     address public immutable administrator;
+   |                              -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/DoorKeys.sol:21:44
+   |
+21 |     IPermissionedRegistry public immutable parentRegistry;
+   |                                            --------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/DoorKeys.sol:22:44
+   |
+22 |     IPermissionedRegistry public immutable guestRegistry;
+   |                                            -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/DoorKeys.sol:23:30
+   |
+23 |     bytes32 public immutable rootLabelHash;
+   |                              -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IRegistryURIRenderer.sol:12:14
+   |
+12 |     function renderURI(IRegistry registry, uint256 tokenId) external view returns (string memory);
+   |              ---------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/CredentialRegistrar.sol:25:30
+   |
+25 |     address public immutable owner;
+   |                              -----
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3/ThreeLevelENSv2.t.sol:17:14
+   |
+17 |     function MIN_COMMITMENT_AGE() external view returns (uint64);
+   |              ------------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/DoorKeys.sol:24:30
+   |
+24 |     uint256 public immutable rootTokenId;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/DoorKeys.sol:25:30
+   |
+25 |     uint256 public immutable lockTokenId;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/DoorKeys.sol:26:30
+   |
+26 |     uint256 public immutable deploymentEpoch;
+   |                              ---------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/DoorKeys.sol:27:30
+   |
+27 |     bytes32 public immutable doorId;
+   |                              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/CredentialRegistrar.sol:26:44
+   |
+26 |     IPermissionedRegistry public immutable parentRegistry;
+   |                                            --------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:11:44
+   |
+11 |     IPermissionedRegistry public immutable subregistry;
+   |                                            -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:12:30
+   |
+12 |     address public immutable resolver;
+   |                              --------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/CredentialRegistrar.sol:27:44
+   |
+27 |     IPermissionedRegistry public immutable guestRegistry;
+   |                                            -------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registrar/interfaces/IETHRenewer.sol:88:14
+   |
+88 |     function GRACE_PERIOD() external view returns (uint64);
+   |              ------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3c/CredentialRegistrar.t.sol:21:14
+   |
+21 |     function onERC1155Received(address, address, uint256 id, uint256, bytes calldata) external returns (bytes4) {
+   |              -----------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:13:44
+   |
+13 |     IPermissionedRegistry public immutable parentRegistry;
+   |                                            --------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/spike/SpikeRegistrar.sol:14:30
+   |
+14 |     address public immutable parentOwner;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:75:14
+   |
+75 |     function setURI(string calldata uri, IRegistryURIRenderer renderer) external;
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3c/FinalArchitectureCorrections.t.sol:14:44
+   |
+14 |     IPermissionedRegistry public immutable registry;
+   |                                            --------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3c/FinalArchitectureCorrections.t.sol:15:30
+   |
+15 |     address public immutable owner;
+   |                              -----
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol:80:14
+   |
+80 |     function getURI() external view returns (string memory uri, IRegistryURIRenderer renderer);
+   |              ------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/CredentialRegistrar.sol:28:30
+   |
+28 |     uint256 public immutable rootTokenId;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/src/CredentialRegistrar.sol:29:30
+   |
+29 |     uint256 public immutable lockTokenId;
+   |                              -----------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3d/DoorKeys.t.sol:17:14
+   |
+17 |     function onERC1155Received(address, address, uint256, uint256, bytes calldata) external returns (bytes4) {
+   |              -----------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[mixed-case-function]: function names should use mixedCase
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/test/workflow/OrderedDeploymentWorkflow.t.sol:19:14
+   |
+19 |     function MIN_COMMITMENT_AGE() external view returns (uint64);
+   |              ------------------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-function
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3c/SecurityPreflight.t.sol:13:30
+   |
+13 |     address public immutable owner;
+   |                              -----
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3c/SecurityPreflight.t.sol:14:44
+   |
+14 |     IPermissionedRegistry public immutable registry;
+   |                                            --------
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3c/SecurityPreflight.t.sol:140:19
+    |
+140 |             (bool unsafeOK,) = address(r2).call(
+    |                   --------
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> /home/l/EthMumbai2026/names-as-keys/contracts/test/stage3c/SecurityPreflight.t.sol:145:19
+    |
+145 |             (bool safeOK,) = address(r2).call(
+    |                   ------
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+

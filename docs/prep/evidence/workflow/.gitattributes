@@ -1,0 +1,3 @@
+# Preserve exact captured output; exemptions apply only to these two raw logs.
+node-tests-final-attempt1.log whitespace=-blank-at-eol
+offline-build-attempt1.log whitespace=-blank-at-eof

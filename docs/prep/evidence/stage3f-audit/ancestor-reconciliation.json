@@ -1,0 +1,16 @@
+{
+  "block": 12071963,
+  "checks": {
+    "completeEthTokenHistory": true,
+    "eventTransitionsContiguous": true,
+    "currentRolesMatchEvents": true,
+    "packedRoleCountMatches": true,
+    "registeredAndActive": true,
+    "ethTokenOwnerMatchesENSAdministrator": true,
+    "operatorHistoriesCompleteAndEmpty": true,
+    "uriRendererCodeNonempty": true
+  },
+  "ethTokenExpiry": 18446744073709551615,
+  "tokenRolesPacked": 6065802694000329494497715370160354329644498944,
+  "warning": "Non-authorizing URI renderer code identity only; no source equality claim"
+}

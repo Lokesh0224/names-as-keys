@@ -1,0 +1,11 @@
+test_both_candidates_use_owner_verified_token_and_zero_eth (test_audit.GateAuditTests.test_both_candidates_use_owner_verified_token_and_zero_eth) ... ok
+test_every_recorded_method_is_read_only_or_nonpersistent_estimation (test_audit.GateAuditTests.test_every_recorded_method_is_read_only_or_nonpersistent_estimation) ... ok
+test_existing_root_role_histories_reconcile_full_counts (test_audit.GateAuditTests.test_existing_root_role_histories_reconcile_full_counts) ... ok
+test_rpc_write_and_sign_methods_rejected_before_network (test_audit.GateAuditTests.test_rpc_write_and_sign_methods_rejected_before_network) ... ok
+test_semantic_reconciliation_detects_runtime_corruption (test_audit.GateAuditTests.test_semantic_reconciliation_detects_runtime_corruption) ... ok
+test_semantic_runtime_evidence_every_named_immutable_matches (test_audit.GateAuditTests.test_semantic_runtime_evidence_every_named_immutable_matches) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.259s
+
+OK

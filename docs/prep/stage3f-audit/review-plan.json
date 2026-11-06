@@ -1,0 +1,1685 @@
+{
+  "kind": "REVIEW_ONLY_SUPPLEMENT_NOT_AN_EXECUTOR",
+  "approvedCheckpoint": "3c6240f84d6010ac7dfcefb9f5f626655f22f767",
+  "sourceManifestSHA256": "3c9c32ecd64268623283033d0a1269acac5f033cb563a3d7a888b2c51bbbdfe6",
+  "chainId": 11155111,
+  "observationBlock": 12071963,
+  "observationBlockHash": "0x58bfa2bb15174e49b537d0d645c589e07adab37b8ede60ad6be5f1ab7ffc8caf",
+  "owner": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+  "mira": "0x5a9191871b9117218F83Ed43293E011667053F39",
+  "accountSelectionSource": "Owner supplied both public addresses in this chat; no wallet connection or signing-control check",
+  "proposalsRetainedForReview": {
+    "root": "nak-lokesh-20261105.eth",
+    "payment": "MockUSDC",
+    "rootDurationSeconds": 31536000,
+    "lockDurationSeconds": 7776000,
+    "guestDurationSeconds": 86400,
+    "deploymentEpoch": 1
+  },
+  "initializationCalldata": "0x37cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f70000000000000000000000000011110100000000000000000000000000111101",
+  "initializationRoleBitmap": "380593917518227438537563280301172632627253505",
+  "futureAddresses": {
+    "R1": null,
+    "R2": null,
+    "CredentialRegistrar": null,
+    "DoorKeys": null
+  },
+  "salts": {
+    "R1": null,
+    "R2": null
+  },
+  "registrationSecret": null,
+  "registrationCommitment": null,
+  "lockExpiry": null,
+  "guestExpiry": null,
+  "broadcastEnabled": false,
+  "walletRequestsEnabled": false,
+  "stage3F": "NO_GO",
+  "transactions": [
+    {
+      "id": "T01",
+      "label": "Obtain mock rent tokens if needed",
+      "signature": "mint(address,uint256)",
+      "abi": "MockUSDC",
+      "target": {
+        "reference": "verified.MockUSDC",
+        "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "OWNER_SUPPLIED_PUBLIC_ADDRESS_NOT_SIGNING_CONTROL_PROOF"
+        },
+        {
+          "binding": "quote.basePlusPremium",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "quote.basePlusPremium"
+      ],
+      "snapshotCandidate": {
+        "id": "T01",
+        "classification": "SNAPSHOT_PROPOSAL_NOT_APPROVED_DEPLOYMENT_INPUT",
+        "signature": "mint(address,uint256)",
+        "arguments": [
+          "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          8000021
+        ],
+        "transaction": {
+          "from": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "to": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "value": "0x0",
+          "data": "0x40c10f1900000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f700000000000000000000000000000000000000000000000000000000007a1215"
+        },
+        "ethCall": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x"
+        },
+        "estimateGas": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x229a2"
+        },
+        "scope": "Non-persistent individual call. Not a full ordered fork-manifest execution, signed transaction or approved spending limit."
+      },
+      "expectedEvents": [
+        {
+          "name": "Transfer",
+          "emitterBinding": "verified.MockUSDC",
+          "signature": "Transfer(address,address,uint256)",
+          "fields": [
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Transfer"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T02",
+      "label": "Approve bounded registrar rent spend",
+      "signature": "approve(address,uint256)",
+      "abi": "MockUSDC",
+      "target": {
+        "reference": "verified.MockUSDC",
+        "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "reference": "verified.ETHRegistrar",
+          "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "quote.basePlusPremium",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "quote.basePlusPremium"
+      ],
+      "snapshotCandidate": {
+        "id": "T02",
+        "classification": "SNAPSHOT_PROPOSAL_NOT_APPROVED_DEPLOYMENT_INPUT",
+        "signature": "approve(address,uint256)",
+        "arguments": [
+          "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+          8000021
+        ],
+        "transaction": {
+          "from": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "to": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "value": "0x0",
+          "data": "0x095ea7b3000000000000000000000000f633e7fc17e2bbe0d0965d18ec1821dcb754a3d300000000000000000000000000000000000000000000000000000000007a1215"
+        },
+        "ethCall": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "estimateGas": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x1f956"
+        },
+        "scope": "Non-persistent individual call. Not a full ordered fork-manifest execution, signed transaction or approved spending limit."
+      },
+      "expectedEvents": [
+        {
+          "name": "Approval",
+          "emitterBinding": "verified.MockUSDC",
+          "signature": "Approval(address,address,uint256)",
+          "fields": [
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "spender",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Approval"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T03",
+      "label": "Commit root registration intent",
+      "signature": "commit(bytes32)",
+      "abi": "ETHRegistrar",
+      "target": {
+        "reference": "verified.ETHRegistrar",
+        "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "binding": "registration.commitment",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "registration.commitment"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "CommitmentMade",
+          "emitterBinding": "verified.ETHRegistrar",
+          "signature": "CommitmentMade(bytes32)",
+          "fields": [
+            {
+              "name": "commitment",
+              "type": "bytes32",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "CommitmentMade"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T04",
+      "label": "Reveal/register the approved Sepolia root",
+      "signature": "register(string,address,bytes32,address,address,uint64,address,bytes32)",
+      "abi": "ETHRegistrar",
+      "target": {
+        "reference": "verified.ETHRegistrar",
+        "value": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        "nak-lokesh-20261105",
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "OWNER_SUPPLIED_PUBLIC_ADDRESS_NOT_SIGNING_CONTROL_PROOF"
+        },
+        {
+          "binding": "privateRegistrationState.secret",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+        31536000,
+        {
+          "reference": "verified.MockUSDC",
+          "value": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "privateRegistrationState.secret"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "NameRegistered",
+          "emitterBinding": "verified.ETHRegistrar",
+          "signature": "NameRegistered(uint256,string,address,address,address,uint64,address,bytes32,uint256,uint256)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "subregistry",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "resolver",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "duration",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "name": "paymentToken",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "referrer",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "base",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "premium",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "LabelRegistered",
+          "abi": "ETHRegistry",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "LabelRegistered(uint256,bytes32,string,address,uint64,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "labelHash",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "expiry",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "MockUSDC",
+          "name": "Transfer",
+          "emitterBinding": "verified.MockUSDC",
+          "signature": "Transfer(address,address,uint256)",
+          "fields": [
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "ETHRegistry",
+          "name": "TransferSingle",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "TransferSingle(address,address,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "operator",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "id",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "ETHRegistry",
+          "name": "TokenResource",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "TokenResource(uint256,uint256)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "ETHRegistry",
+          "name": "EACRolesChanged",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Transfer",
+        "LabelRegistered",
+        "TransferSingle",
+        "TokenResource",
+        "EACRolesChanged",
+        "NameRegistered"
+      ],
+      "labelStoreEvent": {
+        "name": "Label",
+        "signature": "Label(bytes32,string)",
+        "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+        "indexed": [
+          true,
+          false
+        ],
+        "condition": "T04/T08/T15 only: exactly one event if global getLabel(labelId) is empty immediately before registration; otherwise zero; compare source LibLabel.id, exact label and emitter",
+        "currentlyStoredLabelRead": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T05",
+      "label": "Create R1 and initialize owner grants atomically",
+      "signature": "deployProxy(address,uint256,bytes)",
+      "abi": "VerifiableFactory",
+      "target": {
+        "reference": "verified.VerifiableFactory",
+        "value": "0xda70306c98e97ece36f997a21368e53298572991",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "reference": "verified.UserRegistryImpl",
+          "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "salts.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "encoded.initializeOwnerGrants",
+          "value": "0x37cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f70000000000000000000000000011110100000000000000000000000000111101",
+          "classification": "OFFLINE_ENCODED_APPROVED_ROLE_POLICY_AND_SELECTED_OWNER"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "salts.R1"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "ProxyDeployed",
+          "emitterBinding": "verified.VerifiableFactory",
+          "signature": "ProxyDeployed(address,address,uint256,address)",
+          "fields": [
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "proxyAddress",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "salt",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "implementation",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "RegistryCreated",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R1",
+          "signature": "RegistryCreated()",
+          "fields": [],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "EACRolesChanged",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R1",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "Upgraded",
+          "emitterBinding": "future.R1",
+          "signature": "Upgraded(address)",
+          "fields": [
+            {
+              "name": "implementation",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "URIUpdated",
+          "emitterBinding": "future.R1",
+          "signature": "URIUpdated(string,address,address)",
+          "fields": [
+            {
+              "name": "uri",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "renderer",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "Initialized",
+          "emitterBinding": "future.R1",
+          "signature": "Initialized(uint64)",
+          "fields": [
+            {
+              "name": "version",
+              "type": "uint64",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Upgraded",
+        "RegistryCreated",
+        "EACRolesChanged",
+        "URIUpdated",
+        "Initialized",
+        "ProxyDeployed"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T06",
+      "label": "Attach R1 to root",
+      "signature": "setSubregistry(uint256,address)",
+      "abi": "ETHRegistry",
+      "target": {
+        "reference": "verified.ETHRegistry",
+        "value": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "binding": "receipts.rootTokenId",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.R1",
+        "receipts.rootTokenId"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "SubregistryUpdated",
+          "emitterBinding": "verified.ETHRegistry",
+          "signature": "SubregistryUpdated(uint256,address,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "subregistry",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "SubregistryUpdated"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T07",
+      "label": "Set R1 canonical parent metadata",
+      "signature": "setParent(address,string)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R1",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "arguments": [
+        {
+          "reference": "verified.ETHRegistry",
+          "value": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        "nak-lokesh-20261105"
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.R1"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "ParentUpdated",
+          "emitterBinding": "future.R1",
+          "signature": "ParentUpdated(address,string,address)",
+          "fields": [
+            {
+              "name": "parent",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "ParentUpdated"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T08",
+      "label": "Register owner-controlled lock with no child attached yet",
+      "signature": "register(string,address,address,address,uint256,uint64)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R1",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "arguments": [
+        "lock",
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "OWNER_SUPPLIED_PUBLIC_ADDRESS_NOT_SIGNING_CONTROL_PROOF"
+        },
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+        "91700664256357922357994873537130062512592519168",
+        {
+          "binding": "inputs.lockExpiry",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.R1",
+        "inputs.lockExpiry"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "LabelRegistered",
+          "emitterBinding": "future.R1",
+          "signature": "LabelRegistered(uint256,bytes32,string,address,uint64,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "labelHash",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "expiry",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "TokenResource",
+          "emitterBinding": "future.R1",
+          "signature": "TokenResource(uint256,uint256)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "TransferSingle",
+          "emitterBinding": "future.R1",
+          "signature": "TransferSingle(address,address,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "operator",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "id",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "EACRolesChanged",
+          "emitterBinding": "future.R1",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "LabelRegistered",
+        "TransferSingle",
+        "TokenResource",
+        "EACRolesChanged"
+      ],
+      "labelStoreEvent": {
+        "name": "Label",
+        "signature": "Label(bytes32,string)",
+        "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+        "indexed": [
+          true,
+          false
+        ],
+        "condition": "T04/T08/T15 only: exactly one event if global getLabel(labelId) is empty immediately before registration; otherwise zero; compare source LibLabel.id, exact label and emitter",
+        "currentlyStoredLabelRead": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T09",
+      "label": "Create R2 and initialize owner grants atomically",
+      "signature": "deployProxy(address,uint256,bytes)",
+      "abi": "VerifiableFactory",
+      "target": {
+        "reference": "verified.VerifiableFactory",
+        "value": "0xda70306c98e97ece36f997a21368e53298572991",
+        "classification": "VERIFIED",
+        "block": 12071722
+      },
+      "arguments": [
+        {
+          "reference": "verified.UserRegistryImpl",
+          "value": "0x9bd8a88719068d09ecee662f36c0e3856708366a",
+          "classification": "VERIFIED",
+          "block": 12071722
+        },
+        {
+          "binding": "salts.R2",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "encoded.initializeOwnerGrants",
+          "value": "0x37cb53a80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000040f6dcb0fa311570f72ac6f64045eb80e66711f70000000000000000000000000011110100000000000000000000000000111101",
+          "classification": "OFFLINE_ENCODED_APPROVED_ROLE_POLICY_AND_SELECTED_OWNER"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "salts.R2"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "ProxyDeployed",
+          "emitterBinding": "verified.VerifiableFactory",
+          "signature": "ProxyDeployed(address,address,uint256,address)",
+          "fields": [
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "proxyAddress",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "salt",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "implementation",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "RegistryCreated",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R2",
+          "signature": "RegistryCreated()",
+          "fields": [],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "EACRolesChanged",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R2",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "Upgraded",
+          "emitterBinding": "future.R2",
+          "signature": "Upgraded(address)",
+          "fields": [
+            {
+              "name": "implementation",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "URIUpdated",
+          "emitterBinding": "future.R2",
+          "signature": "URIUpdated(string,address,address)",
+          "fields": [
+            {
+              "name": "uri",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "renderer",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "Initialized",
+          "emitterBinding": "future.R2",
+          "signature": "Initialized(uint64)",
+          "fields": [
+            {
+              "name": "version",
+              "type": "uint64",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "Upgraded",
+        "RegistryCreated",
+        "EACRolesChanged",
+        "URIUpdated",
+        "Initialized",
+        "ProxyDeployed"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T10",
+      "label": "Attach R2 under lock",
+      "signature": "setSubregistry(uint256,address)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R1",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "arguments": [
+        {
+          "binding": "receipts.lockTokenId",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R2",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.R1",
+        "future.R2",
+        "receipts.lockTokenId"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "SubregistryUpdated",
+          "emitterBinding": "future.R1",
+          "signature": "SubregistryUpdated(uint256,address,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "subregistry",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "SubregistryUpdated"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T11",
+      "label": "Set R2 canonical parent metadata",
+      "signature": "setParent(address,string)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R2",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "arguments": [
+        {
+          "binding": "future.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        "lock"
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.R1",
+        "future.R2"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "ParentUpdated",
+          "emitterBinding": "future.R2",
+          "signature": "ParentUpdated(address,string,address)",
+          "fields": [
+            {
+              "name": "parent",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "ParentUpdated"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T12",
+      "label": "Deploy CredentialRegistrar",
+      "signature": "constructor(address,string,address,address)",
+      "abi": "CredentialRegistrar",
+      "target": null,
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "OWNER_SUPPLIED_PUBLIC_ADDRESS_NOT_SIGNING_CONTROL_PROOF"
+        },
+        "nak-lokesh-20261105",
+        {
+          "binding": "future.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R2",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.R1",
+        "future.R2"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [],
+      "expectedApplicationEventOrder": [],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T13",
+      "label": "Grant only minimal registrar permissions",
+      "signature": "grantRootRoles(uint256,address)",
+      "abi": "UserRegistryImpl",
+      "target": {
+        "binding": "future.R2",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "arguments": [
+        4097,
+        {
+          "binding": "future.CredentialRegistrar",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.CredentialRegistrar",
+        "future.R2"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "EACRolesChanged",
+          "emitterBinding": "future.R2",
+          "signature": "EACRolesChanged(uint256,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "oldRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "newRoleBitmap",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "EACRolesChanged"
+      ],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T14",
+      "label": "Deploy DoorKeys",
+      "signature": "constructor(address,string,address,address,uint256)",
+      "abi": "DoorKeys",
+      "target": null,
+      "arguments": [
+        {
+          "binding": "accounts.owner",
+          "value": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+          "classification": "OWNER_SUPPLIED_PUBLIC_ADDRESS_NOT_SIGNING_CONTROL_PROOF"
+        },
+        "nak-lokesh-20261105",
+        {
+          "binding": "future.R1",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        {
+          "binding": "future.R2",
+          "value": null,
+          "classification": "UNVERIFIED"
+        },
+        1
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.R1",
+        "future.R2"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [],
+      "expectedApplicationEventOrder": [],
+      "labelStoreEvent": null,
+      "execution": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "T15",
+      "label": "Issue Mira temporary credential",
+      "signature": "issue(string,address,uint64)",
+      "abi": "CredentialRegistrar",
+      "target": {
+        "binding": "future.CredentialRegistrar",
+        "value": null,
+        "classification": "UNVERIFIED"
+      },
+      "arguments": [
+        "mira",
+        {
+          "binding": "accounts.guest",
+          "value": "0x5a9191871b9117218F83Ed43293E011667053F39",
+          "classification": "OWNER_SUPPLIED_PUBLIC_ADDRESS_NOT_SIGNING_CONTROL_PROOF"
+        },
+        {
+          "binding": "inputs.guestExpiry",
+          "value": null,
+          "classification": "UNVERIFIED"
+        }
+      ],
+      "signer": {
+        "address": "0x40F6DcB0Fa311570f72aC6F64045EB80E66711F7",
+        "control": "UNRESOLVED"
+      },
+      "finalCalldata": null,
+      "finalGasEstimate": null,
+      "state": "BLOCKED",
+      "remainingBindings": [
+        "future.CredentialRegistrar",
+        "inputs.guestExpiry"
+      ],
+      "snapshotCandidate": null,
+      "expectedEvents": [
+        {
+          "name": "CredentialIssued",
+          "emitterBinding": "future.CredentialRegistrar",
+          "signature": "CredentialIssued(bytes32,uint256,address,uint64)",
+          "fields": [
+            {
+              "name": "labelHash",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "guest",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "expiry",
+              "type": "uint64",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "name": "LabelRegistered",
+          "abi": "UserRegistryImpl",
+          "emitterBinding": "future.R2",
+          "signature": "LabelRegistered(uint256,bytes32,string,address,uint64,address)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "labelHash",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "indexed": false
+            },
+            {
+              "name": "expiry",
+              "type": "uint64",
+              "indexed": false
+            },
+            {
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "TransferSingle",
+          "emitterBinding": "future.R2",
+          "signature": "TransferSingle(address,address,address,uint256,uint256)",
+          "fields": [
+            {
+              "name": "operator",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "from",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "to",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "name": "id",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "name": "value",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        },
+        {
+          "abi": "UserRegistryImpl",
+          "name": "TokenResource",
+          "emitterBinding": "future.R2",
+          "signature": "TokenResource(uint256,uint256)",
+          "fields": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "name": "resource",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "requiredCount": 1,
+          "valueValidation": "Reconcile every decoded field with exact reviewed arguments, sender, receipt-created addresses, token/resource readback and receipt block; ABI matching alone is insufficient."
+        }
+      ],
+      "expectedApplicationEventOrder": [
+        "LabelRegistered",
+        "TransferSingle",
+        "TokenResource",
+        "CredentialIssued"
+      ],
+      "labelStoreEvent": {
+        "name": "Label",
+        "signature": "Label(bytes32,string)",
+        "emitter": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+        "indexed": [
+          true,
+          false
+        ],
+        "condition": "T04/T08/T15 only: exactly one event if global getLabel(labelId) is empty immediately before registration; otherwise zero; compare source LibLabel.id, exact label and emitter",
+        "currentlyStoredLabelRead": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "execution": "NOT_AUTHORIZED"
+    }
+  ]
+}

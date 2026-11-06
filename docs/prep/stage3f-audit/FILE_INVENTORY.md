@@ -1,0 +1,47 @@
+# Gate-audit file inventory
+
+All **43** files below are new and untracked. All293 pre-existing tracked files are byte-identical. No index entries, commit or push. Includes preserved LabelStore inspection failures and public upstream sources. No production or historical file was changed.
+
+- `contracts/scripts/stage3f_audit/ancestor_roles.py`
+- `contracts/scripts/stage3f_audit/compile_sources.py`
+- `contracts/scripts/stage3f_audit/labelstore.py`
+- `contracts/scripts/stage3f_audit/probe.py`
+- `contracts/scripts/stage3f_audit/reconcile_runtime.py`
+- `contracts/scripts/stage3f_audit/test_audit.py`
+- `docs/prep/evidence/stage3f-audit/SHA256SUMS`
+- `docs/prep/evidence/stage3f-audit/ancestor-probe.log`
+- `docs/prep/evidence/stage3f-audit/ancestor-reconciliation.json`
+- `docs/prep/evidence/stage3f-audit/ancestor-role-observation.json`
+- `docs/prep/evidence/stage3f-audit/ancestor-rpc-transcript.json`
+- `docs/prep/evidence/stage3f-audit/audit-tests-final.log`
+- `docs/prep/evidence/stage3f-audit/audit-tests.log`
+- `docs/prep/evidence/stage3f-audit/compiler-audit.json`
+- `docs/prep/evidence/stage3f-audit/compiler-reproduction.log`
+- `docs/prep/evidence/stage3f-audit/compiler-stderr-reproducible.log`
+- `docs/prep/evidence/stage3f-audit/compiler-stderr.log`
+- `docs/prep/evidence/stage3f-audit/final-validation.log`
+- `docs/prep/evidence/stage3f-audit/git-status.txt`
+- `docs/prep/evidence/stage3f-audit/labelstore-artifact.json`
+- `docs/prep/evidence/stage3f-audit/labelstore-inspection.log`
+- `docs/prep/evidence/stage3f-audit/labelstore-rpc-transcript.json`
+- `docs/prep/evidence/stage3f-audit/labelstore-script-attempt1.py.txt`
+- `docs/prep/evidence/stage3f-audit/labelstore-standard-input.json`
+- `docs/prep/evidence/stage3f-audit/labelstore-verification-attempt1.log`
+- `docs/prep/evidence/stage3f-audit/labelstore-verification-final.log`
+- `docs/prep/evidence/stage3f-audit/labelstore-verification.json`
+- `docs/prep/evidence/stage3f-audit/labelstore-verification.log`
+- `docs/prep/evidence/stage3f-audit/python-indentation-check.log`
+- `docs/prep/evidence/stage3f-audit/read-only-observation.json`
+- `docs/prep/evidence/stage3f-audit/read-only-probe.log`
+- `docs/prep/evidence/stage3f-audit/rpc-transcript.json`
+- `docs/prep/evidence/stage3f-audit/run.json`
+- `docs/prep/evidence/stage3f-audit/runtime-reconciliation-reproduced.log`
+- `docs/prep/evidence/stage3f-audit/runtime-reconciliation.log`
+- `docs/prep/evidence/stage3f-audit/semantic-runtime-reconciliation.json`
+- `docs/prep/evidence/stage3f-audit/stage3e-manifest-check.log`
+- `docs/prep/evidence/stage3f-audit/stage3e-offline-tests.log`
+- `docs/prep/stage3f-audit/FILE_INVENTORY.md`
+- `docs/prep/stage3f-audit/READINESS_REPORT.md`
+- `docs/prep/stage3f-audit/TRANSACTION_REVIEW_PLAN.md`
+- `docs/prep/stage3f-audit/gate-status.json`
+- `docs/prep/stage3f-audit/review-plan.json`

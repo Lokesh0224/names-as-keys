@@ -1,0 +1,1 @@
+PASS: compiler input, binary, version and every AST immutable mapping reproduced; compiled output retained at requested local path

@@ -1,0 +1,342 @@
+{
+  "stage": "Local deployment-workflow preparation only",
+  "stage3F": "NO_GO",
+  "utc": "2026-11-06T00:45:22.327184+00:00",
+  "displayTimezone": "Asia/Calcutta",
+  "head": "3c6240f84d6010ac7dfcefb9f5f626655f22f767",
+  "branch": "master",
+  "initialTrackedFiles": 293,
+  "initialUntrackedAuditFiles": 43,
+  "newWorkflowFileCount": 51,
+  "totalUntrackedFileCount": 94,
+  "sourceHashes": {
+    "contracts/scripts/deployment_workflow/README.md": "8e4d2bd3e5ff98df65f5555e0fa443a24e55b9b15b4e09434d8705e968020282",
+    "contracts/scripts/deployment_workflow/browser.mjs": "092394da69fe7035a0ac97f8496de6fe9986114234004222b91d02aad8096572",
+    "contracts/scripts/deployment_workflow/build.mjs": "c9b15d8701299772370a0568d6cdc9f052f713758633d5e34f58d1557b7987b5",
+    "contracts/scripts/deployment_workflow/guards.mjs": "fc46ccdeb2c065b7472db07f6a1b2b14dc0c861886188640993667fc2fe69854",
+    "contracts/scripts/deployment_workflow/index.html": "81b7b1b49c37fba384a2343f19258370a596aa41507daf786f61bd0f86d82b03",
+    "contracts/scripts/deployment_workflow/package-lock.json": "51bb1b2c8644040884d7e2e854eb46de60e41660ea74debd089f1f2b4bd77088",
+    "contracts/scripts/deployment_workflow/package.json": "26c18ac6785a1e85021f70d401be6c0c51707d3b985bf0a620d1e19f398e354a",
+    "contracts/scripts/deployment_workflow/style.css": "4367542ca6eb2b582c1a80c028fd6878e88b05d61fb816c7662ee928be76538b",
+    "contracts/scripts/deployment_workflow/test/fixture.mjs": "82f44bd512347a5967b6b8bcb5385087070b92a75a411e9cda357e223dbf5d4a",
+    "contracts/scripts/deployment_workflow/test/workflow.test.mjs": "8833b5135aadb235eebd58a2072fa64bd62a00a1fbe2592868aec0e86c0c75d1",
+    "contracts/scripts/deployment_workflow/workflow.mjs": "270f668e19f1499245d637b129fa081deeb3c7ef4f7e6dbc7d9e9e90e044a66d",
+    "contracts/test/workflow/OrderedDeploymentWorkflow.t.sol": "02e071cc403128f5f606468dea45a5af9c4b155d5bdb48526e9200d2d0ce7de2",
+    "docs/prep/workflow/FILE_INVENTORY.md": "7d68ee204efb223768aa86ec1c84e045fd511ac79c880a16c609a8cbf704ff59",
+    "docs/prep/workflow/IMPLEMENTATION_REPORT.md": "63dda6760046b63bbeb70e8981cd5089a2cc7f3fcec1b84dbbaeb12fa407c9ca",
+    "docs/prep/workflow/PROPOSED_DEFAULTS.json": "6e4dc63ea3bce446febb5ddae9f9f3a9e50cb82a61cd882fa64c72abdbc1a410"
+  },
+  "newSourceDiffStat": [
+    {
+      "file": "contracts/scripts/deployment_workflow/README.md",
+      "bytes": 2176,
+      "lines": 26
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/browser.mjs",
+      "bytes": 5077,
+      "lines": 45
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/build.mjs",
+      "bytes": 1618,
+      "lines": 19
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/guards.mjs",
+      "bytes": 4000,
+      "lines": 41
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/index.html",
+      "bytes": 1889,
+      "lines": 3
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/package-lock.json",
+      "bytes": 18382,
+      "lines": 608
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/package.json",
+      "bytes": 286,
+      "lines": 12
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/style.css",
+      "bytes": 686,
+      "lines": 9
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/test/fixture.mjs",
+      "bytes": 4652,
+      "lines": 55
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/test/workflow.test.mjs",
+      "bytes": 18004,
+      "lines": 230
+    },
+    {
+      "file": "contracts/scripts/deployment_workflow/workflow.mjs",
+      "bytes": 27047,
+      "lines": 333
+    },
+    {
+      "file": "contracts/test/workflow/OrderedDeploymentWorkflow.t.sol",
+      "bytes": 14034,
+      "lines": 281
+    },
+    {
+      "file": "docs/prep/workflow/FILE_INVENTORY.md",
+      "bytes": 5652,
+      "lines": 103
+    },
+    {
+      "file": "docs/prep/workflow/IMPLEMENTATION_REPORT.md",
+      "bytes": 17039,
+      "lines": 85
+    },
+    {
+      "file": "docs/prep/workflow/PROPOSED_DEFAULTS.json",
+      "bytes": 2740,
+      "lines": 60
+    }
+  ],
+  "commands": [
+    {
+      "command": "node contracts/scripts/deployment_workflow/test/workflow.test.mjs",
+      "exitCode": 0,
+      "evidence": "node-tests-final-54.log",
+      "result": "54 passed,0 failed"
+    },
+    {
+      "command": "node contracts/scripts/deployment_workflow/build.mjs",
+      "exitCode": 0,
+      "evidence": "build-final-54.log",
+      "result": "Static local bundle; no provider contacted"
+    },
+    {
+      "command": "forge test --root contracts --fork-url https://sepolia.gateway.tenderly.co --fork-block-number 12071963 --match-contract OrderedDeploymentWorkflowTest -vv",
+      "exitCode": 0,
+      "evidence": "ordered-fork-attempt1.log",
+      "result": "1 passed,15 ordered local EVM actions"
+    },
+    {
+      "command": "forge build --root contracts --offline",
+      "exitCode": 0,
+      "evidence": "offline-build-attempt1.log",
+      "result": "Existing lints/cache warning only; production unchanged"
+    },
+    {
+      "command": "forge fmt --check contracts/test/workflow/OrderedDeploymentWorkflow.t.sol",
+      "exitCode": 0,
+      "evidence": "format-verification-final.log",
+      "result": "Formatting passed"
+    },
+    {
+      "command": "npm install --package-lock-only --offline --ignore-scripts --no-audit --no-fund --prefix contracts/scripts/deployment_workflow",
+      "exitCode": 1,
+      "evidence": "dependency-lock.log",
+      "result": "Metadata unavailable offline; preserved failure"
+    },
+    {
+      "command": "npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefix contracts/scripts/deployment_workflow --cache /tmp/nak-workflow-npm-cache --logs-dir /tmp/nak-workflow-npm-logs",
+      "exitCode": 0,
+      "evidence": "dependency-lock-final.log",
+      "result": "Public metadata only; no package install/lifecycle scripts"
+    },
+    {
+      "command": "node contracts/scripts/deployment_workflow/test/workflow.test.mjs (intermediate)",
+      "exitCode": 1,
+      "evidence": "node-tests-final-attempt1.log",
+      "result": "Guard-message assertion corrected"
+    },
+    {
+      "command": "node contracts/scripts/deployment_workflow/test/workflow.test.mjs (intermediate expanded)",
+      "exitCode": 1,
+      "evidence": "node-tests-expanded-attempt1.log",
+      "result": "Fixture relative path corrected"
+    }
+  ],
+  "checks": [
+    {
+      "check": "HEAD unchanged",
+      "status": "PASS",
+      "detail": "3c6240f84d6010ac7dfcefb9f5f626655f22f767"
+    },
+    {
+      "check": "all 293 tracked files byte-identical",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "check": "index empty",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "git diff --check",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "git diff --cached --check",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "prior readiness-audit artifacts preserved",
+      "status": "PASS",
+      "detail": "42 prior checksums verified; prior manifest unchanged; 43 pre-existing untracked paths retained"
+    },
+    {
+      "check": "workflow changes isolated",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "JS syntax checks",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "check": "Solidity formatting",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "final workflow tests",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "ordered local-fork fixture",
+      "status": "PASS",
+      "detail": "15 disposable EVM calls; not final deployment simulation"
+    },
+    {
+      "check": "local bundle build",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "dependency lock generated without scripts",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "secret-pattern scan",
+      "status": "PASS",
+      "detail": "{\"patterns\": {\"private_key_literal\": \"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase)\\\\s*[=:]\\\\s*[\\\\\\\"\\\\'](?:0x)?[a-zA-Z0-9 ]{32,}[\\\\\\\"\\\\']\", \"credentialed_url\": \"https?://[^\\\\s/\\\\\\\"<>]+:[^\\\\s/@\\\\\\\"<>]+@\", \"rpc_api_key_url\": \"https?://[^\\\\s\\\\\\\"<>]*(?:alchemy\\\\.com/v2/|infura\\\\.io/v3/|[?&](?:api[_-]?key|token|key)=)[a-zA-Z0-9_-]{12,}\", \"pem_private_key\": \"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----\"}, \"findings\": [], \"binary\": \"One manually reviewed test-only JPEG; no other binary artifacts\", \"limits\": \"Pattern scan, not mathematical absence-of-secrets proof. Public test preimages/hashes/salts intentionally retained.\"}"
+    },
+    {
+      "check": "all new-file whitespace checks",
+      "status": "PASS",
+      "detail": "[]"
+    }
+  ],
+  "inventory": [
+    "contracts/scripts/deployment_workflow/README.md",
+    "contracts/scripts/deployment_workflow/browser.mjs",
+    "contracts/scripts/deployment_workflow/build.mjs",
+    "contracts/scripts/deployment_workflow/guards.mjs",
+    "contracts/scripts/deployment_workflow/index.html",
+    "contracts/scripts/deployment_workflow/package-lock.json",
+    "contracts/scripts/deployment_workflow/package.json",
+    "contracts/scripts/deployment_workflow/style.css",
+    "contracts/scripts/deployment_workflow/test/fixture.mjs",
+    "contracts/scripts/deployment_workflow/test/workflow.test.mjs",
+    "contracts/scripts/deployment_workflow/workflow.mjs",
+    "contracts/test/workflow/OrderedDeploymentWorkflow.t.sol",
+    "docs/prep/evidence/workflow/.gitattributes",
+    "docs/prep/evidence/workflow/SHA256SUMS",
+    "docs/prep/evidence/workflow/SOURCE_DIFF.patch",
+    "docs/prep/evidence/workflow/browser-qa.json",
+    "docs/prep/evidence/workflow/build-final-52.log",
+    "docs/prep/evidence/workflow/build-final-53.log",
+    "docs/prep/evidence/workflow/build-final-54.log",
+    "docs/prep/evidence/workflow/build-final.log",
+    "docs/prep/evidence/workflow/build-verification-final.log",
+    "docs/prep/evidence/workflow/build.log",
+    "docs/prep/evidence/workflow/dependency-lock-final.log",
+    "docs/prep/evidence/workflow/dependency-lock.log",
+    "docs/prep/evidence/workflow/final-validation.log",
+    "docs/prep/evidence/workflow/format-check.log",
+    "docs/prep/evidence/workflow/format-verification-final.log",
+    "docs/prep/evidence/workflow/git-status.txt",
+    "docs/prep/evidence/workflow/node-tests-after-hardening.log",
+    "docs/prep/evidence/workflow/node-tests-attempt1.log",
+    "docs/prep/evidence/workflow/node-tests-detailed-attempt1.log",
+    "docs/prep/evidence/workflow/node-tests-expanded-attempt1.log",
+    "docs/prep/evidence/workflow/node-tests-final-52.log",
+    "docs/prep/evidence/workflow/node-tests-final-53.log",
+    "docs/prep/evidence/workflow/node-tests-final-54.log",
+    "docs/prep/evidence/workflow/node-tests-final-attempt1.log",
+    "docs/prep/evidence/workflow/node-tests-final-guards.log",
+    "docs/prep/evidence/workflow/node-tests-final.log",
+    "docs/prep/evidence/workflow/node-tests-hardened-final.log",
+    "docs/prep/evidence/workflow/node-tests-verification-final.log",
+    "docs/prep/evidence/workflow/offline-build-attempt1.log",
+    "docs/prep/evidence/workflow/ordered-fork-attempt1.log",
+    "docs/prep/evidence/workflow/run.json",
+    "docs/prep/evidence/workflow/solidity-format.log",
+    "docs/prep/evidence/workflow/test-only-ui.jpg",
+    "docs/prep/evidence/workflow/tooling-notes.log",
+    "docs/prep/evidence/workflow/validation-attempt1.log",
+    "docs/prep/evidence/workflow/whitespace-initial.json",
+    "docs/prep/workflow/FILE_INVENTORY.md",
+    "docs/prep/workflow/IMPLEMENTATION_REPORT.md",
+    "docs/prep/workflow/PROPOSED_DEFAULTS.json"
+  ],
+  "previousUnchangedInventory": [
+    "contracts/scripts/stage3f_audit/ancestor_roles.py",
+    "contracts/scripts/stage3f_audit/compile_sources.py",
+    "contracts/scripts/stage3f_audit/labelstore.py",
+    "contracts/scripts/stage3f_audit/probe.py",
+    "contracts/scripts/stage3f_audit/reconcile_runtime.py",
+    "contracts/scripts/stage3f_audit/test_audit.py",
+    "docs/prep/evidence/stage3f-audit/SHA256SUMS",
+    "docs/prep/evidence/stage3f-audit/ancestor-probe.log",
+    "docs/prep/evidence/stage3f-audit/ancestor-reconciliation.json",
+    "docs/prep/evidence/stage3f-audit/ancestor-role-observation.json",
+    "docs/prep/evidence/stage3f-audit/ancestor-rpc-transcript.json",
+    "docs/prep/evidence/stage3f-audit/audit-tests-final.log",
+    "docs/prep/evidence/stage3f-audit/audit-tests.log",
+    "docs/prep/evidence/stage3f-audit/compiler-audit.json",
+    "docs/prep/evidence/stage3f-audit/compiler-reproduction.log",
+    "docs/prep/evidence/stage3f-audit/compiler-stderr-reproducible.log",
+    "docs/prep/evidence/stage3f-audit/compiler-stderr.log",
+    "docs/prep/evidence/stage3f-audit/final-validation.log",
+    "docs/prep/evidence/stage3f-audit/git-status.txt",
+    "docs/prep/evidence/stage3f-audit/labelstore-artifact.json",
+    "docs/prep/evidence/stage3f-audit/labelstore-inspection.log",
+    "docs/prep/evidence/stage3f-audit/labelstore-rpc-transcript.json",
+    "docs/prep/evidence/stage3f-audit/labelstore-script-attempt1.py.txt",
+    "docs/prep/evidence/stage3f-audit/labelstore-standard-input.json",
+    "docs/prep/evidence/stage3f-audit/labelstore-verification-attempt1.log",
+    "docs/prep/evidence/stage3f-audit/labelstore-verification-final.log",
+    "docs/prep/evidence/stage3f-audit/labelstore-verification.json",
+    "docs/prep/evidence/stage3f-audit/labelstore-verification.log",
+    "docs/prep/evidence/stage3f-audit/python-indentation-check.log",
+    "docs/prep/evidence/stage3f-audit/read-only-observation.json",
+    "docs/prep/evidence/stage3f-audit/read-only-probe.log",
+    "docs/prep/evidence/stage3f-audit/rpc-transcript.json",
+    "docs/prep/evidence/stage3f-audit/run.json",
+    "docs/prep/evidence/stage3f-audit/runtime-reconciliation-reproduced.log",
+    "docs/prep/evidence/stage3f-audit/runtime-reconciliation.log",
+    "docs/prep/evidence/stage3f-audit/semantic-runtime-reconciliation.json",
+    "docs/prep/evidence/stage3f-audit/stage3e-manifest-check.log",
+    "docs/prep/evidence/stage3f-audit/stage3e-offline-tests.log",
+    "docs/prep/stage3f-audit/FILE_INVENTORY.md",
+    "docs/prep/stage3f-audit/READINESS_REPORT.md",
+    "docs/prep/stage3f-audit/TRANSACTION_REVIEW_PLAN.md",
+    "docs/prep/stage3f-audit/gate-status.json",
+    "docs/prep/stage3f-audit/review-plan.json"
+  ],
+  "liveActionsPerformed": false,
+  "gitMutationsPerformed": false,
+  "fullFoundrySuiteRun": false,
+  "exactApprovedManifestSimulated": false,
+  "uiQA": "browser-qa.json; test-only-ui.jpg; no wallet inspection clicked; loopback server stopped"
+}

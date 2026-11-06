@@ -1,0 +1,77 @@
+{
+  "url": "https://raw.githubusercontent.com/ensdomains/contracts-v2/07e55a056f5b6a9c90119f501bdd05714e67dddd/contracts/deployments/sepolia/LabelStore.json",
+  "artifactSHA256": "2f6c5287e66bf37c26c15cd3dc18f8185d257472945e2c5a11d6944e535e8508",
+  "source": "project/src/utils/LabelStore.sol",
+  "contract": "LabelStore",
+  "sources": 10,
+  "compiler": "0.8.25+commit.b61c2a91",
+  "solcBinarySHA256": "c42aada7a52057ddbed93ec011235e256c564c440b68dbaac5ae482babbb3d6d",
+  "sourceInputSHA256": "f4c4085d0c73f63f94c54f5c7f7522989cb706c92863ca62d33eb9c479a19b74",
+  "creationTemplateExact": true,
+  "runtimeTemplateExact": true,
+  "fullLiveRuntimeExact": true,
+  "abiExact": true,
+  "immutableReferences": {
+    "1601": [
+      {
+        "length": 32,
+        "start": 149
+      },
+      {
+        "length": 32,
+        "start": 405
+      }
+    ]
+  },
+  "immutableDeclarations": {
+    "1601": "CONTRACT_NAMER"
+  },
+  "expectedContractNamer": "000000000000000000000000606f2453484f4fa85b6e5fdb0e0bf777064bf9f3",
+  "namerGetter": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": "0x000000000000000000000000606f2453484f4fa85b6e5fdb0e0bf777064bf9f3"
+  },
+  "labelReads": {
+    "nak-lokesh-20261105": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "lock": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "mira": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "receipt": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "type": "0x2",
+      "status": "0x1",
+      "cumulativeGasUsed": "0x9fb3c1",
+      "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "logs": [],
+      "transactionHash": "0x1b2b353d0af949af4e19a71403883eef95a74b8665a3eae03ff9bba4f3168b61",
+      "from": "0x84d3a426d4e12e955d1df95db0b24fe26afe39d3",
+      "to": null,
+      "contractAddress": "0xed8246ff02203a4d4cb262bd78beaa7408a57cae",
+      "gasUsed": "0x72f01",
+      "effectiveGasPrice": "0x3d0d7a6d",
+      "blockHash": "0x28784906ec31d474c46ed0cba3dcf8b98075d8d7a86ca6017de728683a5bd9d2",
+      "blockNumber": "0xb45d01",
+      "transactionIndex": "0x63",
+      "blobGasUsed": "0x0"
+    }
+  },
+  "canonicalSuccessfulReceipt": true,
+  "eventSignatures": [
+    "Label(bytes32,string)"
+  ]
+}

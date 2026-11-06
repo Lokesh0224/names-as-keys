@@ -1,0 +1,216 @@
+{
+  "sourceInput": "docs/prep/evidence/stage3e/ens-standard-input.json",
+  "sourceInputSHA256": "b2c30369dcac59dba1ab06f7de5bebb4086d101bde6a29242650bc0597c09c06",
+  "auditInputSHA256": "a81eaaa77282e1bca3453d8d2d3f084e9b80a5c54efd88deec9c7db5e7b49d1e",
+  "outputSelection": {
+    "project/lib/verifiable-factory/src/VerifiableFactory.sol": {
+      "VerifiableFactory": [
+        "abi",
+        "metadata",
+        "evm.bytecode.object",
+        "evm.deployedBytecode.object",
+        "evm.deployedBytecode.immutableReferences"
+      ]
+    },
+    "project/src/registrar/ETHRegistrar.sol": {
+      "ETHRegistrar": [
+        "abi",
+        "metadata",
+        "evm.bytecode.object",
+        "evm.deployedBytecode.object",
+        "evm.deployedBytecode.immutableReferences"
+      ]
+    },
+    "project/src/registrar/StandardRentPriceOracle.sol": {
+      "StandardRentPriceOracle": [
+        "abi",
+        "metadata",
+        "evm.bytecode.object",
+        "evm.deployedBytecode.object",
+        "evm.deployedBytecode.immutableReferences"
+      ]
+    },
+    "project/src/registry/PermissionedRegistry.sol": {
+      "PermissionedRegistry": [
+        "abi",
+        "metadata",
+        "evm.bytecode.object",
+        "evm.deployedBytecode.object",
+        "evm.deployedBytecode.immutableReferences"
+      ]
+    },
+    "project/src/registry/UserRegistry.sol": {
+      "UserRegistry": [
+        "abi",
+        "metadata",
+        "evm.bytecode.object",
+        "evm.deployedBytecode.object",
+        "evm.deployedBytecode.immutableReferences"
+      ]
+    },
+    "project/test/mocks/MockERC20.sol": {
+      "MockERC20": [
+        "abi",
+        "metadata",
+        "evm.bytecode.object",
+        "evm.deployedBytecode.object",
+        "evm.deployedBytecode.immutableReferences"
+      ]
+    },
+    "*": {
+      "": [
+        "ast"
+      ]
+    },
+    "project/lib/verifiable-factory/src/UUPSProxyLogic.sol": {
+      "UUPSProxyLogic": [
+        "abi",
+        "evm.bytecode.object",
+        "evm.deployedBytecode.object",
+        "evm.deployedBytecode.immutableReferences"
+      ]
+    }
+  },
+  "solcBinarySHA256": "c42aada7a52057ddbed93ec011235e256c564c440b68dbaac5ae482babbb3d6d",
+  "solcVersion": "solc, the solidity compiler commandline interface\nVersion: 0.8.25+commit.b61c2a91.Linux.g++",
+  "immutableDeclarations": {
+    "557": {
+      "name": "__self",
+      "source": "project/lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol",
+      "src": "1128:48:2",
+      "type": "address"
+    },
+    "6770": {
+      "name": "_cachedDomainSeparator",
+      "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+      "src": "2373:48:36",
+      "type": "bytes32"
+    },
+    "6772": {
+      "name": "_cachedChainId",
+      "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+      "src": "2427:40:36",
+      "type": "uint256"
+    },
+    "6774": {
+      "name": "_cachedThis",
+      "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+      "src": "2473:37:36",
+      "type": "address"
+    },
+    "6776": {
+      "name": "_hashedName",
+      "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+      "src": "2517:37:36",
+      "type": "bytes32"
+    },
+    "6778": {
+      "name": "_hashedVersion",
+      "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+      "src": "2560:40:36",
+      "type": "bytes32"
+    },
+    "6781": {
+      "name": "_name",
+      "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+      "src": "2607:35:36",
+      "type": "ShortString"
+    },
+    "6784": {
+      "name": "_version",
+      "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+      "src": "2648:38:36",
+      "type": "ShortString"
+    },
+    "10913": {
+      "name": "verifiableProxyFactory",
+      "source": "project/lib/verifiable-factory/src/UUPSProxyLogic.sol",
+      "src": "1551:47:49",
+      "type": "address"
+    },
+    "11049": {
+      "name": "proxyLogic",
+      "source": "project/lib/verifiable-factory/src/VerifiableFactory.sol",
+      "src": "402:35:50",
+      "type": "address"
+    },
+    "13312": {
+      "name": "ETH_REGISTRY",
+      "source": "project/src/registrar/AbstractETHRegistrar.sol",
+      "src": "1193:51:58",
+      "type": "contract IPermissionedRegistry"
+    },
+    "13315": {
+      "name": "BENEFICIARY",
+      "source": "project/src/registrar/AbstractETHRegistrar.sol",
+      "src": "1299:36:58",
+      "type": "address"
+    },
+    "13712": {
+      "name": "GRACE_PERIOD",
+      "source": "project/src/registrar/ETHRegistrar.sol",
+      "src": "2094:36:59",
+      "type": "uint64"
+    },
+    "13715": {
+      "name": "MIN_COMMITMENT_AGE",
+      "source": "project/src/registrar/ETHRegistrar.sol",
+      "src": "2284:42:59",
+      "type": "uint64"
+    },
+    "13718": {
+      "name": "MAX_COMMITMENT_AGE",
+      "source": "project/src/registrar/ETHRegistrar.sol",
+      "src": "2427:42:59",
+      "type": "uint64"
+    },
+    "13721": {
+      "name": "MIN_REGISTER_DURATION",
+      "source": "project/src/registrar/ETHRegistrar.sol",
+      "src": "2531:45:59",
+      "type": "uint64"
+    },
+    "14409": {
+      "name": "DISCOUNT_DENOMINATOR",
+      "source": "project/src/registrar/StandardRentPriceOracle.sol",
+      "src": "3933:45:60",
+      "type": "uint128"
+    },
+    "14412": {
+      "name": "PREMIUM_PRICE_INITIAL",
+      "source": "project/src/registrar/StandardRentPriceOracle.sol",
+      "src": "4100:46:60",
+      "type": "uint256"
+    },
+    "14415": {
+      "name": "PREMIUM_HALVING_PERIOD",
+      "source": "project/src/registrar/StandardRentPriceOracle.sol",
+      "src": "4222:46:60",
+      "type": "uint64"
+    },
+    "14418": {
+      "name": "PREMIUM_PERIOD",
+      "source": "project/src/registrar/StandardRentPriceOracle.sol",
+      "src": "4382:38:60",
+      "type": "uint64"
+    },
+    "14421": {
+      "name": "PREMIUM_PRICE_OFFSET",
+      "source": "project/src/registrar/StandardRentPriceOracle.sol",
+      "src": "4489:45:60",
+      "type": "uint256"
+    },
+    "16063": {
+      "name": "LABEL_STORE",
+      "source": "project/src/registry/PermissionedRegistry.sol",
+      "src": "4542:40:66",
+      "type": "contract ILabelStore"
+    },
+    "18047": {
+      "name": "URI_RENDERER",
+      "source": "project/src/registry/UserRegistry.sol",
+      "src": "1642:50:67",
+      "type": "contract IRegistryURIRenderer"
+    }
+  }
+}

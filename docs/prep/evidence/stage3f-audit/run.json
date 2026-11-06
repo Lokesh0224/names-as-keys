@@ -1,0 +1,193 @@
+{
+  "stage": "Read-only Stage 3F gate audit; not execution authorization",
+  "utc": "2026-11-05T21:12:58.326133+00:00",
+  "branch": "master",
+  "head": "3c6240f84d6010ac7dfcefb9f5f626655f22f767",
+  "initialWorkingTreeClean": true,
+  "trackedFileCount": 293,
+  "newFileCount": 43,
+  "sourceHashes": {
+    "contracts/scripts/stage3f_audit/test_audit.py": "aaef15d803d50c2f241b81c393f2d7ffb8434cc68c3ed87a8b901f9699d0bc63",
+    "contracts/scripts/stage3f_audit/probe.py": "a6fd3fd976056af4ccc66f78f6be858b096ea3e492aa3c4cf149091e2463d646",
+    "contracts/scripts/stage3f_audit/ancestor_roles.py": "585166265b61a5a760a9585a5761ae15149e89d0a48788430b567bbf2abce697",
+    "contracts/scripts/stage3f_audit/labelstore.py": "4ae9d6e96c2db012d0ae21167805a53d019b01419de4572cbab8fbc328522495",
+    "contracts/scripts/stage3f_audit/reconcile_runtime.py": "fa1d03d901197c38fa141ac260324317b631201742d35fda48712a935b3864d1",
+    "contracts/scripts/stage3f_audit/compile_sources.py": "bbd3be46a03ee5122125699fbde35c31a3f887c4db7f35054ea452ca764bde2b"
+  },
+  "commands": [
+    {
+      "command": "python3 contracts/scripts/stage3f_audit/probe.py",
+      "exitCode": 0,
+      "evidence": "read-only-probe.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3f_audit/compile_sources.py --output /tmp/nak-stage3f-reproduced.json --solc /home/l/.local/share/svm/0.8.25/solc-0.8.25",
+      "exitCode": 0,
+      "evidence": "compiler-reproduction.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3f_audit/reconcile_runtime.py --compiled /tmp/nak-stage3f-reproduced.json",
+      "exitCode": 0,
+      "evidence": "runtime-reconciliation-reproduced.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3f_audit/ancestor_roles.py",
+      "exitCode": 0,
+      "evidence": "ancestor-probe.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3f_audit/labelstore.py (first assumption-limited version)",
+      "exitCode": 1,
+      "evidence": "labelstore-verification-attempt1.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3f_audit/labelstore.py (artifact-preserving inspection version)",
+      "exitCode": 1,
+      "evidence": "labelstore-inspection.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3f_audit/labelstore.py (final constructor/AST immutable reconciliation)",
+      "exitCode": 0,
+      "evidence": "labelstore-verification-final.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s contracts/scripts/stage3f_audit -p 'test_*.py' -v",
+      "exitCode": 0,
+      "evidence": "audit-tests-final.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s contracts/scripts/stage3e -p 'test*.py' -v",
+      "exitCode": 0,
+      "evidence": "stage3e-offline-tests.log"
+    },
+    {
+      "command": "python3 contracts/scripts/stage3e/prepare.py --check",
+      "exitCode": 0,
+      "evidence": "stage3e-manifest-check.log"
+    },
+    {
+      "command": "python3 -m tabnanny contracts/scripts/stage3f_audit",
+      "exitCode": 0,
+      "evidence": "python-indentation-check.log"
+    }
+  ],
+  "checks": [
+    {
+      "check": "approved HEAD unchanged",
+      "status": "PASS",
+      "detail": "3c6240f84d6010ac7dfcefb9f5f626655f22f767"
+    },
+    {
+      "check": "all 293 previously tracked files byte-identical",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "check": "index empty",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "new paths limited to gate audit",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "git diff --check",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "git diff --cached --check",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "untracked whitespace",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "check": "secret-pattern scan",
+      "status": "PASS",
+      "detail": "{\"patterns\": {\"private_key_literal\": \"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase)\\\\s*[=:]\\\\s*[\\\\\\\"\\\\'](?:0x)?[a-zA-Z0-9 ]{32,}[\\\\\\\"\\\\']\", \"credentialed_url\": \"https?://[^\\\\s/\\\\\\\"<>]+:[^\\\\s/@\\\\\\\"<>]+@\", \"rpc_api_key_url\": \"https?://[^\\\\s\\\\\\\"<>]*(?:alchemy\\\\.com/v2/|infura\\\\.io/v3/|[?&](?:api[_-]?key|token|key)=)[a-zA-Z0-9_-]{12,}\", \"pem_private_key\": \"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----\"}, \"findings\": [], \"limit\": \"Pattern inspection of public artifacts; no absolute absence-of-secrets claim.\"}"
+    },
+    {
+      "check": "Python syntax and indentation",
+      "status": "PASS",
+      "detail": "No configured Python formatter; AST/indentation and Git whitespace checked; no Solidity modifications."
+    },
+    {
+      "check": "committed Stage 3E current checksums",
+      "status": "PASS",
+      "detail": "81 verified; historical snapshots preserved unchanged"
+    },
+    {
+      "check": "new audit tests",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "Stage 3E offline tests",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "committed offline manifest checker",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "all final transaction payloads remain blocked",
+      "status": "PASS",
+      "detail": ""
+    }
+  ],
+  "inventory": [
+    "contracts/scripts/stage3f_audit/ancestor_roles.py",
+    "contracts/scripts/stage3f_audit/compile_sources.py",
+    "contracts/scripts/stage3f_audit/labelstore.py",
+    "contracts/scripts/stage3f_audit/probe.py",
+    "contracts/scripts/stage3f_audit/reconcile_runtime.py",
+    "contracts/scripts/stage3f_audit/test_audit.py",
+    "docs/prep/evidence/stage3f-audit/SHA256SUMS",
+    "docs/prep/evidence/stage3f-audit/ancestor-probe.log",
+    "docs/prep/evidence/stage3f-audit/ancestor-reconciliation.json",
+    "docs/prep/evidence/stage3f-audit/ancestor-role-observation.json",
+    "docs/prep/evidence/stage3f-audit/ancestor-rpc-transcript.json",
+    "docs/prep/evidence/stage3f-audit/audit-tests-final.log",
+    "docs/prep/evidence/stage3f-audit/audit-tests.log",
+    "docs/prep/evidence/stage3f-audit/compiler-audit.json",
+    "docs/prep/evidence/stage3f-audit/compiler-reproduction.log",
+    "docs/prep/evidence/stage3f-audit/compiler-stderr-reproducible.log",
+    "docs/prep/evidence/stage3f-audit/compiler-stderr.log",
+    "docs/prep/evidence/stage3f-audit/final-validation.log",
+    "docs/prep/evidence/stage3f-audit/git-status.txt",
+    "docs/prep/evidence/stage3f-audit/labelstore-artifact.json",
+    "docs/prep/evidence/stage3f-audit/labelstore-inspection.log",
+    "docs/prep/evidence/stage3f-audit/labelstore-rpc-transcript.json",
+    "docs/prep/evidence/stage3f-audit/labelstore-script-attempt1.py.txt",
+    "docs/prep/evidence/stage3f-audit/labelstore-standard-input.json",
+    "docs/prep/evidence/stage3f-audit/labelstore-verification-attempt1.log",
+    "docs/prep/evidence/stage3f-audit/labelstore-verification-final.log",
+    "docs/prep/evidence/stage3f-audit/labelstore-verification.json",
+    "docs/prep/evidence/stage3f-audit/labelstore-verification.log",
+    "docs/prep/evidence/stage3f-audit/python-indentation-check.log",
+    "docs/prep/evidence/stage3f-audit/read-only-observation.json",
+    "docs/prep/evidence/stage3f-audit/read-only-probe.log",
+    "docs/prep/evidence/stage3f-audit/rpc-transcript.json",
+    "docs/prep/evidence/stage3f-audit/run.json",
+    "docs/prep/evidence/stage3f-audit/runtime-reconciliation-reproduced.log",
+    "docs/prep/evidence/stage3f-audit/runtime-reconciliation.log",
+    "docs/prep/evidence/stage3f-audit/semantic-runtime-reconciliation.json",
+    "docs/prep/evidence/stage3f-audit/stage3e-manifest-check.log",
+    "docs/prep/evidence/stage3f-audit/stage3e-offline-tests.log",
+    "docs/prep/stage3f-audit/FILE_INVENTORY.md",
+    "docs/prep/stage3f-audit/READINESS_REPORT.md",
+    "docs/prep/stage3f-audit/TRANSACTION_REVIEW_PLAN.md",
+    "docs/prep/stage3f-audit/gate-status.json",
+    "docs/prep/stage3f-audit/review-plan.json"
+  ],
+  "prohibitedActionsPerformed": false,
+  "notes": "Public read-only RPC plus non-persistent eth_call/eth_estimateGas only. No signatures, live mint, approval, registration, deployment, broadcast, staging, commit or push. No full Foundry or complete manifest fork simulation claimed."
+}

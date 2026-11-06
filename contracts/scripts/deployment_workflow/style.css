@@ -1,0 +1,9 @@
+:root { font: 16px/1.5 system-ui, sans-serif; color: #e6edf3; background: #101820; }
+main { max-width: 1060px; margin: 2rem auto; padding: 0 1rem; }
+section { border: 1px solid #49606c; border-radius: 8px; padding: 1rem; margin: 1.2rem 0; }
+h1, h2 { line-height: 1.25; }
+pre { max-height: 32rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: #17232e; padding: 1rem; border-radius: 6px; }
+button, select { font: inherit; padding: .6rem; margin: .3rem; border-radius: 5px; }
+button:disabled { opacity: .55; }
+.warning { position: sticky; top: 0; z-index: 1; padding: .7rem; background: #101820; color: #ffe58f; font-weight: bold; }
+.gate { padding: .3rem; }

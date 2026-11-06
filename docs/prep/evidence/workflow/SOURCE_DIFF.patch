@@ -1,0 +1,2000 @@
+diff --git a/contracts/scripts/deployment_workflow/README.md b/contracts/scripts/deployment_workflow/README.md
+new file mode 100644
+index 0000000..bcfdf75
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/README.md
+@@ -0,0 +1,26 @@
++# Local deployment review (execution disabled)
++
++Stage3F is NO-GO. Production submission is locked in code; there is no browser enable switch. No wallet permission/signature is requested on page load. Do not use test-only addresses, public test preimages, salts or receipts as deployment inputs.
++
++From the repository root, with the pinned local ethers6.17.0/esbuild0.28.2 dependencies available:
++
++```sh
++node contracts/scripts/deployment_workflow/test/workflow.test.mjs
++node contracts/scripts/deployment_workflow/build.mjs
++python3 -m http.server 8769 --bind 127.0.0.1 --directory /tmp/nak-local-deployment-review
++```
++
++Open `http://127.0.0.1:8769/` locally. The UI displays all15 unresolved review packets and an isolated in-memory lifecycle demonstration. The inspect-wallet button reads only accounts already exposed by the provider and chain ID; it never requests permissions or switches chains. There is no send/sign control for a real wallet. Stop the temporary server after review. Build outputs are outside the repository and are not committed.
++
++`npm test` and `npm run build` also work from this directory. package-lock.json pins dependencies for separately authorized reproduction; dependency installation is not part of running the workflow. The browser demo journal is intentionally test memory. `BrowserJournal` is the public localStorage adapter for a future resolved/approved workflow; it is not initialized for deployment by the UI.
++
++Pinned ordered test-only fork simulation (read-only RPC; disposable in-memory changes):
++
++```sh
++forge test --root contracts --fork-url https://sepolia.gateway.tenderly.co \
++  --fork-block-number 12071963 --match-contract OrderedDeploymentWorkflowTest -vv
++```
++
++This executes15 local EVM actions using a synthetic root and test wallets, not real externally submitted transactions. It is **not** the final approved-input deployment simulation. No `forge script --broadcast`, private key, mnemonic or wallet import is used.
++
++Implementation/security decisions, proposals, test evidence and remaining blockers: `docs/prep/workflow/IMPLEMENTATION_REPORT.md` and `PROPOSED_DEFAULTS.json`. The earlier Stage3F audit is preserved unchanged.
+diff --git a/contracts/scripts/deployment_workflow/browser.mjs b/contracts/scripts/deployment_workflow/browser.mjs
+new file mode 100644
+index 0000000..99d0b7b
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/browser.mjs
+@@ -0,0 +1,45 @@
++import { Interface, formatUnits } from 'ethers';
++import { ReadOnlyWallet, digest } from './workflow.mjs';
++import { fixture } from './test/fixture.mjs';
++const element = id => document.getElementById(id);
++const show = (id, value) => { element(id).textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2); };
++let data, abis, demo, lastReview;
++function render() {
++  const step = data.transactions.find(s => s.id === element('step').value);
++  const iface = new Interface(abis[step.abi]);
++  const fragment = step.signature.startsWith('constructor(') ? iface.deploy : iface.getFunction(step.signature);
++  const candidate = step.snapshotCandidate;
++  const decoded = candidate ? iface.parseTransaction({ data: candidate.transaction.data }).args.toArray().map(x => typeof x === 'bigint' ? x.toString() : x) : null;
++  show('review', { argumentTypes: fragment.inputs.map(x => x.format('sighash')), snapshotDecodedArguments: decoded, id: step.id, selectedAccount: data.owner, chainId: data.chainId, destination: step.target ?? '[CREATE address unresolved]',
++    signature: step.signature, decodedArgumentBindings: step.arguments, inputStatus: 'UNRESOLVED / NOT_APPROVED',
++    tokenAmountAndAllowance: candidate ? { token: 'MockUSDC', units: String(candidate.arguments[1]), amount: formatUnits(candidate.arguments[1],6), allowanceSnapshotUnits: '0', snapshotBlock: data.observationBlock, recipientOrSpender: candidate.arguments[0], classification: 'SNAPSHOT_ONLY_NOT_AN_APPROVED_SPEND' } : 'See exact step preconditions; unresolved future bindings',
++    ethValueWei: '0', gasLimit: null, maxFeePerGasWei: null, maxPriorityFeePerGasWei: null,
++    proposedLimits: { fees: data.workflowProposals.fees, spending: data.workflowProposals.spending, confirmations: data.workflowProposals.confirmations }, missingInputs: step.remainingBindings, expectedEvents: step.expectedEvents, execution: 'DISABLED' });
++}
++function reset() { demo?.workflow.close(); demo = fixture(); lastReview = null; show('demo', 'Test-only provider idle.'); show('journal', 'No persisted test requests.'); for (const id of ['ack','submit','receipt']) element(id).disabled = true; }
++async function action(fn) { try { await fn(); } catch { show('demo', 'Blocked or rejected. No live wallet request was made. Re-prepare/reconcile the test-only packet.'); } show('journal', demo.persisted() ?? {}); }
++element('prepare').onclick = () => action(async () => { lastReview = await demo.workflow.prepare('T01', demo.packets[0]); show('demo', lastReview); element('ack').disabled = false; });
++element('ack').onclick = () => action(async () => { demo.workflow.acknowledge('T01', digest(lastReview)); element('submit').disabled = false; element('ack').disabled = true; });
++element('submit').onclick = () => action(async () => { element('submit').disabled = true; await demo.workflow.submitTestOnly('T01'); element('receipt').disabled = false; });
++element('receipt').onclick = () => action(async () => { demo.provider.mine(demo.packets[0]); await demo.workflow.reconcile('T01'); show('demo', demo.workflow.state('T01')); element('receipt').disabled = true; });
++element('reset').onclick = reset;
++element('inspect').onclick = async () => {
++  try {
++    if (!window.ethereum) { show('wallet', 'No EIP-1193 provider available. No connection request made.'); return; }
++    const adapter = new ReadOnlyWallet(window.ethereum);
++    const chain = await adapter.request({ method: 'eth_chainId' });
++    const accounts = await adapter.request({ method: 'eth_accounts' });
++    show('wallet', { selectedAccount: accounts[0] ?? 'No previously exposed account', chainId: String(BigInt(chain)), matchesSelectedOwner: accounts[0]?.toLowerCase() === data.owner.toLowerCase(), matchesSepolia: BigInt(chain) === 11155111n, execution: 'DISABLED' });
++    for (const event of ['chainChanged','accountsChanged','disconnect']) adapter.on(event, () => show('wallet', 'Wallet context changed; previous identity observation invalid. Inspect again. Execution remains disabled.'));
++  } catch { show('wallet', 'Read-only identity inspection failed; execution remains disabled.'); }
++};
++async function load() {
++  data = await (await fetch('./review-plan.json')).json();
++  abis = await (await fetch('./verified-abis.json')).json();
++  const gates = await (await fetch('./gate-status.json')).json();
++  show('identity', { owner: data.owner, mira: data.mira, chainId: data.chainId, checkpoint: data.approvedCheckpoint, stage: 'NO_GO', signingControl: 'NOT_VERIFIED', observationBlock: data.observationBlock });
++  for (const gate of gates.gates) { const line = document.createElement('div'); line.className = 'gate'; line.textContent = `${gate.id} · ${gate.status} · ${gate.gate}`; element('gates').append(line); }
++  for (const step of data.transactions) { const option = document.createElement('option'); option.value = step.id; option.textContent = `${step.id} — ${step.label}`; element('step').append(option); }
++  element('step').onchange = render; render(); reset();
++}
++load().catch(() => show('identity', 'Plan load failed; execution disabled.'));
+diff --git a/contracts/scripts/deployment_workflow/build.mjs b/contracts/scripts/deployment_workflow/build.mjs
+new file mode 100644
+index 0000000..9ba0a9f
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/build.mjs
+@@ -0,0 +1,19 @@
++// Builds a local static review bundle only. Does not start a server or open a wallet.
++import { build } from 'esbuild';
++import { mkdir, copyFile, readFile, writeFile } from 'node:fs/promises';
++import { fileURLToPath } from 'node:url';
++import path from 'node:path';
++const here = path.dirname(fileURLToPath(import.meta.url));
++const repo = path.resolve(here, '../../..');
++const out = '/tmp/nak-local-deployment-review';
++await mkdir(out, { recursive: true });
++await build({ entryPoints: [path.join(here,'browser.mjs')], bundle: true, format: 'esm', outfile: path.join(out,'app.js'), platform: 'browser', target: 'es2022' });
++for (const name of ['index.html','style.css']) await copyFile(path.join(here,name),path.join(out,name));
++const abiNames = ['ETHRegistrar','ETHRegistry','UserRegistryImpl','VerifiableFactory','MockUSDC','CredentialRegistrar','DoorKeys'];
++const abis = {}; for (const name of abiNames) abis[name] = JSON.parse(await readFile(path.join(repo,'docs/prep/stage3e/abis',name+'.json'),'utf8'));
++await writeFile(path.join(out,'verified-abis.json'), JSON.stringify(abis));
++for (const name of ['review-plan.json','gate-status.json']) await copyFile(path.join(repo,'docs/prep/stage3f-audit',name),path.join(out,name));
++const data = JSON.parse(await readFile(path.join(out,'review-plan.json'),'utf8'));
++data.workflowProposals = JSON.parse(await readFile(path.join(repo,'docs/prep/workflow/PROPOSED_DEFAULTS.json'),'utf8'));
++await writeFile(path.join(out,'review-plan.json'),JSON.stringify(data,null,2)+'\n');
++console.log('PASS: local review-only bundle built at '+out+'; no server, wallet or network started');
+diff --git a/contracts/scripts/deployment_workflow/guards.mjs b/contracts/scripts/deployment_workflow/guards.mjs
+new file mode 100644
+index 0000000..11b4d13
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/guards.mjs
+@@ -0,0 +1,41 @@
++// Deployment read-check builders only. ENS remains the onchain authorization source.
++import { Interface, id } from 'ethers';
++export const FIXED = Object.freeze({ root: '0xb458d6a3a77919449d03e7a6903c26827c1ec43f', eth: '0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4', factory: '0xda70306c98e97ece36f997a21368e53298572991', implementation: '0x9bd8a88719068d09ecee662f36c0e3856708366a', labelStore: '0xed8246ff02203a4d4cb262bd78beaa7408a57cae' });
++export function callCheck(abi, to, signature, args, outputs, name = signature) {
++  const iface = new Interface(abi);
++  return { id: name, kind: 'call', to, data: iface.encodeFunctionData(signature,args), expected: iface.encodeFunctionResult(signature,outputs) };
++}
++export function hierarchyChecks(abis, b) {
++  if ([b.owner,b.r1,b.r2,b.rootLabel,b.rootState,b.lockState].some(x => x === null || x === undefined)) throw new Error('Unresolved hierarchy bindings');
++  const root = b.rootState, lock = b.lockState;
++  if (BigInt(root[0]) !== 2n || BigInt(lock[0]) !== 2n || BigInt(lock[1]) > BigInt(root[1]) || BigInt(lock[1]) <= BigInt(b.referenceTimestamp) || String(root[2]).toLowerCase() !== b.owner.toLowerCase() || String(lock[2]).toLowerCase() !== b.owner.toLowerCase()) throw new Error('Inactive/unbounded/wrong-owner hierarchy snapshot');
++  const checks = [], add = (abi,to,sig,args,out,name) => checks.push(callCheck(abi,to,sig,args,out,name));
++  const grants = 380593917518227438537563280301172632627253505n;
++  for (const address of [FIXED.root,FIXED.eth,FIXED.factory,FIXED.implementation,FIXED.labelStore,b.r1,b.r2]) {
++    const expectedHash = b.runtimeHashes?.[address.toLowerCase()];
++    if (!/^0x[0-9a-fA-F]{64}$/.test(expectedHash ?? '')) throw new Error('Unverified hierarchy runtime hash');
++    checks.push({id:'RUNTIME_'+address,kind:'code',to:address,expectedHash});
++  }
++  for (const registry of [b.r1,b.r2]) {
++    add(abis.UserRegistryImpl,registry,'ROOT_RESOURCE()',[],[0],'ROOT_RESOURCE_'+registry);
++    add(abis.UserRegistryImpl,registry,'roles(uint256,address)',[0,b.owner],[grants],'OWNER_ROLES_'+registry);
++    add(abis.UserRegistryImpl,registry,'roleCount(uint256)',[0],[grants+(registry===b.r2 && b.registrar?4097n:0n)],'ROOT_ROLE_COUNTS_'+registry);
++  }
++  add(abis.ETHRegistry,FIXED.eth,'roles(uint256,address)',[root[4],b.owner],[97409655027181761882228017414928043058140282880n],'ROOT_TOKEN_ROLES');
++  add(abis.UserRegistryImpl,b.r1,'roles(uint256,address)',[lock[4],b.owner],[91700664256357922357994873537130062512592519168n],'LOCK_TOKEN_ROLES');
++  add(abis.RootRegistry,FIXED.root,'getSubregistry(string)',['eth'],[FIXED.eth],'ETH_ATTACHMENT');
++  for (const registry of [b.r1,b.r2]) add(abis.VerifiableFactory,FIXED.factory,'verifyContract(address)',[registry],[FIXED.implementation],'IMPLEMENTATION_'+registry);
++  add(abis.ETHRegistry,FIXED.eth,'getState(uint256)',[id(b.rootLabel)],[root],'ROOT_STATE_GENERATION');
++  add(abis.ETHRegistry,FIXED.eth,'getOwner(uint256)',[id(b.rootLabel)],[b.owner],'ROOT_OWNER');
++  add(abis.ETHRegistry,FIXED.eth,'getSubregistry(string)',[b.rootLabel],[b.r1],'ROOT_R1_ATTACHMENT');
++  add(abis.UserRegistryImpl,b.r1,'getState(uint256)',[id('lock')],[lock],'LOCK_STATE_GENERATION');
++  add(abis.UserRegistryImpl,b.r1,'getOwner(uint256)',[id('lock')],[b.owner],'LOCK_OWNER');
++  add(abis.UserRegistryImpl,b.r1,'getSubregistry(string)',['lock'],[b.r2],'LOCK_R2_ATTACHMENT');
++  add(abis.UserRegistryImpl,b.r1,'getParent()',[],[FIXED.eth,b.rootLabel],'R1_PARENT_METADATA');
++  add(abis.UserRegistryImpl,b.r2,'getParent()',[],[b.r1,'lock'],'R2_PARENT_METADATA');
++  add(abis.UserRegistryImpl,b.r2,'isEmancipated()',[],[false],'UNEMANCIPATED');
++  if (b.registrar) add(abis.UserRegistryImpl,b.r2,'roles(uint256,address)',[0,b.registrar],[4097],'EXACT_REGISTRAR_ROLES');
++  if (b.guest) add(abis.UserRegistryImpl,b.r2,'roles(uint256,address)',[0,b.guest],[0],'ZERO_GUEST_ROOT_ROLES');
++  if (b.door) add(abis.UserRegistryImpl,b.r2,'roles(uint256,address)',[0,b.door],[0],'ZERO_DOOR_ROLES');
++  return checks;
++}
+diff --git a/contracts/scripts/deployment_workflow/index.html b/contracts/scripts/deployment_workflow/index.html
+new file mode 100644
+index 0000000..8ca1337
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/index.html
+@@ -0,0 +1,3 @@
++<!doctype html>
++<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"><title>Names as Keys — Local Deployment Review</title><link rel="stylesheet" href="style.css"></head>
++<body><main><h1>Local deployment review</h1><p class="warning">Stage 3F NO-GO · Execution disabled · No signing or transaction requests</p><p>This tool reviews deployment steps. It is separate from the guest unlock app. Test-only demonstrations cannot enable live execution.</p><section><h2>Selected identities</h2><pre id="identity">Loading public review plan…</pre><button id="inspect">Inspect already-exposed wallet account (read only)</button><p id="wallet" role="status">No wallet queried.</p></section><section><h2>Deployment gates</h2><div id="gates"></div></section><section><h2>Ordered transaction packets</h2><label>Step <select id="step"></select></label><pre id="review"></pre><button disabled>Live requests unavailable — separate authorization required</button></section><section><h2>Test-only lifecycle demonstration</h2><p>Synthetic provider, wallet, token, calldata and receipts. No network requests. This is a workflow demonstration, not the ordered Sepolia fork fixture or final deployment simulation.</p><button id="prepare">Prepare test-only review</button><pre id="demo"></pre><button id="ack" disabled>Acknowledge displayed test-only review</button><button id="submit" disabled>Simulate request against in-memory provider</button><button id="receipt" disabled>Verify synthetic receipt and state</button><button id="reset">Reset demo</button><pre id="journal"></pre></section></main><script type="module" src="app.js"></script></body></html>
+diff --git a/contracts/scripts/deployment_workflow/package-lock.json b/contracts/scripts/deployment_workflow/package-lock.json
+new file mode 100644
+index 0000000..b371ddb
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/package-lock.json
+@@ -0,0 +1,608 @@
++{
++  "name": "nak-local-deployment-review",
++  "version": "0.1.0",
++  "lockfileVersion": 3,
++  "requires": true,
++  "packages": {
++    "": {
++      "name": "nak-local-deployment-review",
++      "version": "0.1.0",
++      "dependencies": {
++        "ethers": "6.17.0"
++      },
++      "devDependencies": {
++        "esbuild": "0.28.2"
++      }
++    },
++    "node_modules/@adraffy/ens-normalize": {
++      "version": "1.11.1",
++      "resolved": "https://registry.npmjs.org/@adraffy/ens-normalize/-/ens-normalize-1.11.1.tgz",
++      "integrity": "sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==",
++      "license": "MIT"
++    },
++    "node_modules/@esbuild/aix-ppc64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.28.2.tgz",
++      "integrity": "sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==",
++      "cpu": [
++        "ppc64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "aix"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/android-arm": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.28.2.tgz",
++      "integrity": "sha512-kXXoiPVVGQcnIYGOeaovwOURpniDBpSq4A03qkQ+BMQqtGG6HYap3xne9C1O1yo4TR3qxlCX5IqqmX6fFo2Lqg==",
++      "cpu": [
++        "arm"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "android"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/android-arm64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.28.2.tgz",
++      "integrity": "sha512-5YfKeeI8qWfBZIX+u2xZC3Zlb3Os/gLS2sbEKM+I4ZOcsWmHS2WLysCcQZDAFRslDUU5Oiq44gf6PYN1vGwG5A==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "android"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/android-x64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.28.2.tgz",
++      "integrity": "sha512-O387ite7SzUyCcy3JQX4P4bLtEA7bLLkx+esve5JHnyYfNTxcVpXZo9jhdB0lTKN44gztELTdU7nS8Nr16Fs1Q==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "android"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/darwin-arm64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.28.2.tgz",
++      "integrity": "sha512-n4KqkOQrraxHJcgjM1RvwbigfQKIKJVpM7xp+KsxiyUSrRdIXnt73VhrPAx0fV44hgfmIVKjxMN9J1t5jySVkw==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/darwin-x64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.28.2.tgz",
++      "integrity": "sha512-uq6suIWYP37qzGddBKPw5QEQPi6HiLGsO7UmkpfyaYNQ3D+rN6w6WfwH+nuqcGXWvawGwxOEroO4YGnFh95azw==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/freebsd-arm64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.28.2.tgz",
++      "integrity": "sha512-n+I0BTSRIoy+d6RPKnEVwql5UwBJolytvY4mAOIEJorKlqgPII8ix6slVVrfZ5Tnj7glIZvloylbB/EJPMWEXw==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "freebsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/freebsd-x64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.28.2.tgz",
++      "integrity": "sha512-78XJTJkvPs0kz2w61301PJjXl4g7q3JqiYMZ/M/yVI73EHBrCRTgkhu9oqG7vPqq+a/yadEW8aD+agKlk5xrmg==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "freebsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-arm": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.28.2.tgz",
++      "integrity": "sha512-XlDnu2q5yoqems+xay6wSAcg9DDD7K9RLKZEBOMZm3ckNpJBvOX20tSfby8KfrrhINDyv9V2YVZKY/SpoGJI8w==",
++      "cpu": [
++        "arm"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-arm64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.28.2.tgz",
++      "integrity": "sha512-pW4AC0P3it8c7do9MVM4p51FzHzdM/TZrerurgRcHJ2WTa1VQ1CIq18xncfpBJw4ojkiZZrKW2yIBWBP92j6Ug==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-ia32": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.28.2.tgz",
++      "integrity": "sha512-CYbnj78HsIeA+DhgUKgFCfvNsTHFhMMrinUrMZpDXJXKN8T3XViTZ/+wtHeVxEWY8ewSzTFN+nRmSwO2tZaLUQ==",
++      "cpu": [
++        "ia32"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-loong64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.28.2.tgz",
++      "integrity": "sha512-buwkd8nsph4R+ajRvw0qM5Hja/TXQow3ptzWO2EbG/cqcIkHloRrdlBtQlshyYGTNFvfkfJ5tpPLVkY4DtsPfQ==",
++      "cpu": [
++        "loong64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-mips64el": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.28.2.tgz",
++      "integrity": "sha512-ZVykbDyk7519VwiNb9Lcj9m8XM6v5V9uKPvrEMkkEedVewf+0itkhahp4HDpgERXhwLRpWFypsGbG/J8s0QjJA==",
++      "cpu": [
++        "mips64el"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-ppc64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.28.2.tgz",
++      "integrity": "sha512-CAXl+Dtd9UUuJd8pKKdwh6MLm3MUMiqMPmhZ3tTSXPqfyQ3vDl6R5hZdZ/kYojK4ofXtdfSv1tFq8XzWx3heNQ==",
++      "cpu": [
++        "ppc64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-riscv64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.28.2.tgz",
++      "integrity": "sha512-GeXCej4IQtU1B+QlDV8W/RRvbzI3O/Stss+/bCXv4lZls5WGRtu2a+3JkA3i4qIUlMXpcHebWpF8AkJhATowuA==",
++      "cpu": [
++        "riscv64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-s390x": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.28.2.tgz",
++      "integrity": "sha512-3H1weTYZPxt/WOhByszQZybS9w5lKzUn1FDMsgEChbHWQwHYQQRfBxgCcZvPhjHfKyJjIievvMmEUawJrdY9Dg==",
++      "cpu": [
++        "s390x"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/linux-x64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.28.2.tgz",
++      "integrity": "sha512-4xTZr1FUmSoQW4XIWmit3tzQrUTZM+N3P0XV8xROKYF50XfI7xeO90+1bZvNwxIufQ9hDQVRJH5YhgPVF8A/HQ==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "linux"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/netbsd-arm64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.28.2.tgz",
++      "integrity": "sha512-sSATRjPeDBg3pdgHoQfoYBob11Kk1FGa9lui5RIHZCoCkJa9QKlvl3/vKz2usCmYYjs7ymJR/2Nnsqe+Hjt5nw==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "netbsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/netbsd-x64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.28.2.tgz",
++      "integrity": "sha512-lqnzCV+mM0gIADaKihiCg6ifgfU2L3h5E33rNQBN1Y4MaVGnzryzmvvf7UHxprpQdE8hpqLolJ9Rl+SkIRDpyw==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "netbsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/openbsd-arm64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.28.2.tgz",
++      "integrity": "sha512-AL2qJILH7lNjrDmCQDvdxMfAUIv8KMNZOvrwAQ8i8//ntL9FflhOyMJ8OZSMBb8/AWXe3/5v5S20y3zCoZWKoQ==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "openbsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/openbsd-x64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.28.2.tgz",
++      "integrity": "sha512-QtiuPytchRyC4rwUKhexJdQKvDuZ6hWloi3igqPQNUJCS1/v9EiO3UTOXR6A3FoMo4fnAKbWJdqaIwhOzh8qEw==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "openbsd"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/openharmony-arm64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/openharmony-arm64/-/openharmony-arm64-0.28.2.tgz",
++      "integrity": "sha512-WkhYDmpTjLvGlScA1rwjRUmhl4k8oXR3cIbtqWmELgU/dFeHHlEllxDvdWcNJV9rbzCexB5vz8gtNewWLgCT7Q==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "openharmony"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/sunos-x64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.28.2.tgz",
++      "integrity": "sha512-GPMSkTOtMnv2U2F8gxe4Io6qmVs+YKyp832Etqqxr0hFngmXQ3rzwytelm3GIn7T4VviRUlf3sOgBOiTdvaf7g==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "sunos"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/win32-arm64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.28.2.tgz",
++      "integrity": "sha512-PIhhEkE9uPBleRBrQEJpUn7MBnibZzbGzYWPmY3x+YoVg/95zbjB4CxPPOQ8l5tYYM4mMaCthF8/1DIfBQQyWQ==",
++      "cpu": [
++        "arm64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "win32"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/win32-ia32": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.28.2.tgz",
++      "integrity": "sha512-YmJbfTlvU7Sdn9BB+4PRES4oB6pxgS37MAONj+hBr/cpXS1aBPKXxNnDbu+QCWPj0o9dgyxeq79g6c5P8KeuYA==",
++      "cpu": [
++        "ia32"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "win32"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@esbuild/win32-x64": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.28.2.tgz",
++      "integrity": "sha512-5ebpxr3nWMzrL/rnUI755Jkuee0bHL/Gq0WTF9lvcpv73wAp5eu8MfBUgWK9bhWvZjj7yX8etf/8tI8Ney695g==",
++      "cpu": [
++        "x64"
++      ],
++      "dev": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "win32"
++      ],
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@noble/curves": {
++      "version": "1.2.0",
++      "resolved": "https://registry.npmjs.org/@noble/curves/-/curves-1.2.0.tgz",
++      "integrity": "sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==",
++      "license": "MIT",
++      "dependencies": {
++        "@noble/hashes": "1.3.2"
++      },
++      "funding": {
++        "url": "https://paulmillr.com/funding/"
++      }
++    },
++    "node_modules/@noble/hashes": {
++      "version": "1.3.2",
++      "resolved": "https://registry.npmjs.org/@noble/hashes/-/hashes-1.3.2.tgz",
++      "integrity": "sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==",
++      "license": "MIT",
++      "engines": {
++        "node": ">= 16"
++      },
++      "funding": {
++        "url": "https://paulmillr.com/funding/"
++      }
++    },
++    "node_modules/@types/node": {
++      "version": "22.7.5",
++      "resolved": "https://registry.npmjs.org/@types/node/-/node-22.7.5.tgz",
++      "integrity": "sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==",
++      "license": "MIT",
++      "dependencies": {
++        "undici-types": "~6.19.2"
++      }
++    },
++    "node_modules/aes-js": {
++      "version": "4.0.0-beta.5",
++      "resolved": "https://registry.npmjs.org/aes-js/-/aes-js-4.0.0-beta.5.tgz",
++      "integrity": "sha512-G965FqalsNyrPqgEGON7nIx1e/OVENSgiEIzyC63haUMuvNnwIgIjMs52hlTCKhkBny7A2ORNlfY9Zu+jmGk1Q==",
++      "license": "MIT"
++    },
++    "node_modules/esbuild": {
++      "version": "0.28.2",
++      "resolved": "https://registry.npmjs.org/esbuild/-/esbuild-0.28.2.tgz",
++      "integrity": "sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==",
++      "dev": true,
++      "hasInstallScript": true,
++      "license": "MIT",
++      "bin": {
++        "esbuild": "bin/esbuild"
++      },
++      "engines": {
++        "node": ">=18"
++      },
++      "optionalDependencies": {
++        "@esbuild/aix-ppc64": "0.28.2",
++        "@esbuild/android-arm": "0.28.2",
++        "@esbuild/android-arm64": "0.28.2",
++        "@esbuild/android-x64": "0.28.2",
++        "@esbuild/darwin-arm64": "0.28.2",
++        "@esbuild/darwin-x64": "0.28.2",
++        "@esbuild/freebsd-arm64": "0.28.2",
++        "@esbuild/freebsd-x64": "0.28.2",
++        "@esbuild/linux-arm": "0.28.2",
++        "@esbuild/linux-arm64": "0.28.2",
++        "@esbuild/linux-ia32": "0.28.2",
++        "@esbuild/linux-loong64": "0.28.2",
++        "@esbuild/linux-mips64el": "0.28.2",
++        "@esbuild/linux-ppc64": "0.28.2",
++        "@esbuild/linux-riscv64": "0.28.2",
++        "@esbuild/linux-s390x": "0.28.2",
++        "@esbuild/linux-x64": "0.28.2",
++        "@esbuild/netbsd-arm64": "0.28.2",
++        "@esbuild/netbsd-x64": "0.28.2",
++        "@esbuild/openbsd-arm64": "0.28.2",
++        "@esbuild/openbsd-x64": "0.28.2",
++        "@esbuild/openharmony-arm64": "0.28.2",
++        "@esbuild/sunos-x64": "0.28.2",
++        "@esbuild/win32-arm64": "0.28.2",
++        "@esbuild/win32-ia32": "0.28.2",
++        "@esbuild/win32-x64": "0.28.2"
++      }
++    },
++    "node_modules/ethers": {
++      "version": "6.17.0",
++      "resolved": "https://registry.npmjs.org/ethers/-/ethers-6.17.0.tgz",
++      "integrity": "sha512-BpyrpIPJ3ydEVow8zGaz1DuPS7YU8DcWxuBnY9a0UA/lvAPwrMr+EPXsfrul628SRaekPNeIM4UFh/91GWZang==",
++      "funding": [
++        {
++          "type": "individual",
++          "url": "https://github.com/sponsors/ethers-io/"
++        },
++        {
++          "type": "individual",
++          "url": "https://www.buymeacoffee.com/ricmoo"
++        }
++      ],
++      "license": "MIT",
++      "dependencies": {
++        "@adraffy/ens-normalize": "1.11.1",
++        "@noble/curves": "1.2.0",
++        "@noble/hashes": "1.3.2",
++        "@types/node": "22.7.5",
++        "aes-js": "4.0.0-beta.5",
++        "tslib": "2.7.0",
++        "ws": "8.21.0"
++      },
++      "engines": {
++        "node": ">=14.0.0"
++      }
++    },
++    "node_modules/tslib": {
++      "version": "2.7.0",
++      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.7.0.tgz",
++      "integrity": "sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==",
++      "license": "0BSD"
++    },
++    "node_modules/undici-types": {
++      "version": "6.19.8",
++      "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-6.19.8.tgz",
++      "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==",
++      "license": "MIT"
++    },
++    "node_modules/ws": {
++      "version": "8.21.0",
++      "resolved": "https://registry.npmjs.org/ws/-/ws-8.21.0.tgz",
++      "integrity": "sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==",
++      "license": "MIT",
++      "engines": {
++        "node": ">=10.0.0"
++      },
++      "peerDependencies": {
++        "bufferutil": "^4.0.1",
++        "utf-8-validate": ">=5.0.2"
++      },
++      "peerDependenciesMeta": {
++        "bufferutil": {
++          "optional": true
++        },
++        "utf-8-validate": {
++          "optional": true
++        }
++      }
++    }
++  }
++}
+diff --git a/contracts/scripts/deployment_workflow/package.json b/contracts/scripts/deployment_workflow/package.json
+new file mode 100644
+index 0000000..9579008
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/package.json
+@@ -0,0 +1,12 @@
++{
++  "name": "nak-local-deployment-review",
++  "version": "0.1.0",
++  "private": true,
++  "type": "module",
++  "scripts": {
++    "test": "node test/workflow.test.mjs",
++    "build": "node build.mjs"
++  },
++  "dependencies": { "ethers": "6.17.0" },
++  "devDependencies": { "esbuild": "0.28.2" }
++}
+diff --git a/contracts/scripts/deployment_workflow/style.css b/contracts/scripts/deployment_workflow/style.css
+new file mode 100644
+index 0000000..729a7be
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/style.css
+@@ -0,0 +1,9 @@
++:root { font: 16px/1.5 system-ui, sans-serif; color: #e6edf3; background: #101820; }
++main { max-width: 1060px; margin: 2rem auto; padding: 0 1rem; }
++section { border: 1px solid #49606c; border-radius: 8px; padding: 1rem; margin: 1.2rem 0; }
++h1, h2 { line-height: 1.25; }
++pre { max-height: 32rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: #17232e; padding: 1rem; border-radius: 6px; }
++button, select { font: inherit; padding: .6rem; margin: .3rem; border-radius: 5px; }
++button:disabled { opacity: .55; }
++.warning { position: sticky; top: 0; z-index: 1; padding: .7rem; background: #101820; color: #ffe58f; font-weight: bold; }
++.gate { padding: .3rem; }
+diff --git a/contracts/scripts/deployment_workflow/test/fixture.mjs b/contracts/scripts/deployment_workflow/test/fixture.mjs
+new file mode 100644
+index 0000000..298c177
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/test/fixture.mjs
+@@ -0,0 +1,55 @@
++// All addresses, receipts and provider responses in this module are TEST ONLY.
++import { Interface, keccak256 } from 'ethers';
++import { DeploymentWorkflow, digest } from '../workflow.mjs';
++export const OWNER = '0x00000000000000000000000000000000000A11cE';
++export const TOKEN = '0x0000000000000000000000000000000000001234';
++export const HASH = '0x' + '22'.repeat(32);
++export const BLOCK = '0x' + '11'.repeat(32);
++export const ABI = ['function mint(address,uint256)', 'event Transfer(address indexed from,address indexed to,uint256 value)'];
++export const ZERO = '0x' + '00'.repeat(20);
++const WORD = '0x' + '0'.repeat(63) + '1';
++export function packet(id = 'T01', nonce = 0) {
++  return { id, inputClass: 'TEST_ONLY', signature: 'mint(address,uint256)', abi: ABI, arguments: [OWNER, '8000021'], expectedTarget: TOKEN,
++    creation: false, tx: { from: OWNER, to: TOKEN, data: new Interface(ABI).encodeFunctionData('mint', [OWNER, 8000021]), chainId: '0xaa36a7', value: '0x0', nonce: '0x' + nonce.toString(16), gas: '0x186a0', maxFeePerGas: '0x64', maxPriorityFeePerGas: '0x1' },
++    tokenReview: { token: TOKEN, units: '8000021', decimals: 6, amount: '8.000021', allowanceUnits: '0', spender: 'not applicable', classification: 'TEST_ONLY' },
++    prerequisites: [{ id: 'TEST_RUNTIME', kind: 'code', to: TOKEN, expectedHash: keccak256('0x6000') }, { id: 'TEST_STATE', kind: 'call', to: TOKEN, data: '0x12345678', expected: WORD }],
++    postconditions: [{ id: 'TEST_POST_STATE', kind: 'call', to: TOKEN, data: '0x12345678', expected: WORD }],
++    expectedEvents: [{ address: TOKEN, abi: ABI, signature: 'Transfer(address,address,uint256)', arguments: [ZERO, OWNER, '8000021'] }] };
++}
++export function policy() { return { gates: [{ id: 'TEST_ONLY_GATE', status: 'PASS' }], maxGasPerStep: '1000000', maxFeePerGas: '200', maxPriorityFeePerGas: '2', maxTotalWei: '100000000', maxAgeSeconds: 120, maxAgeBlocks: 2, confirmations: 1, finalityTag: 'finalized' }; }
++export class FakeProvider {
++  testOnly = true; calls = []; listeners = new Map(); chain = '0xaa36a7'; accounts = [OWNER]; nonce = '0x0'; code = '0x6000'; state = WORD;
++  header = { number: '0x64', hash: BLOCK, timestamp: '0x6553f100', baseFeePerGas: '0x1' };
++  receipts = new Map(); transactions = new Map(); sendError = null;
++  on(name, fn) { this.listeners.set(name, fn); }
++  removeListener(name) { this.listeners.delete(name); }
++  emit(name) { this.listeners.get(name)?.(); }
++  async request({ method, params = [] }) {
++    this.calls.push({ method, params });
++    if (this.hook) await this.hook(method, params);
++    if (method === 'eth_chainId') return this.chain;
++    if (method === 'eth_accounts') return this.accounts;
++    if (method === 'eth_getBlockByNumber') return this.header;
++    if (method === 'eth_getTransactionCount') return this.nonce;
++    if (method === 'eth_getCode') return this.code;
++    if (method === 'eth_call') return this.state;
++    if (method === 'eth_estimateGas') return '0xc350';
++    if (method === 'eth_getBalance') return '0x1000000000000000000';
++    if (method === 'eth_getTransactionReceipt') return this.receipts.get(params[0]) ?? null;
++    if (method === 'eth_getTransactionByHash') return this.transactions.get(params[0]) ?? null;
++    if (method === 'eth_sendTransaction') { if (this.sendError) throw this.sendError; this.sent = params[0]; return HASH; }
++    throw new Error('Unexpected RPC ' + method);
++  }
++  mine(p, hash = HASH) {
++    const iface = new Interface(ABI), encoded = iface.encodeEventLog(iface.getEvent('Transfer'), [ZERO, OWNER, 8000021]);
++    this.receipts.set(hash, { transactionHash: hash, from: OWNER, to: TOKEN, blockHash: BLOCK, blockNumber: '0x64', status: '0x1', gasUsed: '0xc350', effectiveGasPrice: '0x2', logs: [{ address: TOKEN, ...encoded, logIndex: '0x0' }] });
++    this.transactions.set(hash, { hash, from: OWNER, to: TOKEN, blockHash: BLOCK, nonce: p.tx.nonce, value: '0x0', input: p.tx.data, chainId: p.tx.chainId, gas: p.tx.gas, maxFeePerGas: p.tx.maxFeePerGas, maxPriorityFeePerGas: p.tx.maxPriorityFeePerGas });
++  }
++}
++export function fixture(packets = [packet()], overrides = {}) {
++  const provider = new FakeProvider(); let persisted = null;
++  const journal = { read: () => persisted, write: (x) => { persisted = JSON.parse(JSON.stringify(x)); } };
++  const steps = packets.map(p => ({ id: p.id, packet: p, packetDigest: digest(p), maxCostWei: '10000000' }));
++  const options = { provider, owner: OWNER, policy: policy(), steps, journal, testSubmission: true, now: () => 1700000000000, ...overrides };
++  return { provider, journal, packets, steps, options, workflow: new DeploymentWorkflow(options), persisted: () => persisted };
++}
+diff --git a/contracts/scripts/deployment_workflow/test/workflow.test.mjs b/contracts/scripts/deployment_workflow/test/workflow.test.mjs
+new file mode 100644
+index 0000000..86a9501
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/test/workflow.test.mjs
+@@ -0,0 +1,230 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { Interface } from 'ethers';
++import { DeploymentWorkflow, ReadOnlyWallet, decodePacket, digest } from '../workflow.mjs';
++import { fixture, packet, policy, OWNER, HASH, BLOCK, TOKEN, ABI } from './fixture.mjs';
++const ready = async (f, p = f.packets[0]) => { const review = await f.workflow.prepare(p.id, p); f.workflow.acknowledge(p.id, digest(review)); return review; };
++const submit = async f => { await ready(f); return f.workflow.submitTestOnly('T01'); };
++
++test('shipped adapter refuses every write, signature and permission prompt', async () => {
++  const f = fixture(), adapter = new ReadOnlyWallet(f.provider);
++  for (const method of ['eth_sendTransaction', 'eth_sendRawTransaction', 'personal_sign', 'eth_sign', 'eth_requestAccounts', 'wallet_switchEthereumChain']) assert.throws(() => adapter.request({ method }), /disabled/);
++  assert.equal(f.provider.calls.length, 0);
++});
++test('execution defaults disabled even with fake provider', async () => {
++  const f = fixture([packet()], { testSubmission: false }); await assert.rejects(() => f.workflow.submitTestOnly('T01'), /disabled/);
++  assert.equal(f.provider.calls.length, 0);
++});
++test('review displays account chain ABI types amount value nonce and fee limits', async () => {
++  const f = fixture(); const r = await ready(f);
++  assert.equal(r.account, OWNER); assert.equal(r.chain, '11155111'); assert.equal(r.destination, TOKEN);
++  assert.deepEqual(r.argumentTypes, ['address', 'uint256']); assert.equal(r.token.amount, '8.000021'); assert.equal(r.ethValueWei, '0x0'); assert.equal(r.maxFeePerGasWei, '0x64');
++});
++test('correct lifecycle verifies raw receipt logs and state before advancing', async () => {
++  const f = fixture([packet(), packet('T02', 1)]); await submit(f);
++  assert.equal(f.workflow.state('T01').status, 'PENDING');
++  await assert.rejects(() => f.workflow.prepare('T02', f.packets[1]), /preceding/);
++  f.provider.mine(f.packets[0]); assert.equal(await f.workflow.reconcile('T01'), true);
++  f.provider.nonce = '0x1'; await f.workflow.prepare('T02', f.packets[1]);
++  assert.equal(f.workflow.state('T02').status, 'PREPARED');
++});
++for (const [name, mutate, pattern] of [
++  ['wrong network', f => { f.provider.chain = '0x1'; }, /Wrong network/],
++  ['wrong account', f => { f.provider.accounts = [TOKEN]; }, /Wrong selected account/],
++  ['ENS read failure', f => { f.provider.state = '0x00'; }, /State mismatch/],
++  ['runtime changed', f => { f.provider.code = '0x6001'; }, /Code mismatch/],
++  ['nonce churn', f => { f.provider.nonce = '0x1'; }, /nonce changed/],
++  ['stale header', f => { f.provider.header.timestamp = '0x1'; }, /Stale/],
++]) test(name + ' blocks before any request', async () => {
++  const f = fixture(); mutate(f); await assert.rejects(() => ready(f), pattern);
++  assert.equal(f.provider.calls.filter(x => x.method === 'eth_sendTransaction').length, 0);
++});
++test('null inputs, bad calldata and wrong destination fail closed', async () => {
++  for (const mutate of [p => { p.arguments[1] = null; }, p => { p.tx.data += '00'; }, p => { p.tx.to = OWNER; }]) {
++    const p = packet(); mutate(p); const f = fixture([p]); await assert.rejects(() => ready(f));
++  }
++});
++test('unresolved prerequisite gate blocks', async () => {
++  const p = policy(); p.gates[0].status = 'UNRESOLVED'; const f = fixture([packet()], { policy: p }); await assert.rejects(() => ready(f), /gate/);
++});
++test('calldata cannot be swapped after frozen packet policy', async () => {
++  const f = fixture(); const changed = packet(); changed.arguments[1] = '9000'; await assert.rejects(() => ready(f, changed), /frozen/);
++});
++test('fee and total budget ceilings block', async () => {
++  for (const modify of [p => { p.maxFeePerGas = '50'; }, p => { p.maxTotalWei = '1'; }, p => { p.maxGasPerStep = '1'; }]) {
++    const p = policy(); modify(p); const f = fixture([packet()], { policy: p }); await assert.rejects(() => ready(f));
++  }
++});
++test('account change between review and submit invalidates acknowledgement', async () => {
++  const f = fixture(); await ready(f); f.provider.emit('accountsChanged'); await assert.rejects(() => f.workflow.submitTestOnly('T01'), /acknowledgement/);
++});
++test('provider changes without an event are detected in fresh preflight', async () => {
++  const f = fixture(); await ready(f); f.provider.chain = '0x1'; await assert.rejects(() => f.workflow.submitTestOnly('T01'), /Wrong network/);
++});
++test('async preflight chain changes invalidate result', async () => {
++  const f = fixture(); let changed = false;
++  f.provider.hook = async method => { if (method === 'eth_estimateGas' && !changed) { changed = true; f.provider.emit('chainChanged'); } };
++  await assert.rejects(() => ready(f), /changed during preflight/);
++});
++test('explicit exact displayed review required', async () => {
++  const f = fixture(); await f.workflow.prepare('T01', f.packets[0]); assert.throws(() => f.workflow.acknowledge('T01', 'incorrect'), /differs/);
++  await assert.rejects(() => f.workflow.submitTestOnly('T01'), /acknowledgement/);
++});
++test('rejected requests remain recorded and never automatically retry', async () => {
++  const f = fixture(); f.provider.sendError = { code: 4001 }; await assert.rejects(() => submit(f), /rejected/);
++  assert.equal(f.workflow.state('T01').status, 'REJECTED'); assert.equal(f.workflow.state('T01').attempts.length, 1);
++});
++test('unknown send error locks nonce as uncertain', async () => {
++  const f = fixture(); f.provider.sendError = { code: -32000 }; await assert.rejects(() => submit(f), /uncertain/);
++  await assert.rejects(() => ready(f), /reconciliation/); assert.equal(f.workflow.state('T01').status, 'UNCERTAIN');
++});
++test('storage failure before request prevents provider submission', async () => {
++  const f = fixture(); await ready(f); f.journal.write = () => { throw new Error('disk full'); };
++  await assert.rejects(() => f.workflow.submitTestOnly('T01'), /disk full/); assert.equal(f.provider.calls.some(x => x.method === 'eth_sendTransaction'), false);
++});
++test('pending timeout and duplicate submission never resend', async () => {
++  const f = fixture(); await submit(f); assert.equal(await f.workflow.reconcile('T01'), false);
++  await assert.rejects(() => ready(f), /reconciliation/); await assert.rejects(() => f.workflow.submitTestOnly('T01'));
++  assert.equal(f.provider.calls.filter(x => x.method === 'eth_sendTransaction').length, 1);
++});
++test('failed receipt is not confirmed', async () => {
++  const f = fixture(); await submit(f); f.provider.mine(f.packets[0]); f.provider.receipts.get(HASH).status = '0x0';
++  assert.equal(await f.workflow.reconcile('T01'), false); assert.equal(f.workflow.state('T01').status, 'FAILED');
++});
++for (const [name, mutate] of [
++  ['wrong emitter', r => { r.logs[0].address = OWNER; }],
++  ['wrong event value', r => { r.logs[0].data = '0x' + '0'.repeat(64); }],
++  ['unexpected extra log', r => { r.logs.push(r.logs[0]); }],
++  ['reorged receipt', r => { r.blockHash = '0x' + 'ff'.repeat(32); }],
++  ['wrong receipt sender', r => { r.from = TOKEN; }],
++  ['fee charged over cap', r => { r.effectiveGasPrice = '0xff'; }],
++  ['missing receipt gas quantity', r => { r.gasUsed = null; }],
++]) test(name + ' blocks confirmation', async () => {
++  const f = fixture(); await submit(f); f.provider.mine(f.packets[0]); mutate(f.provider.receipts.get(HASH));
++  await assert.rejects(() => f.workflow.reconcile('T01')); assert.notEqual(f.workflow.state('T01').status, 'CONFIRMED');
++});
++test('post-state changes block confirmation', async () => {
++  const f = fixture(); await submit(f); f.provider.mine(f.packets[0]); f.provider.state = '0x00'; await assert.rejects(() => f.workflow.reconcile('T01'), /State mismatch/);
++});
++test('unfinalized receipt remains pending', async () => {
++  const p = policy(); p.confirmations = 12; const f = fixture([packet()], { policy: p }); await submit(f); f.provider.mine(f.packets[0]);
++  assert.equal(await f.workflow.reconcile('T01'), false); assert.equal(f.workflow.state('T01').status, 'PENDING');
++});
++test('reorg of previously confirmed ancestor blocks successor', async () => {
++  const f = fixture([packet(), packet('T02', 1)]); await submit(f); f.provider.mine(f.packets[0]); await f.workflow.reconcile('T01');
++  f.provider.receipts.clear(); f.provider.nonce = '0x1'; await assert.rejects(() => f.workflow.prepare('T02', f.packets[1]), /lost/);
++});
++test('reload never trusts previously confirmed journal state', async () => {
++  const f = fixture(); await submit(f); f.provider.mine(f.packets[0]); await f.workflow.reconcile('T01');
++  const reload = new DeploymentWorkflow(f.options); assert.equal(reload.state('T01').status, 'RECHECK_REQUIRED'); assert.equal(await reload.reconcile('T01'), true);
++});
++test('hash returned after chain change still retained as pending evidence', async () => {
++  const f = fixture(); f.provider.hook = async method => { if (method === 'eth_sendTransaction') f.provider.emit('chainChanged'); };
++  await submit(f); assert.equal(f.persisted().entries.T01.receiptHash, HASH); assert.equal(f.workflow.state('T01').status, 'PENDING');
++});
++test('replacement same frozen intent is reconciled without another request', async () => {
++  const f = fixture(); await submit(f); const replacement = '0x' + '33'.repeat(32); f.provider.mine(f.packets[0], replacement);
++  assert.equal(await f.workflow.adoptReplacement('T01', replacement), true); assert.equal(f.workflow.state('T01').attempts.length, 2);
++});
++test('changed-intent or over-ceiling replacement is blocked', async () => {
++  const f = fixture(); await submit(f); const replacement = '0x' + '33'.repeat(32); f.provider.mine(f.packets[0], replacement);
++  f.provider.transactions.get(replacement).maxFeePerGas = '0xff'; await assert.rejects(() => f.workflow.adoptReplacement('T01', replacement), /review/);
++});
++test('verified mined cancellation recorded, no automatic resend', async () => {
++  const f = fixture(); await submit(f); const cancellation='0x'+'44'.repeat(32); f.provider.mine(f.packets[0],cancellation);
++  const tx = f.provider.transactions.get(cancellation); tx.to = OWNER; tx.input = '0x';
++  const receipt=f.provider.receipts.get(cancellation); receipt.to=OWNER; receipt.logs=[];
++  assert.equal(await f.workflow.recordCancellation('T01', cancellation), true); assert.equal(f.workflow.state('T01').status, 'CANCELLED');
++});
++test('review and recovery journal do not disclose private registration preimage', async () => {
++  const f = fixture(); const p = packet(); p.abi = ['function secret(bytes32)']; p.signature = 'secret(bytes32)'; p.arguments = ['0x' + 'ab'.repeat(32)]; p.privateArgumentIndices = [0]; p.tx.data = new Interface(p.abi).encodeFunctionData('secret', p.arguments);
++  const privateFixture = fixture([p]); const review = await ready(privateFixture); await privateFixture.workflow.submitTestOnly('T01');
++  assert.equal(JSON.stringify(review).includes(p.arguments[0]), false); assert.equal(JSON.stringify(privateFixture.persisted()).includes(p.arguments[0]), false);
++});
++
++test('live adapter submission seam stays disabled even with a forged GO flag', async () => {
++  const f = fixture(); const adapter = new ReadOnlyWallet(f.provider);
++  await assert.rejects(() => adapter.submitReviewed(packet().tx, { stage: 'GO', planDigest: HASH, packetDigest: HASH }), /disabled/);
++  assert.equal(f.provider.calls.length, 0);
++});
++test('removed receipt log fails closed', async () => {
++  const f = fixture(); await submit(f); f.provider.mine(f.packets[0]); f.provider.receipts.get(HASH).logs[0].removed = true;
++  await assert.rejects(() => f.workflow.reconcile('T01'), /Removed/);
++});
++test('chain change while verifying receipt cannot confirm', async () => {
++  const f = fixture(); await submit(f); f.provider.mine(f.packets[0]); let changed = false;
++  f.provider.hook = async method => { if (method === 'eth_getTransactionReceipt' && !changed) { changed = true; f.provider.emit('chainChanged'); } };
++  await assert.rejects(() => f.workflow.reconcile('T01'), /changed during receipt/);
++  assert.notEqual(f.workflow.state('T01').status, 'CONFIRMED');
++});
++test('unresolved expected event blocks preparation, not just later reconciliation', async () => {
++  const p = packet(); p.expectedEvents[0].arguments[2] = null; const f = fixture([p]);
++  await assert.rejects(() => ready(f), /Unresolved receipt/);
++});
++test('commitment time window is enforced before request', async () => {
++  const p = packet(); p.timeWindows = [{ minimum: '1700000060', maximum: '1700086400' }]; const f = fixture([p]);
++  await assert.rejects(() => ready(f), /time window/);
++});
++test('duplicate concurrent requests are refused', async () => {
++  const f = fixture(); await ready(f); let release;
++  f.provider.hook = method => method === 'eth_sendTransaction' ? new Promise(resolve => { release = resolve; }) : undefined;
++  const first = f.workflow.submitTestOnly('T01');
++  while (!release) await new Promise(resolve => setTimeout(resolve,0));
++  await assert.rejects(() => f.workflow.submitTestOnly('T01'), /busy/); release(); await first;
++  assert.equal(f.provider.calls.filter(x => x.method === 'eth_sendTransaction').length,1);
++});
++test('browser journal persists public locks but rejects calldata and raw arguments', async () => {
++  const { BrowserJournal } = await import('../workflow.mjs'); let stored;
++  const storage = { getItem: () => stored, setItem: (_key,value) => { stored = value; } }; const journal = new BrowserJournal(storage,'test-only');
++  journal.write({ schema:1,planDigest:HASH,entries:{T01:{status:'UNCERTAIN',attempts:[{nonce:'0x0',hash:null}]}},history:[] });
++  assert.equal(journal.read().entries.T01.status,'UNCERTAIN');
++  assert.throws(() => journal.write({schema:1,planDigest:HASH,entries:{arguments:['private']},history:[]}), /forbidden/);
++});
++test('hierarchy builders use the retained deployed ABIs and forbid wrong-owner snapshots', async () => {
++  const { readFile } = await import('node:fs/promises'); const { hierarchyChecks, FIXED } = await import('../guards.mjs');
++  const abis={}; for(const name of ['ETHRegistry','RootRegistry','UserRegistryImpl','VerifiableFactory']) abis[name]=JSON.parse(await readFile(new URL('../../../..'+'/docs/prep/stage3e/abis/'+name+'.json',import.meta.url),'utf8'));
++  const b={owner:OWNER,r1:TOKEN,r2:'0x0000000000000000000000000000000000002345',rootLabel:'nak-test-only',rootState:[2,1800000000,OWNER,1,2],lockState:[2,1750000000,OWNER,3,4],referenceTimestamp:1700000000,registrar:'0x0000000000000000000000000000000000003456'};
++  const { keccak256 }=await import('ethers'); b.runtimeHashes=Object.fromEntries([...Object.values(FIXED),b.r1,b.r2].map(a=>[a.toLowerCase(),keccak256('0x6000')]));
++  const checks=hierarchyChecks(abis,b); assert.equal(checks.length,28); assert.ok(checks.some(x=>x.id==='EXACT_REGISTRAR_ROLES'));
++  b.rootState[2]=TOKEN; assert.throws(()=>hierarchyChecks(abis,b),/wrong-owner/);
++});
++
++test('direct CREATE review binds sender nonce constructor ABI and predicted address', async () => {
++  const { getCreateAddress } = await import('ethers'); const p=packet();
++  p.creation=true; p.abi=['constructor(address)']; p.signature='constructor(address)'; p.arguments=[OWNER]; p.creationBytecode='0x6000';
++  p.expectedAddress=getCreateAddress({from:OWNER,nonce:0}); p.tx.to=''; p.tx.data=p.creationBytecode+new Interface(p.abi).encodeDeploy(p.arguments).slice(2); p.expectedEvents=[];
++  const f=fixture([p]); const r=await ready(f); assert.ok(r.destination.includes(p.expectedAddress));
++  const bad=structuredClone(p); bad.expectedAddress=TOKEN; const invalid=fixture([bad]); await assert.rejects(()=>ready(invalid),/predicted CREATE/);
++});
++test('unreviewed transaction fields are rejected', async () => {
++  const p=packet(); p.tx.authorizationList=[]; const f=fixture([p]); await assert.rejects(()=>ready(f),/transaction fields/);
++});
++test('noncanonical JSON-RPC integer encodings rejected', async () => {
++  const p=packet(); p.tx.nonce='0x00'; const f=fixture([p]); await assert.rejects(()=>ready(f),/quantity/);
++});
++test('two event values cannot be reordered or duplicated', async () => {
++  const { verifyEvents }=await import('../workflow.mjs'); const iface=new Interface(ABI);
++  const events=[1,2].map(n=>({address:TOKEN,abi:ABI,signature:'Transfer(address,address,uint256)',arguments:[OWNER,TOKEN,n]}));
++  const logs=events.map((e,i)=>({address:TOKEN,...iface.encodeEventLog(iface.getEvent('Transfer'),e.arguments),logIndex:'0x'+i}));
++  verifyEvents({logs},events);
++  assert.throws(()=>verifyEvents({logs:[logs[1],logs[0]]},events));
++  assert.throws(()=>verifyEvents({logs:[logs[0],logs[0]]},events));
++});
++test('insufficient ETH and estimate growth block the request', async () => {
++  const p=packet(); p.prerequisites.push({id:'GAS_ETH',kind:'balance',to:OWNER,minimumWei:'999999999999999999999999999999999999'});
++  await assert.rejects(()=>ready(fixture([p])),/Insufficient ETH/);
++  const f=fixture(); f.provider.hook=method=>{if(method==='eth_estimateGas')throw new Error('estimate unavailable');};
++  await assert.rejects(()=>ready(f),/estimate unavailable/);
++});
++test('live submission flag cannot override the compiled disabled policy', async () => {
++  const f=fixture([packet()],{testSubmission:false,executionEnabled:true});
++  await assert.rejects(()=>f.workflow.submitReviewed('T01'),/disabled/); assert.equal(f.provider.calls.length,0);
++});
++
++test('token display cannot hide a different decoded amount or spender', async () => {
++  const p=packet(); p.tokenReview.units='1'; await assert.rejects(()=>ready(fixture([p])),/Token summary/);
++  const q=packet(); q.tokenReview.amount='0.000001'; await assert.rejects(()=>ready(fixture([q])),/Token display/);
++  const a=packet(); a.abi=['function approve(address,uint256)','event Approval(address indexed owner,address indexed spender,uint256 value)']; a.signature='approve(address,uint256)';
++  a.tx.data=new Interface(a.abi).encodeFunctionData('approve',a.arguments); a.tokenReview.spender=TOKEN;
++  await assert.rejects(()=>ready(fixture([a])),/spender display/);
++});
+diff --git a/contracts/scripts/deployment_workflow/workflow.mjs b/contracts/scripts/deployment_workflow/workflow.mjs
+new file mode 100644
+index 0000000..66b8238
+--- /dev/null
++++ b/contracts/scripts/deployment_workflow/workflow.mjs
+@@ -0,0 +1,333 @@
++import { Interface, getAddress, getCreateAddress, formatUnits, keccak256, sha256, toUtf8Bytes } from 'ethers';
++
++export const LIVE_EXECUTION_ALLOWED = false;
++export const CHAIN = 11155111n;
++export const stable = (value) => JSON.stringify(value, (_, v) => typeof v === 'bigint' ? v.toString() :
++  v && !Array.isArray(v) && typeof v === 'object' ? Object.fromEntries(Object.entries(v).sort(([a], [b]) => a.localeCompare(b))) : v);
++export const digest = (value) => sha256(toUtf8Bytes(stable(value)));
++const same = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
++const need = (condition, message) => { if (!condition) throw new Error(message); };
++const hash = (x) => /^0x[0-9a-fA-F]{64}$/.test(x ?? '');
++const clone = (x) => JSON.parse(stable(x));
++const freeze = x => { if (x && typeof x === 'object') { Object.values(x).forEach(freeze); Object.freeze(x); } return x; };
++const hasNull = (x) => x === null || x === undefined || (typeof x === 'object' && Object.values(x).some(hasNull));
++const READS = new Set(['eth_accounts', 'eth_chainId', 'eth_getBlockByNumber', 'eth_getTransactionCount',
++  'eth_getTransactionByHash', 'eth_getTransactionReceipt', 'eth_getCode', 'eth_call', 'eth_getBalance', 'eth_estimateGas']);
++
++/** Shipped adapter never exposes signing, account-permission prompts or submission. */
++export class ReadOnlyWallet {
++  testOnly = false;
++  constructor(provider) { this.provider = provider; }
++  request(args) { need(READS.has(args.method), 'Live execution and permission/signature requests disabled'); return this.provider.request(args); }
++  async submitReviewed(tx, authorization) {
++    need(LIVE_EXECUTION_ALLOWED && authorization?.stage === 'GO' && hash(authorization.planDigest) && hash(authorization.packetDigest), 'Live execution disabled; independent approval required');
++    return this.provider.request({ method: 'eth_sendTransaction', params: [tx] });
++  }
++  on(name, handler) { this.provider.on?.(name, handler); }
++  removeListener(name, handler) { this.provider.removeListener?.(name, handler); }
++}
++
++export function decodePacket(packet) {
++  need(!hasNull(packet.tx) && !hasNull(packet.arguments), 'Unresolved transaction inputs');
++  const keys = ['from','to','data','chainId','value','nonce','gas','maxFeePerGas','maxPriorityFeePerGas'];
++  need(Object.keys(packet.tx).length === keys.length && keys.every(key => key in packet.tx), 'Unexpected/missing transaction fields');
++  for (const key of ['chainId','value','nonce','gas','maxFeePerGas','maxPriorityFeePerGas']) need(/^0x(?:0|[1-9a-f][0-9a-f]*)$/i.test(packet.tx[key]), 'Noncanonical RPC quantity');
++  const iface = new Interface(packet.abi);
++  let encoded;
++  if (packet.creation) {
++    need(/^0x(?:[0-9a-f]{2})+$/i.test(packet.creationBytecode ?? ''), 'Missing approved creation bytecode');
++    encoded = packet.creationBytecode + iface.encodeDeploy(packet.arguments).slice(2);
++    need(packet.tx.to === '', 'Creation destination must be explicitly absent');
++    need(same(getCreateAddress({from:packet.tx.from,nonce:BigInt(packet.tx.nonce)}),packet.expectedAddress), 'Wrong predicted CREATE address');
++    need(packet.signature === 'constructor(' + iface.deploy.inputs.map(x => x.format('sighash')).join(',') + ')', 'Wrong constructor signature');
++  } else {
++    encoded = iface.encodeFunctionData(packet.signature, packet.arguments);
++    need(iface.getFunction(packet.signature).format('sighash') === packet.signature, 'Noncanonical signature');
++    getAddress(packet.tx.to); getAddress(packet.expectedTarget);
++    need(same(packet.tx.to, packet.expectedTarget), 'Unexpected destination binding');
++  }
++  need(same(encoded, packet.tx.data), 'Calldata differs from ABI-decoded review');
++  need(BigInt(packet.tx.value) === 0n, 'Unexpected ETH value');
++  need(BigInt(packet.tx.chainId) === CHAIN, 'Packet wrong network');
++  need(packet.tokenReview && packet.inputClass && packet.expectedEvents && packet.postconditions?.length,
++    'Missing token/event/state review');
++  need(!hasNull(packet.expectedEvents) && !hasNull(packet.postconditions), 'Unresolved receipt verification inputs');
++  for (const event of packet.expectedEvents) { const eventInterface = new Interface(event.abi); eventInterface.encodeEventLog(eventInterface.getEvent(event.signature), event.arguments); getAddress(event.address); }
++  if (['mint(address,uint256)','approve(address,uint256)'].includes(packet.signature)) {
++    need(same(packet.tokenReview.token,packet.expectedTarget) && BigInt(packet.tokenReview.units) === BigInt(packet.arguments[1]), 'Token summary differs from decoded amount');
++    need(packet.tokenReview.amount === formatUnits(packet.arguments[1],packet.tokenReview.decimals), 'Token display amount/decimals mismatch');
++    if (packet.signature === 'approve(address,uint256)') need(same(packet.tokenReview.spender,packet.arguments[0]), 'Allowance spender display mismatch');
++  }
++  const privateIndices = new Set(packet.privateArgumentIndices ?? []);
++  if (['register(string,address,bytes32,address,address,uint64,address,bytes32)', 'makeCommitment(string,address,bytes32,address,address,uint64,bytes32)'].includes(packet.signature)) privateIndices.add(2);
++  return { signature: packet.signature, argumentTypes: (packet.creation ? iface.deploy : iface.getFunction(packet.signature)).inputs.map(x => x.format('sighash')),
++    arguments: packet.arguments.map((arg, i) => privateIndices.has(i) ? '[PRIVATE PREIMAGE: local memory only]' : arg),
++    account: packet.tx.from, chain: String(CHAIN), destination: packet.creation ? '[CREATE: ' + packet.expectedAddress + ']' : packet.tx.to,
++    calldataDigest: keccak256(packet.tx.data), nonce: packet.tx.nonce, token: packet.tokenReview,
++    ethValueWei: packet.tx.value, gasLimit: packet.tx.gas, maxFeePerGasWei: packet.tx.maxFeePerGas,
++    maxPriorityFeePerGasWei: packet.tx.maxPriorityFeePerGas, inputClass: packet.inputClass };
++}
++
++/** Exact ordered logs, including emitter, topics, all ABI arguments and no extras. */
++export function verifyEvents(receipt, expected) {
++  const logs = receipt.logs ?? [];
++  need(logs.length === expected.length, 'Unexpected/missing receipt logs');
++  let previousIndex = -1n;
++  expected.forEach((event, i) => {
++    const actual = logs[i];
++    need(actual.removed !== true && BigInt(actual.logIndex) > previousIndex, 'Removed/duplicate/misordered log'); previousIndex = BigInt(actual.logIndex);
++    if (actual.transactionHash) need(same(actual.transactionHash, receipt.transactionHash), 'Wrong log transaction');
++    if (actual.blockHash) need(same(actual.blockHash, receipt.blockHash), 'Wrong log block');
++    need(same(actual.address, event.address), 'Wrong event emitter');
++    const iface = new Interface(event.abi);
++    const encoded = iface.encodeEventLog(iface.getEvent(event.signature), event.arguments);
++    need(stable(actual.topics.map(x => x.toLowerCase())) === stable(encoded.topics.map(x => x.toLowerCase())) && same(actual.data, encoded.data), 'Wrong event values/order');
++    const decoded = iface.parseLog(actual);
++    need(decoded?.signature === event.signature, 'Wrong event ABI signature');
++  });
++}
++
++export class BrowserJournal {
++  constructor(storage, key) { this.storage = storage; this.key = key; }
++  read() { const text = this.storage.getItem(this.key); return text ? JSON.parse(text) : null; }
++  write(value) {
++    need(value.schema === 1 && hash(value.planDigest) && value.entries && value.history, 'Malformed public journal');
++    const text = stable(value);
++    // Journal API accepts the public state machine only, never review packets or raw calldata.
++    need(!/"(?:arguments|data|privateArgumentIndices|registrationSecret|creationBytecode)"\s*:/.test(text), 'Private/raw packet material forbidden in public journal');
++    this.storage.setItem(this.key, text);
++  }
++}
++
++export class DeploymentWorkflow {
++  constructor({ provider, owner, policy, steps, journal, testSubmission = false, executionEnabled = false, now = () => Date.now() }) {
++    this.provider = provider; this.owner = getAddress(owner); this.policy = freeze(clone(policy)); this.steps = freeze(clone(steps));
++    need(Number.isInteger(policy.confirmations) && policy.confirmations > 0 && policy.finalityTag === 'finalized', 'Invalid finality policy');
++    this.planDigest = digest({ owner: this.owner, policy, steps }); this.journal = journal; this.now = now;
++    this.testSubmission = testSubmission && provider.testOnly === true; this.executionEnabled = executionEnabled === true; this.epoch = 0; this.busy = false;
++    this.packets = new Map(); this.reviewed = new Map(); this.history = [];
++    this.entries = Object.fromEntries(steps.map(s => [s.id, { status: 'BLOCKED', attempts: [] }]));
++    const restored = journal.read();
++    if (restored) {
++      need(restored.planDigest === this.planDigest, 'Recovery journal belongs to different plan');
++      need(stable(Object.keys(restored.entries).sort()) === stable(Object.keys(this.entries).sort()), 'Invalid recovery inventory');
++      this.entries = clone(restored.entries); this.history = clone(restored.history ?? []);
++      for (const entry of Object.values(this.entries)) {
++        entry.status = entry.attempts.length ? 'RECHECK_REQUIRED' : 'BLOCKED';
++      }
++    }
++    this.handlers = Object.fromEntries(['chainChanged', 'accountsChanged', 'disconnect'].map(event => [event, () => this.invalidate(event)]));
++    for (const [event, listener] of Object.entries(this.handlers)) provider.on?.(event, listener);
++  }
++  close() { for (const [event, listener] of Object.entries(this.handlers)) this.provider.removeListener?.(event, listener); }
++  save() { this.journal.write({ schema: 1, planDigest: this.planDigest, entries: this.entries, history: this.history }); }
++  entry(id) { need(this.entries[id], 'Unknown step'); return this.entries[id]; }
++  state(id) { return clone(this.entry(id)); }
++  invalidate(reason) {
++    ++this.epoch; this.packets.clear(); this.reviewed.clear();
++    for (const entry of Object.values(this.entries)) {
++      if (entry.status === 'CONFIRMED') entry.status = 'RECHECK_REQUIRED';
++      else if (entry.status === 'REQUESTING') entry.status = 'UNCERTAIN';
++      else if (!['PENDING', 'RECHECK_REQUIRED', 'UNCERTAIN'].includes(entry.status)) entry.status = 'BLOCKED';
++    }
++    this.history.push({ kind: 'CONTEXT_INVALIDATED', reason, time: this.now() });
++    try { this.save(); } catch { this.storageBroken = true; }
++  }
++  async read(method, params = []) { need(READS.has(method), 'Non-read RPC rejected'); return this.provider.request({ method, params }); }
++  async identity() {
++    const chain = await this.read('eth_chainId'); const accounts = await this.read('eth_accounts');
++    need(BigInt(chain) === CHAIN, 'Wrong network'); need(accounts.length && same(accounts[0], this.owner), 'Wrong selected account');
++  }
++  async checks(checks, block) {
++    need(checks.length > 0, 'No prerequisite/state checks');
++    const observations = [];
++    for (const check of checks) {
++      need(check.id && check.to, 'Malformed read check');
++      let actual;
++      if (check.kind === 'call') {
++        need(/^0x[0-9a-f]+$/i.test(check.data ?? '') && check.expected !== undefined, 'Unresolved ENS read');
++        actual = await this.read('eth_call', [{ to: check.to, data: check.data }, block]);
++        need(same(actual, check.expected), 'State mismatch: ' + check.id);
++      } else if (check.kind === 'code') {
++        need(hash(check.expectedHash), 'Unverified runtime hash');
++        const code = await this.read('eth_getCode', [check.to, block]); actual = keccak256(code);
++        need(same(actual, check.expectedHash), 'Code mismatch: ' + check.id);
++      } else if (check.kind === 'balance') {
++        actual = await this.read('eth_getBalance', [check.to, block]);
++        need(BigInt(actual) >= BigInt(check.minimumWei), 'Insufficient ETH: ' + check.id);
++        actual = 'minimum-satisfied';
++      } else throw new Error('Unknown check kind');
++      observations.push({ id: check.id, actual });
++    }
++    return observations;
++  }
++  async ancestors(id) {
++    const index = this.steps.findIndex(s => s.id === id); need(index >= 0, 'Unknown step');
++    for (const preceding of this.steps.slice(0, index)) {
++      need(this.entry(preceding.id).status === 'CONFIRMED', 'Unverified preceding receipt: ' + preceding.id);
++      need(await this.verifyReceipt(preceding.id, this.entry(preceding.id).receiptHash, true), 'Preceding receipt lost/unfinalized: ' + preceding.id);
++    }
++  }
++  async evaluate(id, packet) {
++    const epoch = this.epoch; await this.identity();
++    need(same(packet.tx.from, this.owner), 'Wrong packet owner');
++    need(this.policy.gates.length > 0 && this.policy.gates.every(g => g.status === 'PASS'), 'Failed/unresolved deployment gate');
++    need(this.testSubmission ? packet.inputClass === 'TEST_ONLY' : packet.inputClass === 'DEPLOYMENT_APPROVED', 'Unapproved or mixed test inputs');
++    const step = this.steps.find(s => s.id === id);
++    need(step && packet.id === id && digest(packet) === step.packetDigest, 'Packet not bound to frozen reviewed plan');
++    const review = decodePacket(packet);
++    need(BigInt(packet.tx.gas) > 0n && BigInt(packet.tx.gas) <= BigInt(this.policy.maxGasPerStep), 'Gas limit exceeds policy');
++    const fee = BigInt(packet.tx.maxFeePerGas), tip = BigInt(packet.tx.maxPriorityFeePerGas);
++    need(fee > 0n && fee <= BigInt(this.policy.maxFeePerGas) && tip >= 0n && tip <= fee && tip <= BigInt(this.policy.maxPriorityFeePerGas), 'Fee ceiling exceeded');
++    const total = this.steps.reduce((sum, s) => sum + BigInt(s.maxCostWei), 0n);
++    need(total <= BigInt(this.policy.maxTotalWei), 'Total deployment budget exceeded');
++    need(BigInt(packet.tx.gas) * fee <= BigInt(step.maxCostWei), 'Step budget exceeded');
++    await this.ancestors(id);
++    const header = await this.read('eth_getBlockByNumber', ['latest', false]);
++    need(header && hash(header.hash), 'Missing latest header');
++    need(this.now() / 1000 - Number(BigInt(header.timestamp)) <= this.policy.maxAgeSeconds && Number(BigInt(header.timestamp)) <= this.now() / 1000 + 15, 'Stale/future block');
++    need(fee >= BigInt(header.baseFeePerGas) + tip, 'Fee does not cover base fee');
++    const remaining = this.steps.slice(this.steps.findIndex(s => s.id === id)).reduce((sum,s) => sum + BigInt(s.maxCostWei),0n);
++    const balance = BigInt(await this.read('eth_getBalance',[this.owner,header.number]));
++    need(balance >= remaining, 'Insufficient ETH for remaining reviewed gas budget');
++    const pending = await this.read('eth_getTransactionCount', [this.owner, 'pending']);
++    need(BigInt(pending) === BigInt(packet.tx.nonce), 'Pending nonce changed');
++    for (const window of packet.timeWindows ?? []) {
++      const timestamp = BigInt(header.timestamp);
++      need(timestamp >= BigInt(window.minimum) && timestamp < BigInt(window.maximum), 'Commitment/expiry time window violated');
++    }
++    const observations = await this.checks(packet.prerequisites, header.number);
++    const tx = { ...packet.tx }; if (packet.creation) delete tx.to;
++    const estimate = BigInt(await this.read('eth_estimateGas', [tx, header.number]));
++    need(estimate > 0n && estimate <= BigInt(tx.gas), 'Gas estimate exceeds reviewed limit');
++    await this.identity(); need(epoch === this.epoch, 'Account/chain changed during preflight');
++    return { review, epoch, header, preparedAt: this.now(), fingerprint: digest({ observations, estimate: estimate.toString(), review }) };
++  }
++  async prepare(id, packet) {
++    need(!this.busy && !this.storageBroken, 'Workflow busy/storage unavailable');
++    const entry = this.entry(id);
++    need(!entry.attempts.length || ['REJECTED'].includes(entry.status), 'Existing transaction requires reconciliation; no retry');
++    this.busy = true; this.packets.delete(id); this.reviewed.delete(id); entry.status = 'BLOCKED';
++    try {
++      const frozen = clone(packet); const evaluated = await this.evaluate(id, frozen);
++      this.packets.set(id, { packet: frozen, evaluated }); this.reviewed.delete(id);
++      entry.status = 'PREPARED'; this.save(); return clone(evaluated.review);
++    } finally { this.busy = false; }
++  }
++  reviewDigest(id) { const item = this.packets.get(id); need(item, 'Not prepared'); return digest(item.evaluated.review); }
++  acknowledge(id, displayedDigest) {
++    const current = this.packets.get(id); need(current && this.entry(id).status === 'PREPARED', 'Not prepared');
++    need(displayedDigest === digest(current.evaluated.review), 'Displayed review differs');
++    this.reviewed.set(id, displayedDigest); this.entry(id).status = 'REVIEWED'; this.save();
++  }
++  async submitTestOnly(id) { need(this.testSubmission, 'Execution disabled: test transport required'); return this.submitReviewed(id); }
++  async submitReviewed(id) {
++    const live = this.executionEnabled && LIVE_EXECUTION_ALLOWED && this.policy.liveAuthorization?.stage === 'GO' && this.policy.liveAuthorization?.transactionPlanDigest === digest(this.steps);
++    need(this.testSubmission || live, 'Execution disabled; no live request authorized');
++    need(!this.busy && !this.storageBroken, 'Workflow busy/storage unavailable');
++    const current = this.packets.get(id); need(current && this.entry(id).status === 'REVIEWED' && this.reviewed.has(id), 'Explicit review acknowledgement required');
++    this.busy = true;
++    try {
++      need(this.now() - current.evaluated.preparedAt <= this.policy.maxAgeSeconds * 1000, 'Review expired');
++      const canonical = await this.read('eth_getBlockByNumber', [current.evaluated.header.number, false]);
++      need(canonical?.hash === current.evaluated.header.hash, 'Review block reorganized');
++      const fresh = await this.evaluate(id, current.packet);
++      need(BigInt(fresh.header.number) - BigInt(current.evaluated.header.number) <= BigInt(this.policy.maxAgeBlocks), 'Review too many blocks old');
++      need(fresh.fingerprint === current.evaluated.fingerprint, 'Prerequisite/estimate changed; review again');
++      const entry = this.entry(id);
++      const attempt = { nonce: current.packet.tx.nonce, calldataDigest: keccak256(current.packet.tx.data), packetDigest: digest(current.packet), hash: null, status: 'REQUESTING' };
++      entry.attempts.push(attempt); entry.status = 'REQUESTING'; this.reviewed.delete(id);
++      this.save(); // Durable nonce lock BEFORE any provider request.
++      const tx = { ...current.packet.tx }; if (current.packet.creation) delete tx.to;
++      try {
++        const result = this.testSubmission ? await this.provider.request({ method: 'eth_sendTransaction', params: [tx] }) :
++          await this.provider.submitReviewed(tx, { stage: 'GO', planDigest: this.planDigest, packetDigest: digest(current.packet) });
++        need(hash(result), 'Provider returned no valid hash');
++        attempt.hash = result; attempt.status = 'PENDING'; entry.status = 'PENDING'; entry.receiptHash = result; this.save();
++        return result;
++      } catch (error) {
++        const rejected = error.code === 4001;
++        attempt.status = rejected ? 'REJECTED' : 'UNCERTAIN'; entry.status = attempt.status;
++        this.history.push({ kind: attempt.status, id, code: error.code ?? null }); // No raw provider error/secret data.
++        try { this.save(); } catch { this.storageBroken = true; }
++        throw new Error(rejected ? 'User rejected request; manual review required' : 'Submission uncertain; reconcile nonce/hash, never auto-retry');
++      }
++    } catch (error) {
++      const entry = this.entry(id);
++      if (entry.attempts.length === 0 || !['REQUESTING', 'PENDING', 'UNCERTAIN', 'REJECTED'].includes(entry.status)) {
++        entry.status = 'BLOCKED'; this.packets.delete(id); this.reviewed.delete(id);
++        try { this.save(); } catch { this.storageBroken = true; }
++      }
++      throw error;
++    } finally { this.busy = false; }
++  }
++  async verifyReceipt(id, txHash, ancestor = false) {
++    const step = this.steps.find(s => s.id === id); need(step, 'Unknown step');
++    const packet = step.packet; need(packet && digest(packet) === step.packetDigest, 'Missing frozen recovery packet');
++    const epoch = this.epoch; await this.identity(); need(hash(txHash), 'Missing transaction hash; manual nonce investigation required');
++    const receipt = await this.read('eth_getTransactionReceipt', [txHash]);
++    if (!receipt) {
++      if (this.entry(id).status === 'CONFIRMED') { this.entry(id).status = 'RECHECK_REQUIRED'; this.save(); }
++      return false; // Timeout/pending does not authorize retry.
++    }
++    const entry = this.entry(id);
++    const block = await this.read('eth_getBlockByNumber', [receipt.blockNumber, false]);
++    const tx = await this.read('eth_getTransactionByHash', [txHash]);
++    const fail = (message) => { entry.status = 'RECHECK_REQUIRED'; this.reviewed.clear(); this.history.push({ kind: 'RECEIPT_BLOCKED', id, reason: message }); this.save(); throw new Error(message); };
++    if (block?.hash !== receipt.blockHash || !same(receipt.transactionHash, txHash)) return fail('Receipt reorg/hash mismatch');
++    const quantities = [receipt.blockNumber,receipt.status,receipt.gasUsed,receipt.effectiveGasPrice,tx?.nonce,tx?.value,tx?.chainId,tx?.gas,tx?.maxFeePerGas,tx?.maxPriorityFeePerGas];
++    if (!quantities.every(value => typeof value === 'string' && /^0x(?:0|[1-9a-f][0-9a-f]*)$/i.test(value))) return fail('Missing/malformed receipt or transaction quantity');
++    if (!tx || BigInt(tx.gas) > BigInt(packet.tx.gas) || BigInt(tx.maxFeePerGas) > BigInt(packet.tx.maxFeePerGas) || BigInt(tx.maxPriorityFeePerGas) > BigInt(packet.tx.maxPriorityFeePerGas) || BigInt(receipt.gasUsed) > BigInt(packet.tx.gas) || BigInt(receipt.effectiveGasPrice) > BigInt(packet.tx.maxFeePerGas) || !same(tx.hash, txHash) || !same(tx.from, this.owner) || BigInt(tx.nonce) !== BigInt(packet.tx.nonce) ||
++        !same(tx.input, packet.tx.data) || BigInt(tx.value) !== 0n || BigInt(tx.chainId) !== CHAIN ||
++        tx.blockHash !== receipt.blockHash || !same(receipt.from, this.owner) ||
++        (packet.creation ? tx.to !== null || receipt.to !== null || !same(receipt.contractAddress, packet.expectedAddress) : !same(tx.to, packet.expectedTarget) || !same(receipt.to, packet.expectedTarget))) return fail('Receipt/transaction identity differs from reviewed packet');
++    if (BigInt(receipt.status) !== 1n) {
++      entry.status = 'FAILED'; for (const attempt of entry.attempts) if (same(attempt.hash,txHash)) attempt.status = 'FAILED'; this.history.push({ kind: 'FAILED_RECEIPT', id, hash: txHash, blockHash: receipt.blockHash }); this.save(); return false;
++    }
++    const head = await this.read('eth_getBlockByNumber', [this.policy.finalityTag, false]);
++    if (!head || BigInt(head.number) < BigInt(receipt.blockNumber) + BigInt(this.policy.confirmations) - 1n) { if (entry.status === 'CONFIRMED') { entry.status = 'RECHECK_REQUIRED'; this.save(); } return false; }
++    try { verifyEvents(receipt, packet.expectedEvents); await this.checks(packet.postconditions, receipt.blockNumber); const persistent = packet.currentPostconditions ?? packet.postconditions; if (persistent.length) await this.checks(persistent, head.number); }
++    catch (error) { return fail(error.message); }
++    const again = await this.read('eth_getBlockByNumber', [receipt.blockNumber, false]);
++    if (again?.hash !== receipt.blockHash) return fail('Receipt changed while verifying');
++    await this.identity(); if (epoch !== this.epoch) return fail('Account/chain changed during receipt verification');
++    entry.status = 'CONFIRMED'; entry.receiptHash = txHash;
++    for (const attempt of entry.attempts) if (same(attempt.hash,txHash)) attempt.status = 'CONFIRMED'; else if (attempt.status === 'PENDING') attempt.status = 'REPLACED';
++    entry.receiptEvidence = { hash: txHash, blockHash: receipt.blockHash, blockNumber: receipt.blockNumber,
++      eventDigest: digest(receipt.logs), postconditionsDigest: digest(packet.postconditions) };
++    this.save(); return true;
++  }
++  async reconcile(id) {
++    const entry = this.entry(id); need(entry.attempts.length, 'No prior request');
++    return this.verifyReceipt(id, entry.receiptHash ?? entry.attempts.at(-1).hash);
++  }
++  async recordCancellation(id, txHash) {
++    const entry = this.entry(id); need(entry.attempts.length && entry.status !== 'CONFIRMED', 'No outstanding request');
++    const epoch = this.epoch; await this.identity(); const step = this.steps.find(s => s.id === id);
++    const tx = await this.read('eth_getTransactionByHash', [txHash]);
++    const receipt = await this.read('eth_getTransactionReceipt', [txHash]);
++    need(tx && receipt && same(tx.hash, txHash) && same(receipt.transactionHash, txHash) &&
++      same(tx.from, this.owner) && same(tx.to, this.owner) && BigInt(tx.nonce) === BigInt(step.packet.tx.nonce) &&
++      BigInt(tx.chainId) === CHAIN && BigInt(tx.value) === 0n && tx.input === '0x' && BigInt(receipt.status) === 1n && tx.blockHash === receipt.blockHash && same(receipt.from,this.owner) && same(receipt.to,this.owner) && receipt.logs.length === 0,
++      'Unverified cancellation');
++    const header = await this.read('eth_getBlockByNumber', [receipt.blockNumber, false]);
++    const finalized = await this.read('eth_getBlockByNumber', [this.policy.finalityTag, false]);
++    need(header?.hash === receipt.blockHash && finalized && BigInt(finalized.number) >= BigInt(receipt.blockNumber) + BigInt(this.policy.confirmations) - 1n, 'Unconfirmed/reorged cancellation');
++    await this.identity(); need(epoch === this.epoch, 'Context changed during cancellation verification');
++    entry.attempts.push({ hash: txHash, nonce: tx.nonce, status: 'CANCELLED' });
++    entry.status = 'CANCELLED'; entry.receiptHash = txHash; this.packets.delete(id); this.reviewed.delete(id);
++    this.history.push({ kind: 'CANCELLED', id, hash: txHash }); this.save(); return true;
++  }
++  async adoptReplacement(id, txHash) {
++    const entry = this.entry(id); need(entry.attempts.length && hash(txHash), 'No pending attempt/replacement hash');
++    await this.identity(); const replacement = await this.read('eth_getTransactionByHash', [txHash]);
++    const step = this.steps.find(s => s.id === id); const packet = step.packet;
++    need(replacement && same(replacement.from, this.owner) && BigInt(replacement.nonce) === BigInt(packet.tx.nonce), 'Replacement belongs to different sender/nonce');
++    need(BigInt(replacement.chainId) === CHAIN, 'Wrong replacement chain');
++    // Only exactly same intent/fees is adoptable. Changed-fee replacements need a new reviewed plan.
++    need(same(replacement.input, packet.tx.data) && same(replacement.to ?? '', packet.tx.to) && BigInt(replacement.value) === 0n &&
++      BigInt(replacement.maxFeePerGas) <= BigInt(packet.tx.maxFeePerGas) && BigInt(replacement.maxPriorityFeePerGas) <= BigInt(packet.tx.maxPriorityFeePerGas), 'Changed/cancelled/over-fee replacement requires independent review');
++    entry.attempts.push({ hash: txHash, replaces: entry.receiptHash, nonce: packet.tx.nonce, calldataDigest: keccak256(packet.tx.data), status: 'PENDING' });
++    entry.receiptHash = txHash; entry.status = 'PENDING'; this.save(); return this.reconcile(id);
++  }
++}
+diff --git a/contracts/test/workflow/OrderedDeploymentWorkflow.t.sol b/contracts/test/workflow/OrderedDeploymentWorkflow.t.sol
+new file mode 100644
+index 0000000..fe95389
+--- /dev/null
++++ b/contracts/test/workflow/OrderedDeploymentWorkflow.t.sol
+@@ -0,0 +1,281 @@
++// SPDX-License-Identifier: MIT
++pragma solidity ^0.8.25;
++
++import {Test} from "forge-std/Test.sol";
++import {Vm} from "forge-std/Vm.sol";
++import {console2} from "forge-std/console2.sol";
++import {IRegistry} from "../../src/ens-vendored/registry/interfaces/IRegistry.sol";
++import {IPermissionedRegistry} from "../../src/ens-vendored/registry/interfaces/IPermissionedRegistry.sol";
++import {IETHRegistrar} from "../../src/ens-vendored/registrar/interfaces/IETHRegistrar.sol";
++import {IVerifiableFactory} from "../../src/ens-vendored/verifiable-factory/IVerifiableFactory.sol";
++import {Grant} from "../../src/ens-vendored/access-control/interfaces/IEACGrantInitializable.sol";
++import {IMockERC20} from "../../src/ens-vendored/oz/IMockERC20.sol";
++import {IERC20} from "../../src/ens-vendored/oz/IERC20.sol";
++import {LibLabel} from "../../src/ens-vendored/utils/LibLabel.sol";
++import {CredentialRegistrar} from "../../src/CredentialRegistrar.sol";
++import {DoorKeys} from "../../src/DoorKeys.sol";
++
++interface IWorkflowTiming {
++    function MIN_COMMITMENT_AGE() external view returns (uint64);
++}
++
++interface IWorkflowLabelStore {
++    function getLabel(uint256 id) external view returns (string memory);
++}
++
++/// @notice TEST ONLY: disposable ordered EVM calls, not the final deployment simulation.
++/// @dev No broadcast API, external transactions, wallet or signing. Pinned Sepolia read-only fork.
++contract OrderedDeploymentWorkflowTest is Test {
++    IPermissionedRegistry constant ETH = IPermissionedRegistry(0xD4eBcbBdF463C9c45784603Db0dDD499BC44A8B4);
++    IRegistry constant ROOT = IRegistry(0xB458D6a3a77919449d03e7A6903C26827c1eC43f);
++    IETHRegistrar constant REG = IETHRegistrar(0xf633e7FC17e2bbE0D0965D18ec1821dcB754a3d3);
++    IVerifiableFactory constant FACTORY = IVerifiableFactory(0xDa70306C98E97eCe36F997a21368e53298572991);
++    address constant IMPL = 0x9BD8a88719068D09ecee662f36C0E3856708366a;
++    address constant LABEL_STORE = address(bytes20(hex"ed8246ff02203a4d4cb262bd78beaa7408a57cae"));
++    IMockERC20 constant USDC = IMockERC20(0x240b0316Df57887DBBE58b586508b19e633a14aa);
++    address constant OWNER = address(0xA11CE); // TEST ONLY, not selected live owner.
++    address constant GUEST = address(0xB0B); // TEST ONLY, not selected live Mira.
++    uint256 constant GRANTS = 380593917518227438537563280301172632627253505;
++    uint256 constant LOCK_ROLES = 91700664256357922357994873537130062512592519168;
++    uint256 constant ROOT_ROLES = 97409655027181761882228017414928043058140282880;
++    bytes32 constant TEST_SECRET = keccak256("PUBLIC TEST ONLY PREIMAGE, NEVER USE LIVE");
++    uint256 constant R1_SALT = 31001; // TEST ONLY, not proposed deployment salts.
++    uint256 constant R2_SALT = 31002;
++    string rootLabel;
++    IPermissionedRegistry r1;
++    IPermissionedRegistry r2;
++    CredentialRegistrar registrar;
++    DoorKeys door;
++    uint256 rootToken;
++    uint256 lockToken;
++    uint256 guestToken;
++    uint256 price;
++    bytes32 commitment;
++    uint64 lockExpiry;
++    uint64 guestExpiry;
++    uint256 completed;
++
++    function setUp() public {
++        assertEq(block.chainid, 11155111);
++        assertEq(block.number, 12071963, "requires audit-pinned fork");
++        rootLabel = "nak-workflow-test-12071963";
++        assertTrue(REG.isAvailable(rootLabel), "synthetic test root collision");
++        assertNotEq(keccak256(bytes(rootLabel)), keccak256("nak-lokesh-20261105"));
++        assertEq(OWNER.code.length, 0);
++        assertEq(GUEST.code.length, 0);
++        assertEq(bytes(IWorkflowLabelStore(LABEL_STORE).getLabel(LibLabel.id(rootLabel))).length, 0);
++        assertEq(bytes(IWorkflowLabelStore(LABEL_STORE).getLabel(LibLabel.id("lock"))).length, 0);
++        assertEq(bytes(IWorkflowLabelStore(LABEL_STORE).getLabel(LibLabel.id("mira"))).length, 0);
++    }
++
++    function testTestOnlyOrderedFifteenActionsAndHierarchy() public {
++        vm.recordLogs();
++        _registration();
++        _registries();
++        _products();
++        assertEq(completed, 15);
++        assertEq(address(ROOT.getSubregistry("eth")), address(ETH));
++        assertEq(address(ETH.getSubregistry(rootLabel)), address(r1));
++        assertEq(address(r1.getSubregistry("lock")), address(r2));
++        (IRegistry p1, string memory l1) = r1.getParent();
++        (IRegistry p2, string memory l2) = r2.getParent();
++        assertEq(address(p1), address(ETH));
++        assertEq(l1, rootLabel);
++        assertEq(address(p2), address(r1));
++        assertEq(l2, "lock");
++        assertEq(ETH.getState(LibLabel.id(rootLabel)).tokenId, rootToken);
++        assertEq(r1.getState(LibLabel.id("lock")).tokenId, lockToken);
++        assertEq(registrar.rootTokenId(), door.rootTokenId());
++        assertEq(registrar.lockTokenId(), door.lockTokenId());
++        assertEq(door.administrator(), OWNER);
++        assertEq(door.requestNonce(), 0);
++        assertEq(r2.roles(r2.ROOT_RESOURCE(), address(door)), 0);
++        assertEq(r2.roles(r2.ROOT_RESOURCE(), GUEST), 0);
++        assertEq(r2.roleCount(r2.getResource(guestToken)), 0);
++        assertEq(r2.getOwner(guestToken), GUEST);
++        assertEq(r2.getExpiry(guestToken), guestExpiry);
++        assertLe(guestExpiry, lockExpiry);
++        assertLe(lockExpiry, ETH.getExpiry(rootToken));
++        assertFalse(r2.isEmancipated());
++        assertEq(ETH.getOwner(rootToken), OWNER);
++        assertEq(r1.getOwner(lockToken), OWNER);
++        console2.log("TEST ONLY: 15 ordered EVM actions, exact log sequences and complete hierarchy verified");
++        console2.log("NOT final deployment simulation; no live ownership, transactions or receipts created");
++    }
++
++    function _registration() internal {
++        (uint256 base, uint256 premium) = REG.getRegisterPrice(rootLabel, 365 days, IERC20(address(USDC)));
++        price = base + premium;
++        vm.prank(OWNER);
++        USDC.mint(OWNER, price);
++        _step(1);
++        assertEq(USDC.balanceOf(OWNER), price);
++        vm.prank(OWNER);
++        USDC.approve(address(REG), price);
++        _step(2);
++        assertEq(USDC.allowance(OWNER, address(REG)), price);
++        commitment = REG.makeCommitment(rootLabel, OWNER, TEST_SECRET, IRegistry(address(0)), address(0), 365 days, 0);
++        vm.prank(OWNER);
++        REG.commit(commitment);
++        _step(3);
++        vm.warp(block.timestamp + IWorkflowTiming(address(REG)).MIN_COMMITMENT_AGE() + 1);
++        vm.prank(OWNER);
++        rootToken = REG.register(
++            rootLabel, OWNER, TEST_SECRET, IRegistry(address(0)), address(0), 365 days, IERC20(address(USDC)), 0
++        );
++        _step(4);
++        assertEq(ETH.getOwner(rootToken), OWNER);
++        assertEq(ETH.roles(ETH.getResource(rootToken), OWNER), ROOT_ROLES);
++        assertEq(ETH.getExpiry(rootToken), block.timestamp + 365 days);
++        assertEq(USDC.balanceOf(OWNER), 0);
++    }
++
++    function _newRegistry(uint256 salt) internal returns (IPermissionedRegistry registry) {
++        Grant[] memory grants = new Grant[](1);
++        grants[0] = Grant(OWNER, GRANTS);
++        address predicted = FACTORY.predictProxyAddress(OWNER, salt);
++        assertEq(predicted.code.length, 0);
++        vm.prank(OWNER);
++        registry = IPermissionedRegistry(
++            FACTORY.deployProxy(IMPL, salt, abi.encodeWithSignature("initialize((address,uint256)[])", grants))
++        );
++        assertEq(address(registry), predicted);
++        assertEq(FACTORY.verifyContract(address(registry)), IMPL);
++        assertEq(registry.roles(registry.ROOT_RESOURCE(), OWNER), GRANTS);
++        assertEq(registry.roleCount(registry.ROOT_RESOURCE()), GRANTS);
++    }
++
++    function _registries() internal {
++        r1 = _newRegistry(R1_SALT);
++        _step(5);
++        vm.prank(OWNER);
++        ETH.setSubregistry(rootToken, r1);
++        _step(6);
++        vm.prank(OWNER);
++        r1.setParent(ETH, rootLabel);
++        _step(7);
++        lockExpiry = uint64(block.timestamp + 90 days);
++        vm.prank(OWNER);
++        lockToken = r1.register("lock", OWNER, IRegistry(address(0)), address(0), LOCK_ROLES, lockExpiry);
++        _step(8);
++        assertEq(r1.roles(r1.getResource(lockToken), OWNER), LOCK_ROLES);
++        r2 = _newRegistry(R2_SALT);
++        _step(9);
++        vm.prank(OWNER);
++        r1.setSubregistry(lockToken, r2);
++        _step(10);
++        vm.prank(OWNER);
++        r2.setParent(r1, "lock");
++        _step(11);
++    }
++
++    function _products() internal {
++        vm.prank(OWNER);
++        registrar = new CredentialRegistrar(OWNER, rootLabel, r1, r2);
++        _step(12);
++        vm.prank(OWNER);
++        r2.grantRootRoles(4097, address(registrar));
++        _step(13);
++        assertEq(r2.roles(r2.ROOT_RESOURCE(), address(registrar)), 4097);
++        assertEq(r2.roleCount(r2.ROOT_RESOURCE()), GRANTS + 4097);
++        vm.prank(OWNER);
++        door = new DoorKeys(OWNER, rootLabel, r1, r2, 1);
++        _step(14);
++        guestExpiry = uint64(block.timestamp + 1 days);
++        vm.prank(OWNER);
++        guestToken = registrar.issue("mira", GUEST, guestExpiry);
++        _step(15);
++    }
++
++    function _at(Vm.Log[] memory logs, uint256 index, address emitter, string memory signature) internal pure {
++        assertEq(logs[index].emitter, emitter);
++        assertEq(logs[index].topics[0], keccak256(bytes(signature)));
++    }
++
++    function _registered(Vm.Log[] memory logs, uint256 start, address registry, bool roles) internal pure {
++        _at(logs, start, LABEL_STORE, "Label(bytes32,string)");
++        _at(logs, start + 1, registry, "LabelRegistered(uint256,bytes32,string,address,uint64,address)");
++        _at(logs, start + 2, registry, "TransferSingle(address,address,address,uint256,uint256)");
++        _at(logs, start + 3, registry, "TokenResource(uint256,uint256)");
++        if (roles) _at(logs, start + 4, registry, "EACRolesChanged(uint256,address,uint256,uint256)");
++    }
++
++    function _step(uint256 step) internal {
++        Vm.Log[] memory logs = vm.getRecordedLogs();
++        assertEq(step, ++completed);
++        if (step == 1 || step == 2) {
++            assertEq(logs.length, 1);
++            _at(
++                logs,
++                0,
++                address(USDC),
++                step == 1 ? "Transfer(address,address,uint256)" : "Approval(address,address,uint256)"
++            );
++            assertEq(logs[0].topics[1], bytes32(uint256(uint160(step == 1 ? address(0) : OWNER))));
++            assertEq(logs[0].topics[2], bytes32(uint256(uint160(step == 1 ? OWNER : address(REG)))));
++            assertEq(abi.decode(logs[0].data, (uint256)), price);
++        } else if (step == 3) {
++            assertEq(logs.length, 1);
++            _at(logs, 0, address(REG), "CommitmentMade(bytes32)");
++            assertEq(abi.decode(logs[0].data, (bytes32)), commitment);
++        } else if (step == 4) {
++            assertEq(logs.length, 7);
++            _at(logs, 0, address(USDC), "Transfer(address,address,uint256)");
++            _registered(logs, 1, address(ETH), true);
++            _at(
++                logs,
++                6,
++                address(REG),
++                "NameRegistered(uint256,string,address,address,address,uint64,address,bytes32,uint256,uint256)"
++            );
++            assertEq(uint256(logs[6].topics[1]), rootToken);
++            assertEq(logs[6].topics[2], bytes32(0));
++        } else if (step == 5 || step == 9) {
++            address registry = step == 5 ? address(r1) : address(r2);
++            assertEq(logs.length, 6);
++            _at(logs, 0, registry, "Upgraded(address)");
++            _at(logs, 1, registry, "RegistryCreated()");
++            _at(logs, 2, registry, "EACRolesChanged(uint256,address,uint256,uint256)");
++            _at(logs, 3, registry, "URIUpdated(string,address,address)");
++            _at(logs, 4, registry, "Initialized(uint64)");
++            _at(logs, 5, address(FACTORY), "ProxyDeployed(address,address,uint256,address)");
++            assertEq(abi.decode(logs[4].data, (uint64)), 1);
++            assertEq(uint256(logs[0].topics[1]), uint256(uint160(IMPL)));
++            assertEq(uint256(logs[5].topics[1]), uint256(uint160(OWNER)));
++            assertEq(uint256(logs[5].topics[2]), uint256(uint160(registry)));
++            (uint256 salt, address impl) = abi.decode(logs[5].data, (uint256, address));
++            assertEq(salt, step == 5 ? R1_SALT : R2_SALT);
++            assertEq(impl, IMPL);
++        } else if (step == 6 || step == 10) {
++            assertEq(logs.length, 1);
++            _at(logs, 0, step == 6 ? address(ETH) : address(r1), "SubregistryUpdated(uint256,address,address)");
++            assertEq(uint256(logs[0].topics[1]), step == 6 ? rootToken : lockToken);
++            assertEq(uint256(logs[0].topics[2]), uint256(uint160(step == 6 ? address(r1) : address(r2))));
++        } else if (step == 7 || step == 11) {
++            assertEq(logs.length, 1);
++            _at(logs, 0, step == 7 ? address(r1) : address(r2), "ParentUpdated(address,string,address)");
++            assertEq(uint256(logs[0].topics[1]), uint256(uint160(step == 7 ? address(ETH) : address(r1))));
++        } else if (step == 8) {
++            assertEq(logs.length, 5);
++            _registered(logs, 0, address(r1), true);
++        } else if (step == 12 || step == 14) {
++            assertEq(logs.length, 0);
++        } else if (step == 13) {
++            assertEq(logs.length, 1);
++            _at(logs, 0, address(r2), "EACRolesChanged(uint256,address,uint256,uint256)");
++            (uint256 oldRoles, uint256 newRoles) = abi.decode(logs[0].data, (uint256, uint256));
++            assertEq(oldRoles, 0);
++            assertEq(newRoles, 4097);
++        } else {
++            assertEq(step, 15);
++            assertEq(logs.length, 5);
++            _registered(logs, 0, address(r2), false);
++            _at(logs, 4, address(registrar), "CredentialIssued(bytes32,uint256,address,uint64)");
++            assertEq(logs[4].topics[1], bytes32(LibLabel.id("mira")));
++            assertEq(uint256(logs[4].topics[2]), guestToken);
++            assertEq(uint256(logs[4].topics[3]), uint256(uint160(GUEST)));
++            assertEq(abi.decode(logs[4].data, (uint64)), guestExpiry);
++        }
++        console2.log("TEST_ONLY ordered action", step);
++    }
++}
+diff --git a/docs/prep/workflow/FILE_INVENTORY.md b/docs/prep/workflow/FILE_INVENTORY.md
+new file mode 100644
+index 0000000..4655f0f
+--- /dev/null
++++ b/docs/prep/workflow/FILE_INVENTORY.md
+@@ -0,0 +1,103 @@
++# Workflow change inventory
++
++HEAD `3c6240f84d6010ac7dfcefb9f5f626655f22f767` unchanged. All293 tracked files and43 prior audit files preserved. **51 new workflow files**; **94 total untracked paths** including the previous43. Index empty. No commit or push.
++
++## New in this task
++
++- `contracts/scripts/deployment_workflow/README.md`
++- `contracts/scripts/deployment_workflow/browser.mjs`
++- `contracts/scripts/deployment_workflow/build.mjs`
++- `contracts/scripts/deployment_workflow/guards.mjs`
++- `contracts/scripts/deployment_workflow/index.html`
++- `contracts/scripts/deployment_workflow/package-lock.json`
++- `contracts/scripts/deployment_workflow/package.json`
++- `contracts/scripts/deployment_workflow/style.css`
++- `contracts/scripts/deployment_workflow/test/fixture.mjs`
++- `contracts/scripts/deployment_workflow/test/workflow.test.mjs`
++- `contracts/scripts/deployment_workflow/workflow.mjs`
++- `contracts/test/workflow/OrderedDeploymentWorkflow.t.sol`
++- `docs/prep/evidence/workflow/.gitattributes`
++- `docs/prep/evidence/workflow/SHA256SUMS`
++- `docs/prep/evidence/workflow/SOURCE_DIFF.patch`
++- `docs/prep/evidence/workflow/browser-qa.json`
++- `docs/prep/evidence/workflow/build-final-52.log`
++- `docs/prep/evidence/workflow/build-final-53.log`
++- `docs/prep/evidence/workflow/build-final-54.log`
++- `docs/prep/evidence/workflow/build-final.log`
++- `docs/prep/evidence/workflow/build-verification-final.log`
++- `docs/prep/evidence/workflow/build.log`
++- `docs/prep/evidence/workflow/dependency-lock-final.log`
++- `docs/prep/evidence/workflow/dependency-lock.log`
++- `docs/prep/evidence/workflow/final-validation.log`
++- `docs/prep/evidence/workflow/format-check.log`
++- `docs/prep/evidence/workflow/format-verification-final.log`
++- `docs/prep/evidence/workflow/git-status.txt`
++- `docs/prep/evidence/workflow/node-tests-after-hardening.log`
++- `docs/prep/evidence/workflow/node-tests-attempt1.log`
++- `docs/prep/evidence/workflow/node-tests-detailed-attempt1.log`
++- `docs/prep/evidence/workflow/node-tests-expanded-attempt1.log`
++- `docs/prep/evidence/workflow/node-tests-final-52.log`
++- `docs/prep/evidence/workflow/node-tests-final-53.log`
++- `docs/prep/evidence/workflow/node-tests-final-54.log`
++- `docs/prep/evidence/workflow/node-tests-final-attempt1.log`
++- `docs/prep/evidence/workflow/node-tests-final-guards.log`
++- `docs/prep/evidence/workflow/node-tests-final.log`
++- `docs/prep/evidence/workflow/node-tests-hardened-final.log`
++- `docs/prep/evidence/workflow/node-tests-verification-final.log`
++- `docs/prep/evidence/workflow/offline-build-attempt1.log`
++- `docs/prep/evidence/workflow/ordered-fork-attempt1.log`
++- `docs/prep/evidence/workflow/run.json`
++- `docs/prep/evidence/workflow/solidity-format.log`
++- `docs/prep/evidence/workflow/test-only-ui.jpg`
++- `docs/prep/evidence/workflow/tooling-notes.log`
++- `docs/prep/evidence/workflow/validation-attempt1.log`
++- `docs/prep/evidence/workflow/whitespace-initial.json`
++- `docs/prep/workflow/FILE_INVENTORY.md`
++- `docs/prep/workflow/IMPLEMENTATION_REPORT.md`
++- `docs/prep/workflow/PROPOSED_DEFAULTS.json`
++
++## Pre-existing readiness-audit paths (unchanged)
++
++- `contracts/scripts/stage3f_audit/ancestor_roles.py`
++- `contracts/scripts/stage3f_audit/compile_sources.py`
++- `contracts/scripts/stage3f_audit/labelstore.py`
++- `contracts/scripts/stage3f_audit/probe.py`
++- `contracts/scripts/stage3f_audit/reconcile_runtime.py`
++- `contracts/scripts/stage3f_audit/test_audit.py`
++- `docs/prep/evidence/stage3f-audit/SHA256SUMS`
++- `docs/prep/evidence/stage3f-audit/ancestor-probe.log`
++- `docs/prep/evidence/stage3f-audit/ancestor-reconciliation.json`
++- `docs/prep/evidence/stage3f-audit/ancestor-role-observation.json`
++- `docs/prep/evidence/stage3f-audit/ancestor-rpc-transcript.json`
++- `docs/prep/evidence/stage3f-audit/audit-tests-final.log`
++- `docs/prep/evidence/stage3f-audit/audit-tests.log`
++- `docs/prep/evidence/stage3f-audit/compiler-audit.json`
++- `docs/prep/evidence/stage3f-audit/compiler-reproduction.log`
++- `docs/prep/evidence/stage3f-audit/compiler-stderr-reproducible.log`
++- `docs/prep/evidence/stage3f-audit/compiler-stderr.log`
++- `docs/prep/evidence/stage3f-audit/final-validation.log`
++- `docs/prep/evidence/stage3f-audit/git-status.txt`
++- `docs/prep/evidence/stage3f-audit/labelstore-artifact.json`
++- `docs/prep/evidence/stage3f-audit/labelstore-inspection.log`
++- `docs/prep/evidence/stage3f-audit/labelstore-rpc-transcript.json`
++- `docs/prep/evidence/stage3f-audit/labelstore-script-attempt1.py.txt`
++- `docs/prep/evidence/stage3f-audit/labelstore-standard-input.json`
++- `docs/prep/evidence/stage3f-audit/labelstore-verification-attempt1.log`
++- `docs/prep/evidence/stage3f-audit/labelstore-verification-final.log`
++- `docs/prep/evidence/stage3f-audit/labelstore-verification.json`
++- `docs/prep/evidence/stage3f-audit/labelstore-verification.log`
++- `docs/prep/evidence/stage3f-audit/python-indentation-check.log`
++- `docs/prep/evidence/stage3f-audit/read-only-observation.json`
++- `docs/prep/evidence/stage3f-audit/read-only-probe.log`
++- `docs/prep/evidence/stage3f-audit/rpc-transcript.json`
++- `docs/prep/evidence/stage3f-audit/run.json`
++- `docs/prep/evidence/stage3f-audit/runtime-reconciliation-reproduced.log`
++- `docs/prep/evidence/stage3f-audit/runtime-reconciliation.log`
++- `docs/prep/evidence/stage3f-audit/semantic-runtime-reconciliation.json`
++- `docs/prep/evidence/stage3f-audit/stage3e-manifest-check.log`
++- `docs/prep/evidence/stage3f-audit/stage3e-offline-tests.log`
++- `docs/prep/stage3f-audit/FILE_INVENTORY.md`
++- `docs/prep/stage3f-audit/READINESS_REPORT.md`
++- `docs/prep/stage3f-audit/TRANSACTION_REVIEW_PLAN.md`
++- `docs/prep/stage3f-audit/gate-status.json`
++- `docs/prep/stage3f-audit/review-plan.json`
+diff --git a/docs/prep/workflow/IMPLEMENTATION_REPORT.md b/docs/prep/workflow/IMPLEMENTATION_REPORT.md
+new file mode 100644
+index 0000000..579f572
+--- /dev/null
++++ b/docs/prep/workflow/IMPLEMENTATION_REPORT.md
+@@ -0,0 +1,85 @@
++# Local deployment-workflow implementation and security review
++
++**Stage 3F remains NO-GO. Local preparation only; no commit requested.** Starting HEAD `3c6240f84d6010ac7dfcefb9f5f626655f22f767`, branch master. Initial working tree contained the 43 untracked readiness-audit files from the preceding task. Those files and all 293 tracked files are preserved byte-for-byte. No production defect was identified and no production contract was modified.
++
++## Implemented behavior
++
++`contracts/scripts/deployment_workflow/workflow.mjs` implements a frozen-plan transaction-review state machine and an EIP-1193 adapter. `browser.mjs`, `index.html`, `style.css` and `build.mjs` implement a local static review interface. This is a deployment-review utility, not the guest app, QR generator or door simulator.
++
++The UI shows the supplied owner and Mira addresses, chain11155111, the historical readiness gates, all15 ordered transaction steps, destination/CREATE status, retained ABI argument types and bindings, ABI-decoded known candidate inputs, token amount and allowance snapshot, ETH value, unresolved gas/fee fields and explicitly proposed ceilings. It never substitutes defaults for unresolved deployment values. The displayed audit snapshot is historical evidence, not a fresh PASS certificate. The live request button is disabled with no UI toggle. No provider is queried on load; optional identity inspection calls only eth_chainId/eth_accounts after a user click, without requesting permissions or switching networks. That button was **not** clicked during QA.
++
++The adapter refuses raw send/sign, account-permission and network-switch methods. Its separately named reviewed-submission seam also rejects under the shipped constant `LIVE_EXECUTION_ALLOWED=false`. The engine defaults executionEnabled=false; a fake GO flag or execution flag cannot override the compiled lock. The engine's real-request seam exists for future separately reviewed enablement, but was not exercised with MetaMask. It requires an explicit execution flag, compiled enablement, GO authorization bound to the frozen transaction-plan digest, all gates PASS and a matching reviewed packet. Do not enable it as part of this stage or treat a JSON GO value as owner authorization. There is no live submission control in this build.
++
++The only enabled request lifecycle is `TEST_ONLY` against the in-memory FakeProvider, whose request handler has no network or wallet reference. Test-only packets are rejected by a production-mode engine. The actual owner, root and proposed salts are not substituted into that demo.
++
++## Pre-request review and fail-closed checks
++
++- ABI function/constructor inputs are re-encoded and compared byte-for-byte to reviewed calldata, including rejecting trailing bytes. Canonical signatures, integer quantities, supported transaction fields and address bindings are checked. Direct CREATE address is independently derived from sender/nonce; expected creation bytecode must be explicitly supplied. Unknown extra fields such as authorizationList are rejected.
++- Account and chain must match before and after asynchronous preflight. Chain/account/disconnect events invalidate prepared reviews and force confirmed receipts back through revalidation. The transaction itself includes the fixed chainId/from. No account/network switching is attempted.
++- Every packet is bound to a frozen transaction-plan digest and packet digest. A separate acknowledgement of the displayed review is required; no prepare/next operation submits anything. Fresh nonce, code and ENS reads, prerequisite gates, expiry/commitment windows, estimate, base fee and balances are checked. Changed estimates/state require re-review. The prepared block must remain canonical; age defaults are proposals, not silently installed live settings.
++- Gas/fee/priority/step/total ceilings are checked with integer arithmetic. Current ETH balance must cover remaining reviewed worst-case gas costs. ERC20 mint/approval summary amount, token and spender must agree with decoded arguments and decimals. Exact token allowance/quote/balance read predicates still belong in each independently reviewed production packet.
++- `guards.mjs` builds verified-ABI reads for the forward hierarchy, both canonical parent metadata links, active owner/expiry/generation snapshots, factory implementations, all seven relevant runtime hashes, exact root/lock token roles, restricted owner root roles/packed counts, registrar4097 and zero guest/door roles when those addresses exist. Missing runtime hashes/bindings stop construction. Parent metadata is a deployment-consistency check, not a newly introduced onchain authorization predicate.
++- These builders consume expected state from independently verified receipt/configuration bindings. They do not manufacture deployment readiness or derive trust from a user-supplied PASS boolean. Full live packets, conditional LabelStore events, exhaustive operator/event inventories and their source/runtime bindings still require review; the current incomplete plan cannot be submitted.
++
++## Pending, rejection, failure, replacement and recovery
++
++The state machine supports BLOCKED → PREPARED → REVIEWED → REQUESTING → PENDING → CONFIRMED, plus REJECTED, FAILED, UNCERTAIN, CANCELLED and RECHECK_REQUIRED. Every attempt and hash is retained. A public nonce/intent lock is written **before** any request. Storage failure blocks requesting; an unknown error, invalid/missing hash or crash leaves an UNCERTAIN/RECHECK_REQUIRED lock. A local timeout is never a failed transaction and cannot trigger a resend. Concurrent requests and repeated pending submissions are refused.
++
++`BrowserJournal` provides public localStorage serialization; raw arguments, calldata, creation bytecode and registration-secret fields are rejected. The demo uses an isolated in-memory journal; production storage is not initialized by loading the UI. Restored journal states are untrusted recovery hints, never authority: confirmed/pending attempts require fresh onchain reconciliation against the frozen plan. Existing evidence is not overwritten by recovery.
++
++Wallet rejection4001 is recorded and allows a fresh explicit preparation/review, never an automatic retry. Failed or cancelled mined transactions stop the frozen plan; nonce rebinding requires a new independently reviewed plan and preserved prior journal, not silent mutation/migration. Same-intent replacement hashes can be reconciled only with the same sender/nonce/chain/calldata/destination/value and fees within the original reviewed bounds. Changed intent or higher fee limits stop for new review. A canonical finalized successful self-send cancellation can be recorded without submitting one. Automatic replacement, fee bumping and journal migration are intentionally absent.
++
++Receipt verification compares canonical block/hash, transaction hash/from/to/input/nonce/chain/value, reviewed fee/gas bounds, creation address, success, finality and confirmation count. Every log must match exact ABI topics/data, emitter, count/order and unique increasing logIndex; removed or inconsistent logs fail. State is checked at the receipt block and through separately specified persistent current postconditions. Transitional conditions, such as a rent balance later spent, must not be incorrectly required forever. Preceding receipts are revalidated before advancing. Missing/reorged predecessors, bad events, state drift, wrong implementations or a context change during verification block progression.
++
++A public RPC remains a trusted read transport; no cryptographic header/log-inclusion verification is implemented. The tool is not hardened against a compromised browser, modified trusted build or malicious RPC. Freezing/hashing and recovery checks detect ordinary drift and journal tampering, not replacement of the entire trusted program.
++
++## Registration-preimage boundary
++
++The proposal is32 future CSPRNG bytes in ephemeral memory only. No real preimage was generated. This is unrelated to wallet seed/private-key material; no wallet key API exists here. Canonical register/makeCommitment review automatically masks the secret argument even if a caller forgets an optional private-field hint. The UI can review all public arguments and the exact calldata digest; private preimage review is a separate local-owner concern. Public journals contain digests and transaction references, never the preimage. JavaScript cannot guarantee secure memory erasure; a refreshed/lost session cannot reveal a lost commitment. The owner must accept loss/expiry handling or request separately reviewed encrypted recovery before a real commit.
++
++## Concrete proposals requiring decisions
++
++Machine-readable values: `PROPOSED_DEFAULTS.json`. None is applied to the approved deployment manifest.
++
++| Setting | Proposed default | Decision / evidence still needed |
++|---|---|---|
++| R1 salt | `0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39` | Owner approval; derive from public UTF-8 `names-as-keys:sepolia:nak-lokesh-20261105:R1:v1`; check factory prediction has no code. |
++| R2 salt | `0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95` | Same procedure with R2; distinct from R1 and every test salt. |
++| Epoch |1| Retain proposal; owner final decision. |
++| Registration preimage |32 CSPRNG bytes, memory only, no public persistence| Accept loss policy or separately review encrypted recovery. Never a wallet seed/key. |
++| Root / lock / guest |365-day root,90-day lock,one-day Mira| Retained proposals; derive absolute uint64 lock/guest expiry from an identified latest review block after ancestors confirm; minimum guest margin600s; bound by ancestors, reject rather than clamp. |
++| Freshness |≤120s and≤2 blocks| Re-read before request; source/time-window changes require a new review. |
++| MockUSDC | Exact fresh rent quote allowance; mint exact deficit; hard rent cap8.1 tokens (8100000 units)| Final owner cap approval. Any quote change requires re-review, including below the cap. No unlimited allowance. |
++| Gas limit | ceil(estimate×120/100), ≤3000000 per step| Owner decision; never silently truncate an oversized estimate. Actual limits unknown until exact packets simulate. |
++| Fees | maxFee≤2gwei, priority≤0.1gwei| Ceilings, not targets. Actual quote must be reviewed; fail if needed fees exceed caps. |
++| Total gas budget |≤0.03 Sepolia ETH worst case| Owner decision and exact whole-sequence budget check; not a forecast of charged gas. |
++| Confirmation / reorg |12 confirmations **and** receipt height covered by finalized tag| Owner decision. Recheck canonical hashes and preceding receipts; no automatic retry after reorg. |
++| Nonce | Single owner sender, no concurrent unrelated submissions| Recheck pending nonce. New plan/review after cancellation/failure/repricing changes. |
++
++## Ordered local-fork simulation
++
++`contracts/test/workflow/OrderedDeploymentWorkflow.t.sol` executes all15 deployment-sequence actions in Foundry's disposable EVM over read-only Sepolia block **12071963**. It uses `nak-workflow-test-12071963`, OWNER0xA11CE, GUEST0xB0B, salts31001/31002 and a public deterministic TEST_SECRET. These are explicitly **test-only**, not approved deployment inputs. It checks the root was available and all three global label-store mappings empty at that pinned block, rather than assuming it.
++
++The test covers mint, approval, commit, local time warp, registration, R1 initialization/attachment/metadata, lock registration, R2 initialization/attachment/metadata, real production CredentialRegistrar/DoorKeys constructors, registrar4097 grant and issuance. All15 ordered log streams are checked for count, emitter and signature/order, with selected indexed/data values decoded. Final reads verify both parent links, owners/expiry nesting, stable ancestor tokens, factory implementations, exact restricted role/count policies, zero guest/door privileges and matching constructor snapshots. It does not call unlock or emit DoorUnlocked.
++
++**This is not the final deployment simulation.** It is a single Foundry test with ordered internal/local EVM calls and cheatcode sender/time handling, not15 external transactions with real nonces, fee charges or canonical receipts. The wallet lifecycle tests use synthetic receipts separately. No real-wallet E2E test, engine-driven local-node transaction run or complete exact approved-input manifest simulation is claimed.
++
++## Actual verification and retained failures
++
++- `node contracts/scripts/deployment_workflow/test/workflow.test.mjs`: **54 passed,0 failed**; final TAP log `node-tests-final-54.log`. Tests cover disabled/forged enablement, review integrity, ABI/constructor/address/quantity checks, token displays, guards, budget/time/nonce controls, async account/chain changes, durable request locks, rejection/uncertainty, duplicate requests, exact receipts/events/state, finality/reorgs, replacement/cancellation, reload and private-preimage exclusion. A Node --test invocation aggregated at file level; detailed direct TAP is used for actual test counts.
++- `forge test --root contracts --fork-url https://sepolia.gateway.tenderly.co --fork-block-number 12071963 --match-contract OrderedDeploymentWorkflowTest -vv`: **1 passed,0 failed**, all15 numbered actions observed. Log `ordered-fork-attempt1.log`. Test aggregate gas4721743 is not a deployment transaction estimate. Foundry reported optional Etherscan configuration/missing local fork-cache warnings; no contract test failure.
++- Offline Foundry build passed, with existing lint warnings and preserved raw output. Solidity formatting and JS syntax/bundle checks pass. Existing production suites are historical; no full Foundry suite total is claimed as rerun.
++- Local browser QA exercised synthetic PREPARED→REVIEWED→PENDING→CONFIRMED and left live submission disabled. Wallet inspection was not clicked. Screenshot `test-only-ui.jpg` and QA note retained. Temporary server was loopback-only and stopped afterward.
++- Intermediate Node failures: one expected guard-message assertion and one incorrect fixture-file relative path; both corrected and original failure TAP files retained. Offline dependency-lock generation failed ENOTCACHED; a later public-metadata-only lockfile command succeeded with lifecycle scripts disabled. No packages/scripts were installed or run by that lock command. The first fork permission review timed out before execution; a short retry succeeded. Initial local server bind was sandbox-denied; the authorized loopback retry succeeded. Notes are retained, not silently called test successes.
++
++## Remaining blockers and next review
++
++Independent security review of this new uncommitted workflow, runtime/source evidence and complete production packet compiler/bindings remains required. Current production packets have unresolved secrets/commitment, future addresses, token generations, expiry timestamps and final gas/fees; no automatic live binding resolver or trusted readiness attestation is fabricated. Conditional LabelStore logs and code/operator/role inventories must be resolved for the exact real packets. The hard live lock remains in source; changing it requires separate authorization and review. Real MetaMask/browser-extension behavior, real replacements/reorgs and exact approved-manifest E2E execution have not been tested.
++
++Prior NO-GO gates are not automatically closed by these tests. Historical audit G22 (workflow absent) now has a local implementation to review, not a live-ready PASS. Token balance/allowance, signing control, owner defaults, complete simulation, fresh runtime/state and explicit write authorization remain gates. Preserve the approved trusted-administrator/current-state semantics: administrators can renew expired unburned credentials; restored attachments/owners can restore validity without generation change; DoorKeys uses only ENS current state. No guest allowlist or authorization database was introduced. Deployment journals track deployment attempts, not guest access.
++
++Stop for independent architecture/security review. No source staging, Git commit/push, live registration, deployment, wallet signature or broadcast occurred.
++
++References: committed Stage3E MetaMask specification and corrected manifest, Stage3F READINESS_REPORT/TRANSACTION_REVIEW_PLAN, and the primary [EIP-1193 specification](https://eips.ethereum.org/EIPS/eip-1193) and [ethers6 ABI documentation](https://docs.ethers.org/v6/api/abi/). Dependency versions are pinned in package.json/package-lock.json; no OpenAI/Claude service is involved.
++
++Evidence-format note: the raw failed TAP output retains two indentation-only blank lines, and raw offline Foundry output retains its captured EOF blank line. A workflow-evidence-only .gitattributes exempts blank-at-eol for node-tests-final-attempt1.log and blank-at-eof for offline-build-attempt1.log. No raw log was trimmed; all active source/docs and other evidence pass ordinary whitespace checks. The initial findings are retained in whitespace-initial.json.
+diff --git a/docs/prep/workflow/PROPOSED_DEFAULTS.json b/docs/prep/workflow/PROPOSED_DEFAULTS.json
+new file mode 100644
+index 0000000..9c1163f
+--- /dev/null
++++ b/docs/prep/workflow/PROPOSED_DEFAULTS.json
+@@ -0,0 +1,60 @@
++{
++  "classification": "PROPOSED_ONLY_OWNER_DECISIONS_REQUIRED",
++  "stage3F": "NO_GO",
++  "root": "nak-lokesh-20261105.eth",
++  "paymentToken": "MockUSDC",
++  "salts": {
++    "R1": "0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39",
++    "R2": "0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95"
++  },
++  "saltPolicy": "Public deterministic uint256 user salts, subject to approval and empty-address prediction checks; no fallback reuse or silent substitution",
++  "registrationSecret": {
++    "lengthBytes": 32,
++    "generator": "future crypto.getRandomValues only after authorization; not generated now",
++    "storage": "memory only; never localStorage, public journal or Git",
++    "lossPolicy": "stop if lost; wait commitment expiration then separately review a new attempt; encrypted recovery is a separate owner decision",
++    "distinction": "This is a commit/reveal preimage, never a MetaMask seed/private key"
++  },
++  "expiry": {
++    "rootDurationSeconds": 31536000,
++    "lockDurationSeconds": 7776000,
++    "guestDurationSeconds": 86400,
++    "reference": "latest identified review block after ancestors confirmed; uint64 absolute expiries; no silent clamping",
++    "guestMinimumRemainingSeconds": 600,
++    "maxAgeSeconds": 120,
++    "maxAgeBlocks": 2
++  },
++  "spending": {
++    "approval": "exact fresh quoted units only, no unlimited approval",
++    "mint": "exact verified deficit only",
++    "maxRentUnits": "8100000",
++    "decimals": 6,
++    "maxRentDisplay": "8.1 MockUSDC",
++    "priceChange": "stop for a new quote/allowance/review, even below cap"
++  },
++  "fees": {
++    "maxFeePerGasWei": "2000000000",
++    "maxPriorityFeePerGasWei": "100000000",
++    "gasLimitMultiplierPercent": 120,
++    "maxGasPerStep": "3000000",
++    "maxTotalWei": "30000000000000000",
++    "maxTotalDisplay": "0.03 Sepolia ETH",
++    "policy": "Ceilings, not fee targets. Resolve RPC quote/estimate for every exact packet; do not silently cap failing estimates"
++  },
++  "confirmations": {
++    "count": 12,
++    "finalityTag": "finalized",
++    "policy": "both 12 confirmations and receipt height covered by finalized header, same canonical hash; revalidate ancestors and current state before every next packet"
++  },
++  "deploymentEpoch": 1,
++  "noncePolicy": "one owner sender; no concurrent unrelated owner transactions; explicit retry/replacement review only",
++  "decisionsRequired": [
++    "salts and deployment epoch",
++    "private registration-preimage loss/recovery policy",
++    "exact duration/absolute-expiry reference",
++    "8.1 MockUSDC rent cap and exact-quote approval policy",
++    "gas/fee/total ceilings",
++    "12 confirmations plus finalized and reorg policy",
++    "independent review and explicit future live authorization"
++  ]
++}

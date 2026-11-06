@@ -1,0 +1,840 @@
+{
+  "scope": "Technical evidence for independent review, not deployment approval; eight main artifacts plus factory proxy logic; external LabelStore/URI renderer not included",
+  "block": 12071963,
+  "blockHash": "0x58bfa2bb15174e49b537d0d645c589e07adab37b8ede60ad6be5f1ab7ffc8caf",
+  "contracts": {
+    "ETHRegistrar": {
+      "immutableChecks": [
+        {
+          "declaration": {
+            "name": "ETH_REGISTRY",
+            "source": "project/src/registrar/AbstractETHRegistrar.sol",
+            "src": "1193:51:58",
+            "type": "contract IPermissionedRegistry"
+          },
+          "expected": "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+          "observed": [
+            "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+            "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+            "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+            "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+            "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+            "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+            "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+            "000000000000000000000000d4ebcbbdf463c9c45784603db0ddd499bc44a8b4"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 697
+            },
+            {
+              "length": 32,
+              "start": 1156
+            },
+            {
+              "length": 32,
+              "start": 1671
+            },
+            {
+              "length": 32,
+              "start": 2116
+            },
+            {
+              "length": 32,
+              "start": 2731
+            },
+            {
+              "length": 32,
+              "start": 3948
+            },
+            {
+              "length": 32,
+              "start": 4367
+            },
+            {
+              "length": 32,
+              "start": 5498
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "BENEFICIARY",
+            "source": "project/src/registrar/AbstractETHRegistrar.sol",
+            "src": "1299:36:58",
+            "type": "address"
+          },
+          "expected": "00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3",
+          "observed": [
+            "00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3",
+            "00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3",
+            "00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3",
+            "00000000000000000000000084d3a426d4e12e955d1df95db0b24fe26afe39d3"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 626
+            },
+            {
+              "length": 32,
+              "start": 1443
+            },
+            {
+              "length": 32,
+              "start": 2067
+            },
+            {
+              "length": 32,
+              "start": 2680
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "GRACE_PERIOD",
+            "source": "project/src/registrar/ETHRegistrar.sol",
+            "src": "2094:36:59",
+            "type": "uint64"
+          },
+          "expected": "000000000000000000000000000000000000000000000000000000000024ea00",
+          "observed": [
+            "000000000000000000000000000000000000000000000000000000000024ea00",
+            "000000000000000000000000000000000000000000000000000000000024ea00",
+            "000000000000000000000000000000000000000000000000000000000024ea00",
+            "000000000000000000000000000000000000000000000000000000000024ea00"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 973
+            },
+            {
+              "length": 32,
+              "start": 1932
+            },
+            {
+              "length": 32,
+              "start": 4803
+            },
+            {
+              "length": 32,
+              "start": 5994
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "MIN_COMMITMENT_AGE",
+            "source": "project/src/registrar/ETHRegistrar.sol",
+            "src": "2284:42:59",
+            "type": "uint64"
+          },
+          "expected": "000000000000000000000000000000000000000000000000000000000000003c",
+          "observed": [
+            "000000000000000000000000000000000000000000000000000000000000003c",
+            "000000000000000000000000000000000000000000000000000000000000003c"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 587
+            },
+            {
+              "length": 32,
+              "start": 5127
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "MAX_COMMITMENT_AGE",
+            "source": "project/src/registrar/ETHRegistrar.sol",
+            "src": "2427:42:59",
+            "type": "uint64"
+          },
+          "expected": "0000000000000000000000000000000000000000000000000000000000015180",
+          "observed": [
+            "0000000000000000000000000000000000000000000000000000000000015180",
+            "0000000000000000000000000000000000000000000000000000000000015180",
+            "0000000000000000000000000000000000000000000000000000000000015180"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 822
+            },
+            {
+              "length": 32,
+              "start": 3157
+            },
+            {
+              "length": 32,
+              "start": 5277
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "MIN_REGISTER_DURATION",
+            "source": "project/src/registrar/ETHRegistrar.sol",
+            "src": "2531:45:59",
+            "type": "uint64"
+          },
+          "expected": "000000000000000000000000000000000000000000000000000000000024ea00",
+          "observed": [
+            "000000000000000000000000000000000000000000000000000000000024ea00",
+            "000000000000000000000000000000000000000000000000000000000024ea00",
+            "000000000000000000000000000000000000000000000000000000000024ea00"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 934
+            },
+            {
+              "length": 32,
+              "start": 4638
+            },
+            {
+              "length": 32,
+              "start": 4728
+            }
+          ]
+        }
+      ],
+      "allImmutablesDerivedAndMatched": true,
+      "fullRuntimeByteEqual": true,
+      "patchedRuntimeSHA256": "083250e737d7b03031bca1e78871725736ad623d3e0cef3037b718ba8d34e810",
+      "observedRuntimeSHA256": "083250e737d7b03031bca1e78871725736ad623d3e0cef3037b718ba8d34e810",
+      "creationInputExact": true,
+      "canonicalReceiptRechecked": true,
+      "abiEqualsRetainedABI": true
+    },
+    "ETHRegistry": {
+      "immutableChecks": [
+        {
+          "declaration": {
+            "name": "LABEL_STORE",
+            "source": "project/src/registry/PermissionedRegistry.sol",
+            "src": "4542:40:66",
+            "type": "contract ILabelStore"
+          },
+          "expected": "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae",
+          "observed": [
+            "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae",
+            "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1621
+            },
+            {
+              "length": 32,
+              "start": 7995
+            }
+          ]
+        }
+      ],
+      "allImmutablesDerivedAndMatched": true,
+      "fullRuntimeByteEqual": true,
+      "patchedRuntimeSHA256": "a5e9ac8359de8a58236fbbb9dbc400e776199e4b140dc328c6db39a09fd7f580",
+      "observedRuntimeSHA256": "a5e9ac8359de8a58236fbbb9dbc400e776199e4b140dc328c6db39a09fd7f580",
+      "creationInputExact": true,
+      "canonicalReceiptRechecked": true,
+      "abiEqualsRetainedABI": true
+    },
+    "MockDAI": {
+      "immutableChecks": [
+        {
+          "declaration": {
+            "name": "_cachedDomainSeparator",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2373:48:36",
+            "type": "bytes32"
+          },
+          "expected": "608f1234ac5de170e6899087ae6ad8e5ced217d06670e38d3510b582669a8371",
+          "observed": [
+            "608f1234ac5de170e6899087ae6ad8e5ced217d06670e38d3510b582669a8371"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1749
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_cachedChainId",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2427:40:36",
+            "type": "uint256"
+          },
+          "expected": "0000000000000000000000000000000000000000000000000000000000aa36a7",
+          "observed": [
+            "0000000000000000000000000000000000000000000000000000000000aa36a7"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1707
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_cachedThis",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2473:37:36",
+            "type": "address"
+          },
+          "expected": "000000000000000000000000f6fac8a58a0be13b9197f27c41b73162fe32572b",
+          "observed": [
+            "000000000000000000000000f6fac8a58a0be13b9197f27c41b73162fe32572b"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1665
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_hashedName",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2517:37:36",
+            "type": "bytes32"
+          },
+          "expected": "a5e92f3efb6826155f1f728e162af9d7cda33a574a1153b58f03ea01cc37e568",
+          "observed": [
+            "a5e92f3efb6826155f1f728e162af9d7cda33a574a1153b58f03ea01cc37e568"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1830
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_hashedVersion",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2560:40:36",
+            "type": "bytes32"
+          },
+          "expected": "c89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6",
+          "observed": [
+            "c89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1870
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_name",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2607:35:36",
+            "type": "ShortString"
+          },
+          "expected": "4441490000000000000000000000000000000000000000000000000000000003",
+          "observed": [
+            "4441490000000000000000000000000000000000000000000000000000000003"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 2009
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_version",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2648:38:36",
+            "type": "ShortString"
+          },
+          "expected": "3100000000000000000000000000000000000000000000000000000000000001",
+          "observed": [
+            "3100000000000000000000000000000000000000000000000000000000000001"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 2054
+            }
+          ]
+        }
+      ],
+      "allImmutablesDerivedAndMatched": true,
+      "fullRuntimeByteEqual": true,
+      "patchedRuntimeSHA256": "ae00b5fd8fa0150b1e44ab2e7951fadecbd62b44f3de36365e9fb015d8a0d8b1",
+      "observedRuntimeSHA256": "ae00b5fd8fa0150b1e44ab2e7951fadecbd62b44f3de36365e9fb015d8a0d8b1",
+      "creationInputExact": true,
+      "canonicalReceiptRechecked": true,
+      "abiEqualsRetainedABI": true
+    },
+    "MockUSDC": {
+      "immutableChecks": [
+        {
+          "declaration": {
+            "name": "_cachedDomainSeparator",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2373:48:36",
+            "type": "bytes32"
+          },
+          "expected": "4716452745b2f9314e4d915567917289d964866652ce973d2fabad2dbe207074",
+          "observed": [
+            "4716452745b2f9314e4d915567917289d964866652ce973d2fabad2dbe207074"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1749
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_cachedChainId",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2427:40:36",
+            "type": "uint256"
+          },
+          "expected": "0000000000000000000000000000000000000000000000000000000000aa36a7",
+          "observed": [
+            "0000000000000000000000000000000000000000000000000000000000aa36a7"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1707
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_cachedThis",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2473:37:36",
+            "type": "address"
+          },
+          "expected": "000000000000000000000000240b0316df57887dbbe58b586508b19e633a14aa",
+          "observed": [
+            "000000000000000000000000240b0316df57887dbbe58b586508b19e633a14aa"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1665
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_hashedName",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2517:37:36",
+            "type": "bytes32"
+          },
+          "expected": "d6aca1be9729c13d677335161321649cccae6a591554772516700f986f942eaa",
+          "observed": [
+            "d6aca1be9729c13d677335161321649cccae6a591554772516700f986f942eaa"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1830
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_hashedVersion",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2560:40:36",
+            "type": "bytes32"
+          },
+          "expected": "c89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6",
+          "observed": [
+            "c89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1870
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_name",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2607:35:36",
+            "type": "ShortString"
+          },
+          "expected": "5553444300000000000000000000000000000000000000000000000000000004",
+          "observed": [
+            "5553444300000000000000000000000000000000000000000000000000000004"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 2009
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "_version",
+            "source": "project/lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol",
+            "src": "2648:38:36",
+            "type": "ShortString"
+          },
+          "expected": "3100000000000000000000000000000000000000000000000000000000000001",
+          "observed": [
+            "3100000000000000000000000000000000000000000000000000000000000001"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 2054
+            }
+          ]
+        }
+      ],
+      "allImmutablesDerivedAndMatched": true,
+      "fullRuntimeByteEqual": true,
+      "patchedRuntimeSHA256": "9a5e4a4294373f29d487c6d2c82664a90bba25873d4238773248a0fac1b0741d",
+      "observedRuntimeSHA256": "9a5e4a4294373f29d487c6d2c82664a90bba25873d4238773248a0fac1b0741d",
+      "creationInputExact": true,
+      "canonicalReceiptRechecked": true,
+      "abiEqualsRetainedABI": true
+    },
+    "RootRegistry": {
+      "immutableChecks": [
+        {
+          "declaration": {
+            "name": "LABEL_STORE",
+            "source": "project/src/registry/PermissionedRegistry.sol",
+            "src": "4542:40:66",
+            "type": "contract ILabelStore"
+          },
+          "expected": "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae",
+          "observed": [
+            "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae",
+            "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1621
+            },
+            {
+              "length": 32,
+              "start": 7995
+            }
+          ]
+        }
+      ],
+      "allImmutablesDerivedAndMatched": true,
+      "fullRuntimeByteEqual": true,
+      "patchedRuntimeSHA256": "a5e9ac8359de8a58236fbbb9dbc400e776199e4b140dc328c6db39a09fd7f580",
+      "observedRuntimeSHA256": "a5e9ac8359de8a58236fbbb9dbc400e776199e4b140dc328c6db39a09fd7f580",
+      "creationInputExact": true,
+      "canonicalReceiptRechecked": true,
+      "abiEqualsRetainedABI": true
+    },
+    "StandardRentPriceOracle": {
+      "immutableChecks": [
+        {
+          "declaration": {
+            "name": "DISCOUNT_DENOMINATOR",
+            "source": "project/src/registrar/StandardRentPriceOracle.sol",
+            "src": "3933:45:60",
+            "type": "uint128"
+          },
+          "expected": "000000000000000000000000000000004b3b4ca85a86c47a098a224000000000",
+          "observed": [
+            "000000000000000000000000000000004b3b4ca85a86c47a098a224000000000",
+            "000000000000000000000000000000004b3b4ca85a86c47a098a224000000000"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 845
+            },
+            {
+              "length": 32,
+              "start": 1909
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "PREMIUM_PRICE_INITIAL",
+            "source": "project/src/registrar/StandardRentPriceOracle.sol",
+            "src": "4100:46:60",
+            "type": "uint256"
+          },
+          "expected": "0000000000000000000000000000000000000000000000056bc75e2d63100000",
+          "observed": [
+            "0000000000000000000000000000000000000000000000056bc75e2d63100000",
+            "0000000000000000000000000000000000000000000000056bc75e2d63100000"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1379
+            },
+            {
+              "length": 32,
+              "start": 2773
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "PREMIUM_HALVING_PERIOD",
+            "source": "project/src/registrar/StandardRentPriceOracle.sol",
+            "src": "4222:46:60",
+            "type": "uint64"
+          },
+          "expected": "0000000000000000000000000000000000000000000000000000000000015180",
+          "observed": [
+            "0000000000000000000000000000000000000000000000000000000000015180",
+            "0000000000000000000000000000000000000000000000000000000000015180"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 1418
+            },
+            {
+              "length": 32,
+              "start": 2806
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "PREMIUM_PERIOD",
+            "source": "project/src/registrar/StandardRentPriceOracle.sol",
+            "src": "4382:38:60",
+            "type": "uint64"
+          },
+          "expected": "00000000000000000000000000000000000000000000000000000000001baf80",
+          "observed": [
+            "00000000000000000000000000000000000000000000000000000000001baf80",
+            "00000000000000000000000000000000000000000000000000000000001baf80"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 985
+            },
+            {
+              "length": 32,
+              "start": 2672
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "PREMIUM_PRICE_OFFSET",
+            "source": "project/src/registrar/StandardRentPriceOracle.sol",
+            "src": "4489:45:60",
+            "type": "uint256"
+          },
+          "expected": "00000000000000000000000000000000000000000000000000002b5e3af16b18",
+          "observed": [
+            "00000000000000000000000000000000000000000000000000002b5e3af16b18",
+            "00000000000000000000000000000000000000000000000000002b5e3af16b18"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 908
+            },
+            {
+              "length": 32,
+              "start": 2737
+            }
+          ]
+        }
+      ],
+      "allImmutablesDerivedAndMatched": true,
+      "fullRuntimeByteEqual": true,
+      "patchedRuntimeSHA256": "c893878cca49251686265a98fa38ef5621a87f4220baba0c628cb24df37e6fe5",
+      "observedRuntimeSHA256": "c893878cca49251686265a98fa38ef5621a87f4220baba0c628cb24df37e6fe5",
+      "creationInputExact": true,
+      "canonicalReceiptRechecked": true,
+      "abiEqualsRetainedABI": true
+    },
+    "UserRegistryImpl": {
+      "immutableChecks": [
+        {
+          "declaration": {
+            "name": "LABEL_STORE",
+            "source": "project/src/registry/PermissionedRegistry.sol",
+            "src": "4542:40:66",
+            "type": "contract ILabelStore"
+          },
+          "expected": "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae",
+          "observed": [
+            "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae",
+            "000000000000000000000000ed8246ff02203a4d4cb262bd78beaa7408a57cae"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 2228
+            },
+            {
+              "length": 32,
+              "start": 10149
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "URI_RENDERER",
+            "source": "project/src/registry/UserRegistry.sol",
+            "src": "1642:50:67",
+            "type": "contract IRegistryURIRenderer"
+          },
+          "expected": "0000000000000000000000000f5b101b6fc626b9b210bb5e70f60f3dd9ca0d96",
+          "observed": [
+            "0000000000000000000000000f5b101b6fc626b9b210bb5e70f60f3dd9ca0d96",
+            "0000000000000000000000000f5b101b6fc626b9b210bb5e70f60f3dd9ca0d96"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 2177
+            },
+            {
+              "length": 32,
+              "start": 4320
+            }
+          ]
+        },
+        {
+          "declaration": {
+            "name": "__self",
+            "source": "project/lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol",
+            "src": "1128:48:2",
+            "type": "address"
+          },
+          "expected": "0000000000000000000000009bd8a88719068d09ecee662f36c0e3856708366a",
+          "observed": [
+            "0000000000000000000000009bd8a88719068d09ecee662f36c0e3856708366a",
+            "0000000000000000000000009bd8a88719068d09ecee662f36c0e3856708366a",
+            "0000000000000000000000009bd8a88719068d09ecee662f36c0e3856708366a"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 9313
+            },
+            {
+              "length": 32,
+              "start": 9354
+            },
+            {
+              "length": 32,
+              "start": 9756
+            }
+          ]
+        }
+      ],
+      "allImmutablesDerivedAndMatched": true,
+      "fullRuntimeByteEqual": true,
+      "patchedRuntimeSHA256": "29974c8d11c93be8d06e0c0edc81df6566aca25b59ed7337eac12561708e148d",
+      "observedRuntimeSHA256": "29974c8d11c93be8d06e0c0edc81df6566aca25b59ed7337eac12561708e148d",
+      "creationInputExact": true,
+      "canonicalReceiptRechecked": true,
+      "abiEqualsRetainedABI": true
+    },
+    "VerifiableFactory": {
+      "immutableChecks": [
+        {
+          "declaration": {
+            "name": "proxyLogic",
+            "source": "project/lib/verifiable-factory/src/VerifiableFactory.sol",
+            "src": "402:35:50",
+            "type": "address"
+          },
+          "expected": "000000000000000000000000c41576b4b809b99cf0ff2e5b41b4f147cd9b6bdd",
+          "observed": [
+            "000000000000000000000000c41576b4b809b99cf0ff2e5b41b4f147cd9b6bdd",
+            "000000000000000000000000c41576b4b809b99cf0ff2e5b41b4f147cd9b6bdd"
+          ],
+          "matches": true,
+          "referenceOffsets": [
+            {
+              "length": 32,
+              "start": 168
+            },
+            {
+              "length": 32,
+              "start": 806
+            }
+          ]
+        }
+      ],
+      "allImmutablesDerivedAndMatched": true,
+      "fullRuntimeByteEqual": true,
+      "patchedRuntimeSHA256": "aba1c1351159847f1c6efa6effcbd5ac365bb9fb5fd6864f05396d3bc6bd438b",
+      "observedRuntimeSHA256": "aba1c1351159847f1c6efa6effcbd5ac365bb9fb5fd6864f05396d3bc6bd438b",
+      "creationInputExact": true,
+      "canonicalReceiptRechecked": true,
+      "abiEqualsRetainedABI": true
+    },
+    "UUPSProxyLogic": {
+      "derivedCreateAddressMatchesGetter": true,
+      "fullRuntimeByteEqual": true,
+      "factoryGetterMatches": true,
+      "patchedRuntimeSHA256": "1259d3ac2b14549b9597de067aa0e180c95969a6c9df7ad2d6debd646331deaf"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+# Workflow change inventory
+
+HEAD `3c6240f84d6010ac7dfcefb9f5f626655f22f767` unchanged. All293 tracked files and43 prior audit files preserved. **51 new workflow files**; **94 total untracked paths** including the previous43. Index empty. No commit or push.
+
+## New in this task
+
+- `contracts/scripts/deployment_workflow/README.md`
+- `contracts/scripts/deployment_workflow/browser.mjs`
+- `contracts/scripts/deployment_workflow/build.mjs`
+- `contracts/scripts/deployment_workflow/guards.mjs`
+- `contracts/scripts/deployment_workflow/index.html`
+- `contracts/scripts/deployment_workflow/package-lock.json`
+- `contracts/scripts/deployment_workflow/package.json`
+- `contracts/scripts/deployment_workflow/style.css`
+- `contracts/scripts/deployment_workflow/test/fixture.mjs`
+- `contracts/scripts/deployment_workflow/test/workflow.test.mjs`
+- `contracts/scripts/deployment_workflow/workflow.mjs`
+- `contracts/test/workflow/OrderedDeploymentWorkflow.t.sol`
+- `docs/prep/evidence/workflow/.gitattributes`
+- `docs/prep/evidence/workflow/SHA256SUMS`
+- `docs/prep/evidence/workflow/SOURCE_DIFF.patch`
+- `docs/prep/evidence/workflow/browser-qa.json`
+- `docs/prep/evidence/workflow/build-final-52.log`
+- `docs/prep/evidence/workflow/build-final-53.log`
+- `docs/prep/evidence/workflow/build-final-54.log`
+- `docs/prep/evidence/workflow/build-final.log`
+- `docs/prep/evidence/workflow/build-verification-final.log`
+- `docs/prep/evidence/workflow/build.log`
+- `docs/prep/evidence/workflow/dependency-lock-final.log`
+- `docs/prep/evidence/workflow/dependency-lock.log`
+- `docs/prep/evidence/workflow/final-validation.log`
+- `docs/prep/evidence/workflow/format-check.log`
+- `docs/prep/evidence/workflow/format-verification-final.log`
+- `docs/prep/evidence/workflow/git-status.txt`
+- `docs/prep/evidence/workflow/node-tests-after-hardening.log`
+- `docs/prep/evidence/workflow/node-tests-attempt1.log`
+- `docs/prep/evidence/workflow/node-tests-detailed-attempt1.log`
+- `docs/prep/evidence/workflow/node-tests-expanded-attempt1.log`
+- `docs/prep/evidence/workflow/node-tests-final-52.log`
+- `docs/prep/evidence/workflow/node-tests-final-53.log`
+- `docs/prep/evidence/workflow/node-tests-final-54.log`
+- `docs/prep/evidence/workflow/node-tests-final-attempt1.log`
+- `docs/prep/evidence/workflow/node-tests-final-guards.log`
+- `docs/prep/evidence/workflow/node-tests-final.log`
+- `docs/prep/evidence/workflow/node-tests-hardened-final.log`
+- `docs/prep/evidence/workflow/node-tests-verification-final.log`
+- `docs/prep/evidence/workflow/offline-build-attempt1.log`
+- `docs/prep/evidence/workflow/ordered-fork-attempt1.log`
+- `docs/prep/evidence/workflow/run.json`
+- `docs/prep/evidence/workflow/solidity-format.log`
+- `docs/prep/evidence/workflow/test-only-ui.jpg`
+- `docs/prep/evidence/workflow/tooling-notes.log`
+- `docs/prep/evidence/workflow/validation-attempt1.log`
+- `docs/prep/evidence/workflow/whitespace-initial.json`
+- `docs/prep/workflow/FILE_INVENTORY.md`
+- `docs/prep/workflow/IMPLEMENTATION_REPORT.md`
+- `docs/prep/workflow/PROPOSED_DEFAULTS.json`
+
+## Pre-existing readiness-audit paths (unchanged)
+
+- `contracts/scripts/stage3f_audit/ancestor_roles.py`
+- `contracts/scripts/stage3f_audit/compile_sources.py`
+- `contracts/scripts/stage3f_audit/labelstore.py`
+- `contracts/scripts/stage3f_audit/probe.py`
+- `contracts/scripts/stage3f_audit/reconcile_runtime.py`
+- `contracts/scripts/stage3f_audit/test_audit.py`
+- `docs/prep/evidence/stage3f-audit/SHA256SUMS`
+- `docs/prep/evidence/stage3f-audit/ancestor-probe.log`
+- `docs/prep/evidence/stage3f-audit/ancestor-reconciliation.json`
+- `docs/prep/evidence/stage3f-audit/ancestor-role-observation.json`
+- `docs/prep/evidence/stage3f-audit/ancestor-rpc-transcript.json`
+- `docs/prep/evidence/stage3f-audit/audit-tests-final.log`
+- `docs/prep/evidence/stage3f-audit/audit-tests.log`
+- `docs/prep/evidence/stage3f-audit/compiler-audit.json`
+- `docs/prep/evidence/stage3f-audit/compiler-reproduction.log`
+- `docs/prep/evidence/stage3f-audit/compiler-stderr-reproducible.log`
+- `docs/prep/evidence/stage3f-audit/compiler-stderr.log`
+- `docs/prep/evidence/stage3f-audit/final-validation.log`
+- `docs/prep/evidence/stage3f-audit/git-status.txt`
+- `docs/prep/evidence/stage3f-audit/labelstore-artifact.json`
+- `docs/prep/evidence/stage3f-audit/labelstore-inspection.log`
+- `docs/prep/evidence/stage3f-audit/labelstore-rpc-transcript.json`
+- `docs/prep/evidence/stage3f-audit/labelstore-script-attempt1.py.txt`
+- `docs/prep/evidence/stage3f-audit/labelstore-standard-input.json`
+- `docs/prep/evidence/stage3f-audit/labelstore-verification-attempt1.log`
+- `docs/prep/evidence/stage3f-audit/labelstore-verification-final.log`
+- `docs/prep/evidence/stage3f-audit/labelstore-verification.json`
+- `docs/prep/evidence/stage3f-audit/labelstore-verification.log`
+- `docs/prep/evidence/stage3f-audit/python-indentation-check.log`
+- `docs/prep/evidence/stage3f-audit/read-only-observation.json`
+- `docs/prep/evidence/stage3f-audit/read-only-probe.log`
+- `docs/prep/evidence/stage3f-audit/rpc-transcript.json`
+- `docs/prep/evidence/stage3f-audit/run.json`
+- `docs/prep/evidence/stage3f-audit/runtime-reconciliation-reproduced.log`
+- `docs/prep/evidence/stage3f-audit/runtime-reconciliation.log`
+- `docs/prep/evidence/stage3f-audit/semantic-runtime-reconciliation.json`
+- `docs/prep/evidence/stage3f-audit/stage3e-manifest-check.log`
+- `docs/prep/evidence/stage3f-audit/stage3e-offline-tests.log`
+- `docs/prep/stage3f-audit/FILE_INVENTORY.md`
+- `docs/prep/stage3f-audit/READINESS_REPORT.md`
+- `docs/prep/stage3f-audit/TRANSACTION_REVIEW_PLAN.md`
+- `docs/prep/stage3f-audit/gate-status.json`
+- `docs/prep/stage3f-audit/review-plan.json`

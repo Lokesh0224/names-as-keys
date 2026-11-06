@@ -1,0 +1,1 @@
+{"block": 12071963, "blockHash": "0x58bfa2bb15174e49b537d0d645c589e07adab37b8ede60ad6be5f1ab7ffc8caf", "codesUnchanged": true, "roles": {"ETHRegistry": {"complete": true, "reconciled": true}, "RootRegistry": {"complete": true, "reconciled": true}, "StandardRentPriceOracle": {"complete": true, "reconciled": true}}, "simulationCount": 2, "rpcCalls": 159}

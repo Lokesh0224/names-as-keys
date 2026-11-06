@@ -1,0 +1,85 @@
+# Local deployment-workflow implementation and security review
+
+**Stage 3F remains NO-GO. Local preparation only; no commit requested.** Starting HEAD `3c6240f84d6010ac7dfcefb9f5f626655f22f767`, branch master. Initial working tree contained the 43 untracked readiness-audit files from the preceding task. Those files and all 293 tracked files are preserved byte-for-byte. No production defect was identified and no production contract was modified.
+
+## Implemented behavior
+
+`contracts/scripts/deployment_workflow/workflow.mjs` implements a frozen-plan transaction-review state machine and an EIP-1193 adapter. `browser.mjs`, `index.html`, `style.css` and `build.mjs` implement a local static review interface. This is a deployment-review utility, not the guest app, QR generator or door simulator.
+
+The UI shows the supplied owner and Mira addresses, chain11155111, the historical readiness gates, all15 ordered transaction steps, destination/CREATE status, retained ABI argument types and bindings, ABI-decoded known candidate inputs, token amount and allowance snapshot, ETH value, unresolved gas/fee fields and explicitly proposed ceilings. It never substitutes defaults for unresolved deployment values. The displayed audit snapshot is historical evidence, not a fresh PASS certificate. The live request button is disabled with no UI toggle. No provider is queried on load; optional identity inspection calls only eth_chainId/eth_accounts after a user click, without requesting permissions or switching networks. That button was **not** clicked during QA.
+
+The adapter refuses raw send/sign, account-permission and network-switch methods. Its separately named reviewed-submission seam also rejects under the shipped constant `LIVE_EXECUTION_ALLOWED=false`. The engine defaults executionEnabled=false; a fake GO flag or execution flag cannot override the compiled lock. The engine's real-request seam exists for future separately reviewed enablement, but was not exercised with MetaMask. It requires an explicit execution flag, compiled enablement, GO authorization bound to the frozen transaction-plan digest, all gates PASS and a matching reviewed packet. Do not enable it as part of this stage or treat a JSON GO value as owner authorization. There is no live submission control in this build.
+
+The only enabled request lifecycle is `TEST_ONLY` against the in-memory FakeProvider, whose request handler has no network or wallet reference. Test-only packets are rejected by a production-mode engine. The actual owner, root and proposed salts are not substituted into that demo.
+
+## Pre-request review and fail-closed checks
+
+- ABI function/constructor inputs are re-encoded and compared byte-for-byte to reviewed calldata, including rejecting trailing bytes. Canonical signatures, integer quantities, supported transaction fields and address bindings are checked. Direct CREATE address is independently derived from sender/nonce; expected creation bytecode must be explicitly supplied. Unknown extra fields such as authorizationList are rejected.
+- Account and chain must match before and after asynchronous preflight. Chain/account/disconnect events invalidate prepared reviews and force confirmed receipts back through revalidation. The transaction itself includes the fixed chainId/from. No account/network switching is attempted.
+- Every packet is bound to a frozen transaction-plan digest and packet digest. A separate acknowledgement of the displayed review is required; no prepare/next operation submits anything. Fresh nonce, code and ENS reads, prerequisite gates, expiry/commitment windows, estimate, base fee and balances are checked. Changed estimates/state require re-review. The prepared block must remain canonical; age defaults are proposals, not silently installed live settings.
+- Gas/fee/priority/step/total ceilings are checked with integer arithmetic. Current ETH balance must cover remaining reviewed worst-case gas costs. ERC20 mint/approval summary amount, token and spender must agree with decoded arguments and decimals. Exact token allowance/quote/balance read predicates still belong in each independently reviewed production packet.
+- `guards.mjs` builds verified-ABI reads for the forward hierarchy, both canonical parent metadata links, active owner/expiry/generation snapshots, factory implementations, all seven relevant runtime hashes, exact root/lock token roles, restricted owner root roles/packed counts, registrar4097 and zero guest/door roles when those addresses exist. Missing runtime hashes/bindings stop construction. Parent metadata is a deployment-consistency check, not a newly introduced onchain authorization predicate.
+- These builders consume expected state from independently verified receipt/configuration bindings. They do not manufacture deployment readiness or derive trust from a user-supplied PASS boolean. Full live packets, conditional LabelStore events, exhaustive operator/event inventories and their source/runtime bindings still require review; the current incomplete plan cannot be submitted.
+
+## Pending, rejection, failure, replacement and recovery
+
+The state machine supports BLOCKED → PREPARED → REVIEWED → REQUESTING → PENDING → CONFIRMED, plus REJECTED, FAILED, UNCERTAIN, CANCELLED and RECHECK_REQUIRED. Every attempt and hash is retained. A public nonce/intent lock is written **before** any request. Storage failure blocks requesting; an unknown error, invalid/missing hash or crash leaves an UNCERTAIN/RECHECK_REQUIRED lock. A local timeout is never a failed transaction and cannot trigger a resend. Concurrent requests and repeated pending submissions are refused.
+
+`BrowserJournal` provides public localStorage serialization; raw arguments, calldata, creation bytecode and registration-secret fields are rejected. The demo uses an isolated in-memory journal; production storage is not initialized by loading the UI. Restored journal states are untrusted recovery hints, never authority: confirmed/pending attempts require fresh onchain reconciliation against the frozen plan. Existing evidence is not overwritten by recovery.
+
+Wallet rejection4001 is recorded and allows a fresh explicit preparation/review, never an automatic retry. Failed or cancelled mined transactions stop the frozen plan; nonce rebinding requires a new independently reviewed plan and preserved prior journal, not silent mutation/migration. Same-intent replacement hashes can be reconciled only with the same sender/nonce/chain/calldata/destination/value and fees within the original reviewed bounds. Changed intent or higher fee limits stop for new review. A canonical finalized successful self-send cancellation can be recorded without submitting one. Automatic replacement, fee bumping and journal migration are intentionally absent.
+
+Receipt verification compares canonical block/hash, transaction hash/from/to/input/nonce/chain/value, reviewed fee/gas bounds, creation address, success, finality and confirmation count. Every log must match exact ABI topics/data, emitter, count/order and unique increasing logIndex; removed or inconsistent logs fail. State is checked at the receipt block and through separately specified persistent current postconditions. Transitional conditions, such as a rent balance later spent, must not be incorrectly required forever. Preceding receipts are revalidated before advancing. Missing/reorged predecessors, bad events, state drift, wrong implementations or a context change during verification block progression.
+
+A public RPC remains a trusted read transport; no cryptographic header/log-inclusion verification is implemented. The tool is not hardened against a compromised browser, modified trusted build or malicious RPC. Freezing/hashing and recovery checks detect ordinary drift and journal tampering, not replacement of the entire trusted program.
+
+## Registration-preimage boundary
+
+The proposal is32 future CSPRNG bytes in ephemeral memory only. No real preimage was generated. This is unrelated to wallet seed/private-key material; no wallet key API exists here. Canonical register/makeCommitment review automatically masks the secret argument even if a caller forgets an optional private-field hint. The UI can review all public arguments and the exact calldata digest; private preimage review is a separate local-owner concern. Public journals contain digests and transaction references, never the preimage. JavaScript cannot guarantee secure memory erasure; a refreshed/lost session cannot reveal a lost commitment. The owner must accept loss/expiry handling or request separately reviewed encrypted recovery before a real commit.
+
+## Concrete proposals requiring decisions
+
+Machine-readable values: `PROPOSED_DEFAULTS.json`. None is applied to the approved deployment manifest.
+
+| Setting | Proposed default | Decision / evidence still needed |
+|---|---|---|
+| R1 salt | `0x21cb34c9e8dade33ad3f2c2359ba164ed8703d57de0d4fd707230785b00f9e39` | Owner approval; derive from public UTF-8 `names-as-keys:sepolia:nak-lokesh-20261105:R1:v1`; check factory prediction has no code. |
+| R2 salt | `0x3818f62a943ba4836a0f0991d9ca1bdece7f4c9144862352aeb52a5c47accd95` | Same procedure with R2; distinct from R1 and every test salt. |
+| Epoch |1| Retain proposal; owner final decision. |
+| Registration preimage |32 CSPRNG bytes, memory only, no public persistence| Accept loss policy or separately review encrypted recovery. Never a wallet seed/key. |
+| Root / lock / guest |365-day root,90-day lock,one-day Mira| Retained proposals; derive absolute uint64 lock/guest expiry from an identified latest review block after ancestors confirm; minimum guest margin600s; bound by ancestors, reject rather than clamp. |
+| Freshness |≤120s and≤2 blocks| Re-read before request; source/time-window changes require a new review. |
+| MockUSDC | Exact fresh rent quote allowance; mint exact deficit; hard rent cap8.1 tokens (8100000 units)| Final owner cap approval. Any quote change requires re-review, including below the cap. No unlimited allowance. |
+| Gas limit | ceil(estimate×120/100), ≤3000000 per step| Owner decision; never silently truncate an oversized estimate. Actual limits unknown until exact packets simulate. |
+| Fees | maxFee≤2gwei, priority≤0.1gwei| Ceilings, not targets. Actual quote must be reviewed; fail if needed fees exceed caps. |
+| Total gas budget |≤0.03 Sepolia ETH worst case| Owner decision and exact whole-sequence budget check; not a forecast of charged gas. |
+| Confirmation / reorg |12 confirmations **and** receipt height covered by finalized tag| Owner decision. Recheck canonical hashes and preceding receipts; no automatic retry after reorg. |
+| Nonce | Single owner sender, no concurrent unrelated submissions| Recheck pending nonce. New plan/review after cancellation/failure/repricing changes. |
+
+## Ordered local-fork simulation
+
+`contracts/test/workflow/OrderedDeploymentWorkflow.t.sol` executes all15 deployment-sequence actions in Foundry's disposable EVM over read-only Sepolia block **12071963**. It uses `nak-workflow-test-12071963`, OWNER0xA11CE, GUEST0xB0B, salts31001/31002 and a public deterministic TEST_SECRET. These are explicitly **test-only**, not approved deployment inputs. It checks the root was available and all three global label-store mappings empty at that pinned block, rather than assuming it.
+
+The test covers mint, approval, commit, local time warp, registration, R1 initialization/attachment/metadata, lock registration, R2 initialization/attachment/metadata, real production CredentialRegistrar/DoorKeys constructors, registrar4097 grant and issuance. All15 ordered log streams are checked for count, emitter and signature/order, with selected indexed/data values decoded. Final reads verify both parent links, owners/expiry nesting, stable ancestor tokens, factory implementations, exact restricted role/count policies, zero guest/door privileges and matching constructor snapshots. It does not call unlock or emit DoorUnlocked.
+
+**This is not the final deployment simulation.** It is a single Foundry test with ordered internal/local EVM calls and cheatcode sender/time handling, not15 external transactions with real nonces, fee charges or canonical receipts. The wallet lifecycle tests use synthetic receipts separately. No real-wallet E2E test, engine-driven local-node transaction run or complete exact approved-input manifest simulation is claimed.
+
+## Actual verification and retained failures
+
+- `node contracts/scripts/deployment_workflow/test/workflow.test.mjs`: **54 passed,0 failed**; final TAP log `node-tests-final-54.log`. Tests cover disabled/forged enablement, review integrity, ABI/constructor/address/quantity checks, token displays, guards, budget/time/nonce controls, async account/chain changes, durable request locks, rejection/uncertainty, duplicate requests, exact receipts/events/state, finality/reorgs, replacement/cancellation, reload and private-preimage exclusion. A Node --test invocation aggregated at file level; detailed direct TAP is used for actual test counts.
+- `forge test --root contracts --fork-url https://sepolia.gateway.tenderly.co --fork-block-number 12071963 --match-contract OrderedDeploymentWorkflowTest -vv`: **1 passed,0 failed**, all15 numbered actions observed. Log `ordered-fork-attempt1.log`. Test aggregate gas4721743 is not a deployment transaction estimate. Foundry reported optional Etherscan configuration/missing local fork-cache warnings; no contract test failure.
+- Offline Foundry build passed, with existing lint warnings and preserved raw output. Solidity formatting and JS syntax/bundle checks pass. Existing production suites are historical; no full Foundry suite total is claimed as rerun.
+- Local browser QA exercised synthetic PREPARED→REVIEWED→PENDING→CONFIRMED and left live submission disabled. Wallet inspection was not clicked. Screenshot `test-only-ui.jpg` and QA note retained. Temporary server was loopback-only and stopped afterward.
+- Intermediate Node failures: one expected guard-message assertion and one incorrect fixture-file relative path; both corrected and original failure TAP files retained. Offline dependency-lock generation failed ENOTCACHED; a later public-metadata-only lockfile command succeeded with lifecycle scripts disabled. No packages/scripts were installed or run by that lock command. The first fork permission review timed out before execution; a short retry succeeded. Initial local server bind was sandbox-denied; the authorized loopback retry succeeded. Notes are retained, not silently called test successes.
+
+## Remaining blockers and next review
+
+Independent security review of this new uncommitted workflow, runtime/source evidence and complete production packet compiler/bindings remains required. Current production packets have unresolved secrets/commitment, future addresses, token generations, expiry timestamps and final gas/fees; no automatic live binding resolver or trusted readiness attestation is fabricated. Conditional LabelStore logs and code/operator/role inventories must be resolved for the exact real packets. The hard live lock remains in source; changing it requires separate authorization and review. Real MetaMask/browser-extension behavior, real replacements/reorgs and exact approved-manifest E2E execution have not been tested.
+
+Prior NO-GO gates are not automatically closed by these tests. Historical audit G22 (workflow absent) now has a local implementation to review, not a live-ready PASS. Token balance/allowance, signing control, owner defaults, complete simulation, fresh runtime/state and explicit write authorization remain gates. Preserve the approved trusted-administrator/current-state semantics: administrators can renew expired unburned credentials; restored attachments/owners can restore validity without generation change; DoorKeys uses only ENS current state. No guest allowlist or authorization database was introduced. Deployment journals track deployment attempts, not guest access.
+
+Stop for independent architecture/security review. No source staging, Git commit/push, live registration, deployment, wallet signature or broadcast occurred.
+
+References: committed Stage3E MetaMask specification and corrected manifest, Stage3F READINESS_REPORT/TRANSACTION_REVIEW_PLAN, and the primary [EIP-1193 specification](https://eips.ethereum.org/EIPS/eip-1193) and [ethers6 ABI documentation](https://docs.ethers.org/v6/api/abi/). Dependency versions are pinned in package.json/package-lock.json; no OpenAI/Claude service is involved.
+
+Evidence-format note: the raw failed TAP output retains two indentation-only blank lines, and raw offline Foundry output retains its captured EOF blank line. A workflow-evidence-only .gitattributes exempts blank-at-eol for node-tests-final-attempt1.log and blank-at-eof for offline-build-attempt1.log. No raw log was trimmed; all active source/docs and other evidence pass ordinary whitespace checks. The initial findings are retained in whitespace-initial.json.

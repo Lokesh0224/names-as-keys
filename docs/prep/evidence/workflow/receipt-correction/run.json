@@ -1,0 +1,30 @@
+{
+  "scope": "verifyReceipt correction and workflow regressions only",
+  "command": "node contracts/scripts/deployment_workflow/test/workflow.test.mjs",
+  "result": {
+    "tests": 62,
+    "passed": 62,
+    "failed": 0,
+    "skipped": 0
+  },
+  "output": "workflow-tests.log",
+  "sources": [
+    {
+      "path": "contracts/scripts/deployment_workflow/workflow.mjs",
+      "prior": "docs/prep/evidence/workflow/receipt-correction/prior/workflow.mjs",
+      "beforeSHA256": "270f668e19f1499245d637b129fa081deeb3c7ef4f7e6dbc7d9e9e90e044a66d",
+      "afterSHA256": "b0652560a53e875016d0f4441c7712d6a8fee12b9ac77736a3797f603da410ba"
+    },
+    {
+      "path": "contracts/scripts/deployment_workflow/test/workflow.test.mjs",
+      "prior": "docs/prep/evidence/workflow/receipt-correction/prior/workflow.test.mjs",
+      "beforeSHA256": "8833b5135aadb235eebd58a2072fa64bd62a00a1fbe2592868aec0e86c0c75d1",
+      "afterSHA256": "84a924b4bf8c6e69d325fe46f36a11f12af18bdb244cf222b60a1e28200f2794"
+    }
+  ],
+  "liveExecutionAllowed": false,
+  "productionContractsChanged": false,
+  "rpcOrWalletRequestsMade": false,
+  "stagingOrCommitPerformed": false,
+  "whitespaceCheck": "PASS: both focused before/after diffs"
+}

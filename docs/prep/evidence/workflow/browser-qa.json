@@ -1,0 +1,19 @@
+{
+  "url": "http://127.0.0.1:8769/",
+  "kind": "LOCAL_TEST_ONLY_NO_LIVE_WALLET",
+  "checks": {
+    "selectedPublicAddressesAndSepoliaDisplayed": true,
+    "fifteenBlockedDeploymentReviewPacketsDisplayed": true,
+    "knownCandidateArgumentsDecodedFromRetainedABI": true,
+    "liveRequestControlDisabled": true,
+    "testOnlyPrepareAcknowledgementPendingAndConfirmedObserved": true,
+    "syntheticReceiptAndStateVerified": true,
+    "liveWalletInspectionClicked": false,
+    "liveWalletSignatureOrTransactionRequested": false
+  },
+  "testOwner": "0x00000000000000000000000000000000000A11cE",
+  "testToken": "0x0000000000000000000000000000000000001234",
+  "testHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
+  "screenshot": "test-only-ui.jpg",
+  "scope": "Manual browser QA of a synthetic in-memory provider, not real MetaMask integration or the final deployment simulation"
+}

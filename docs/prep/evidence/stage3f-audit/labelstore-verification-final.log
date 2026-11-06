@@ -1,0 +1,1 @@
+{"creationTemplateExact": true, "runtimeTemplateExact": true, "fullLiveRuntimeExact": true, "abiExact": true, "canonicalSuccessfulReceipt": true, "eventSignatures": ["Label(bytes32,string)"]}

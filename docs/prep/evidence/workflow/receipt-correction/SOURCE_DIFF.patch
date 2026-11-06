@@ -1,0 +1,144 @@
+--- a/contracts/scripts/deployment_workflow/workflow.mjs
++++ b/contracts/scripts/deployment_workflow/workflow.mjs
+@@ -284,17 +284,36 @@
+     if (BigInt(receipt.status) !== 1n) {
+       entry.status = 'FAILED'; for (const attempt of entry.attempts) if (same(attempt.hash,txHash)) attempt.status = 'FAILED'; this.history.push({ kind: 'FAILED_RECEIPT', id, hash: txHash, blockHash: receipt.blockHash }); this.save(); return false;
+     }
+-    const head = await this.read('eth_getBlockByNumber', [this.policy.finalityTag, false]);
+-    if (!head || BigInt(head.number) < BigInt(receipt.blockNumber) + BigInt(this.policy.confirmations) - 1n) { if (entry.status === 'CONFIRMED') { entry.status = 'RECHECK_REQUIRED'; this.save(); } return false; }
+-    try { verifyEvents(receipt, packet.expectedEvents); await this.checks(packet.postconditions, receipt.blockNumber); const persistent = packet.currentPostconditions ?? packet.postconditions; if (persistent.length) await this.checks(persistent, head.number); }
+-    catch (error) { return fail(error.message); }
++    const validHead = head => head && hash(head.hash) && /^0x(?:0|[1-9a-f][0-9a-f]*)$/i.test(head.number);
++    const minimumHeadNumber = BigInt(receipt.blockNumber) + BigInt(this.policy.confirmations) - 1n;
++    const latest = await this.read('eth_getBlockByNumber', ['latest', false]);
++    const finalized = await this.read('eth_getBlockByNumber', [this.policy.finalityTag, false]);
++    // Confirmation depth uses latest; finality independently covers the receipt itself.
++    if (!validHead(latest) || !validHead(finalized) || BigInt(latest.number) < minimumHeadNumber || BigInt(finalized.number) < BigInt(receipt.blockNumber)) {
++      if (entry.status === 'CONFIRMED') { entry.status = 'RECHECK_REQUIRED'; this.save(); }
++      return false;
++    }
++    let current;
++    try {
++      verifyEvents(receipt, packet.expectedEvents);
++      await this.checks(packet.postconditions, receipt.blockNumber);
++      // Historical verification can take time: identify a fresh latest state snapshot.
++      current = await this.read('eth_getBlockByNumber', ['latest', false]);
++      need(validHead(current) && BigInt(current.number) >= minimumHeadNumber, 'Latest confirmation head unavailable/regressed');
++      const persistent = packet.currentPostconditions ?? packet.postconditions;
++      if (persistent.length) await this.checks(persistent, current.number);
++    } catch (error) { return fail(error.message); }
+     const again = await this.read('eth_getBlockByNumber', [receipt.blockNumber, false]);
+     if (again?.hash !== receipt.blockHash) return fail('Receipt changed while verifying');
++    const currentAgain = await this.read('eth_getBlockByNumber', [current.number, false]);
++    if (!validHead(currentAgain) || currentAgain.number !== current.number || currentAgain.hash !== current.hash) return fail('Latest state snapshot changed while verifying');
+     await this.identity(); if (epoch !== this.epoch) return fail('Account/chain changed during receipt verification');
+     entry.status = 'CONFIRMED'; entry.receiptHash = txHash;
+     for (const attempt of entry.attempts) if (same(attempt.hash,txHash)) attempt.status = 'CONFIRMED'; else if (attempt.status === 'PENDING') attempt.status = 'REPLACED';
+     entry.receiptEvidence = { hash: txHash, blockHash: receipt.blockHash, blockNumber: receipt.blockNumber,
+-      eventDigest: digest(receipt.logs), postconditionsDigest: digest(packet.postconditions) };
++      eventDigest: digest(receipt.logs), postconditionsDigest: digest(packet.postconditions),
++      currentStateBlockNumber: current.number, currentStateBlockHash: current.hash,
++      finalizedBlockNumber: finalized.number, finalizedBlockHash: finalized.hash };
+     this.save(); return true;
+   }
+   async reconcile(id) {
+--- a/contracts/scripts/deployment_workflow/test/workflow.test.mjs
++++ b/contracts/scripts/deployment_workflow/test/workflow.test.mjs
+@@ -106,7 +106,7 @@
+ test('post-state changes block confirmation', async () => {
+   const f = fixture(); await submit(f); f.provider.mine(f.packets[0]); f.provider.state = '0x00'; await assert.rejects(() => f.workflow.reconcile('T01'), /State mismatch/);
+ });
+-test('unfinalized receipt remains pending', async () => {
++test('insufficient latest confirmations remain pending', async () => {
+   const p = policy(); p.confirmations = 12; const f = fixture([packet()], { policy: p }); await submit(f); f.provider.mine(f.packets[0]);
+   assert.equal(await f.workflow.reconcile('T01'), false); assert.equal(f.workflow.state('T01').status, 'PENDING');
+ });
+@@ -228,3 +228,88 @@
+   a.tx.data=new Interface(a.abi).encodeFunctionData('approve',a.arguments); a.tokenReview.spender=TOKEN;
+   await assert.rejects(()=>ready(fixture([a])),/spender display/);
+ });
++
++// Receipt-correction regressions: receipt state, finalized state and latest state
++// are deliberately different. These are synthetic provider snapshots, not ENS writes.
++function divergentReceiptView(f, options = {}) {
++  const original = f.provider.request.bind(f.provider);
++  const calls = [];
++  let latestReads = 0, currentRead = false;
++  const header = number => ({ ...f.provider.header, number: '0x' + number.toString(16), hash: number === 100 ? BLOCK : '0x' + number.toString(16).padStart(64,'0') });
++  f.provider.request = async ({method,params=[]}) => {
++    calls.push({method,params});
++    if (method === 'eth_getBlockByNumber') {
++      if (params[0] === 'latest') return header(++latestReads === 1 ? options.latest ?? 111 : options.freshLatest ?? options.latest ?? 111);
++      if (params[0] === 'finalized') return header(options.finalized ?? 100);
++      const number = Number(BigInt(params[0]));
++      const result = header(number);
++      if (options.reorgCurrent && currentRead && number !== 100) result.hash = '0x' + 'ff'.repeat(32);
++      return result;
++    }
++    if (method === 'eth_call') {
++      const number = Number(BigInt(params[1]));
++      if (number !== 100) currentRead = true;
++      if (options.badStateAt?.includes(number)) return '0x' + '0'.repeat(64);
++    }
++    return original({method,params});
++  };
++  return calls;
++}
++async function pendingReceiptFixture(confirmations = 12, currentPostconditions = false) {
++  const p = packet();
++  if (currentPostconditions) p.currentPostconditions = [{...p.postconditions[0],id:'CURRENT_AUTHORIZATION_STATE'}];
++  const config = policy(); config.confirmations = confirmations;
++  const f = fixture([p],{policy:config}); await submit(f); f.provider.mine(p); return f;
++}
++
++test('confirmation depth uses latest111 while finalized100 only covers receipt100', async () => {
++  const f = await pendingReceiptFixture(); divergentReceiptView(f,{latest:111,finalized:100});
++  assert.equal(await f.workflow.reconcile('T01'),true);
++  const evidence = f.workflow.state('T01').receiptEvidence;
++  assert.equal(evidence.currentStateBlockNumber,'0x6f');
++  assert.equal(evidence.finalizedBlockNumber,'0x64');
++});
++test('finalized receipt coverage does not replace sufficient latest confirmations', async () => {
++  const f = await pendingReceiptFixture(); divergentReceiptView(f,{latest:110,finalized:100});
++  assert.equal(await f.workflow.reconcile('T01'),false);
++  assert.equal(f.workflow.state('T01').status,'PENDING');
++});
++test('sufficient latest confirmations do not replace finalized receipt coverage', async () => {
++  const f = await pendingReceiptFixture(); divergentReceiptView(f,{latest:112,finalized:99});
++  assert.equal(await f.workflow.reconcile('T01'),false);
++  assert.equal(f.workflow.state('T01').status,'PENDING');
++});
++test('valid finalized state cannot hide invalid latest currentPostconditions', async () => {
++  const f = await pendingReceiptFixture(1,true);
++  const calls = divergentReceiptView(f,{latest:112,finalized:101,badStateAt:[112]});
++  await assert.rejects(()=>f.workflow.reconcile('T01'),/CURRENT_AUTHORIZATION_STATE/);
++  assert.notEqual(f.workflow.state('T01').status,'CONFIRMED');
++  assert.ok(calls.some(c=>c.method==='eth_call' && c.params[1]==='0x70'));
++});
++test('currentPostconditions use valid latest state, not divergent finalized state', async () => {
++  const f = await pendingReceiptFixture(1,true);
++  const calls = divergentReceiptView(f,{latest:112,finalized:101,badStateAt:[101]});
++  assert.equal(await f.workflow.reconcile('T01'),true);
++  assert.equal(calls.some(c=>c.method==='eth_call' && c.params[1]==='0x65'),false);
++});
++test('current state snapshot is identified freshly after historical receipt checks', async () => {
++  const f = await pendingReceiptFixture();
++  const calls = divergentReceiptView(f,{latest:111,finalized:100,freshLatest:113});
++  assert.equal(await f.workflow.reconcile('T01'),true);
++  const receiptRead = calls.findIndex(c=>c.method==='eth_call' && c.params[1]==='0x64');
++  const freshHead = calls.findIndex((c,i)=>i>receiptRead && c.method==='eth_getBlockByNumber' && c.params[0]==='latest');
++  const currentRead = calls.findIndex(c=>c.method==='eth_call' && c.params[1]==='0x71');
++  assert.ok(receiptRead>=0 && freshHead>receiptRead && currentRead>freshHead);
++  assert.equal(f.workflow.state('T01').receiptEvidence.currentStateBlockNumber,'0x71');
++  assert.ok(calls.some((c,i)=>i>currentRead && c.method==='eth_getBlockByNumber' && c.params[0]==='0x71'));
++});
++test('latest state block reorg blocks confirmation even if receipt block is unchanged', async () => {
++  const f = await pendingReceiptFixture(); divergentReceiptView(f,{latest:112,finalized:100,reorgCurrent:true});
++  await assert.rejects(()=>f.workflow.reconcile('T01'),/Latest state snapshot changed/);
++  assert.equal(f.workflow.state('T01').status,'RECHECK_REQUIRED');
++});
++test('latest head regression during historical verification invalidates confirmation count', async () => {
++  const f = await pendingReceiptFixture(); divergentReceiptView(f,{latest:111,finalized:100,freshLatest:110});
++  await assert.rejects(()=>f.workflow.reconcile('T01'),/confirmation head unavailable\/regressed/);
++  assert.notEqual(f.workflow.state('T01').status,'CONFIRMED');
++});

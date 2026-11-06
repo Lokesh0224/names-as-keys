@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: contracts/scripts/deployment_workflow/test/workflow.test.mjs
+ok 1 - contracts/scripts/deployment_workflow/test/workflow.test.mjs
+  ---
+  duration_ms: 487.931882
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 507.275752

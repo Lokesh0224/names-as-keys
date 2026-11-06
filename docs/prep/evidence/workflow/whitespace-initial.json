@@ -1,0 +1,10 @@
+[
+  {
+    "file": "docs/prep/evidence/workflow/node-tests-final-attempt1.log",
+    "output": "docs/prep/evidence/workflow/node-tests-final-attempt1.log:17: trailing whitespace.\n+    \ndocs/prep/evidence/workflow/node-tests-final-attempt1.log:19: trailing whitespace.\n+    \n"
+  },
+  {
+    "file": "docs/prep/evidence/workflow/offline-build-attempt1.log",
+    "output": "docs/prep/evidence/workflow/offline-build-attempt1.log:268: new blank line at EOF.\n"
+  }
+]
