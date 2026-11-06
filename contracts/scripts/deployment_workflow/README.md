@@ -2,15 +2,18 @@
 
 Stage 3F remains NO-GO. The main page uses existing MetaMask account access through a read-only adapter. Select the approved owner on Sepolia (11155111). The default page uses read-only wallet requests. It clears the displayed review on account, chain or connection changes.
 
-From the repository root:
+From the repository root, with Node.js 22 and Foundry installed:
 
 ```sh
+npm --prefix contracts install --no-save --package-lock=false ethers@6.17.0
+forge build --root contracts
+npm --prefix contracts/scripts/deployment_workflow ci
 npm --prefix contracts/scripts/deployment_workflow test
-node contracts/scripts/deployment_workflow/build.mjs
+npm --prefix contracts/scripts/deployment_workflow run build
 node contracts/scripts/deployment_workflow/serve.mjs
 ```
 
-Open `http://127.0.0.1:8769/` for the candidate. The build loads the recorded fresh-preflight candidate and approved limits. At review time, the app checks the current owner, network, applicable state, nonce and fee envelope. If the reviewed quote, prefix or other binding has changed, refresh the candidate. The synthetic lifecycle is a separate page at `http://127.0.0.1:8769/demo.html`.
+With MetaMask installed, open `http://127.0.0.1:8769/` for the candidate. The build loads the recorded fresh-preflight candidate and approved limits. At review time, the app checks the current owner, network, applicable state, nonce and fee envelope. If the reviewed quote, prefix or other binding has changed, refresh the candidate. The synthetic lifecycle is a separate page at `http://127.0.0.1:8769/demo.html`.
 
 Choose a step and prepare its unsigned review. After a reload, the workflow rebuilds public drafts from the original canonical review block and prepares a fresh review. Receipt recovery checks the reconstructed packet against its journal digests and verifies the mined envelope, events, canonicality, confirmations, finalized coverage and current state. Enter the transaction hash if the journal has not recorded it yet. Recovery requires a provider that can serve the original historical state.
 
@@ -24,12 +27,26 @@ node contracts/scripts/deployment_candidate/simulate.mjs --candidate-workflow
 
 This starts an ephemeral loopback Anvil fork and enforces a read-only upstream. The harness alone sends transactions to the owned local fork. Its results are written under `docs/prep/evidence/deployment-candidate/workflow-recovery/`. The node uses in-memory history for ancestor receipt rechecks and stops after the run. Anvil models confirmations and finality locally.
 
-## T01 owner handoff
+## Sequential owner review
 
-On the candidate page, prepare T01, read the recipient, destination, mint amount and `reservedWei` (maximum network fee), then check the T01 confirmation box and select **Revalidate T01 confirmation**. This repeats the read-only checks and binds the exact displayed review and packet digests. Confirmation is local to the current review and execution stays disabled. A changed envelope or expired review requires a new confirmation.
+1. Select the first included step without a verified receipt. Choose **Prepare unsigned review** and inspect the sender, destination or predicted CREATE address, arguments, nonce, gas and `reservedWei` (maximum network fee).
+2. Check the per-step confirmation box and select **Revalidate … confirmation**. The dashboard returns the step, plan digest, and packet digest after repeating receipt, identity, state, nonce, estimate, and fee checks. With the default build this is a read-only action.
+3. After a separate Stage 3F GO decision and an explicitly enabled build, the local operator can provide one exact authorization in `step-authorization.json` beside `serve.mjs`. Its default value is `null`. The authorized record has `stage: "GO"`, `step`, `planDigest`, and `packetDigest` from that exact approved review. The loopback server reads the file per request. Revalidate from the same tab to pick up the authorization without reloading. This allows the T03 preimage to stay in memory while authorization is reviewed. T04 remains blocked for wallet execution. The existing static T01 authorization remains supported and defaults to null.
+4. When the exact authorization matches, confirm the displayed envelope again and click **Request … in MetaMask**. The runner checks the approval again, revalidates the envelope and all preceding included receipts, and saves a durable attempt under an exclusive browser lock. Compare the exact envelope in MetaMask before approving the single transaction. A changed envelope requires a new review and authorization.
+5. Use **Verify against session review** to check the transaction, canonical receipt, exact events, confirmations, finalized coverage, and current postconditions. Deployment steps additionally verify the expected deployed address and runtime. Advance only after **CONFIRMED**. Pending transactions can be checked again. Rejection, uncertainty, replacement, or revert requires manual reconciliation and leaves the attempt locked.
 
-The default build has two closed gates. A separately reviewed owner-approved change must explicitly set `LIVE_EXECUTION_ALLOWED=true` and replace the null export in `t01_authorization.mjs` with `{ stage: 'GO', step: 'T01', planDigest, packetDigest }` for the exact bundle and packet the owner approved. Copy the digests from the existing T01 confirmation result, then rebuild and serve the same candidate. The authorization binds the packet, so an unchanged packet can be reviewed at a new fresh block. Any changed packet digest requires separate owner authorization.
+Use the same browser profile and loopback origin for recovery. A recorded hash is offered after reload. If MetaMask returned no hash, inspect the wallet's transaction history and enter the exact hash for verification. Keep the same tab open across T03 and T04. Reload or wallet-context changes discard the unrevealed preimage. Browser storage and Web Locks coordinate one origin and profile.
 
-With both gates satisfied, prepare T01 again, confirm the displayed fields and select **Request T01 in MetaMask**. The handler repeats exact validation, acquires an exclusive Web Lock, and durably records the owner and chain's single T01 attempt before sending the frozen envelope through its private MetaMask transport. The transport accepts only a one-use grant created after revalidation, checks the configured bundle and packet digests again, and reads back the exact lock and journal entry before requesting the wallet. The exported read-only adapter and generic workflow expose no live send route. A browser without Web Locks or writable local storage blocks the request. T02–T15 have no submission control. The owner must compare and approve the envelope in MetaMask.
+## Before live activation
 
-Use **Verify against session review** to reconcile the returned hash, exact envelope and Transfer, resulting balance, confirmations and finalized canonical coverage. A different hash or a consumed nonce without the tracked receipt requires manual replacement investigation. Rejection, an uncertain request, and a failed receipt leave the attempt locked. The interface has no automatic retry or lock reset. Retain the same browser profile and origin so its local lock and journal survive reloads.
+- Obtain a fresh reviewed candidate, with current owner/Mira identities, canonical state and runtime checks, funding, quote, nonce prefix and fees.
+- Obtain independent acceptance of the integrated runner and the Stage 3F GO decision, then authorize each exact packet separately. The global live flag, the legacy T01 authorization, and the sequential authorization file are closed in this checkout.
+- Validate the selected MetaMask version and Sepolia RPC setup with the reviewed envelope format, including contract creation.
+- Resolve the T04 wallet privacy block before starting a live T03 commitment.
+- Verify every real receipt and deployed runtime before using dependent steps or configuring the Stage 3G frontend.
+
+## T04 pre-broadcast privacy
+
+The browser holds the unrevealed preimage in memory. Unsigned review redacts the reveal calldata and the journal stores digests and public receipt evidence. Gas estimation sends the exact calldata to the same loopback server and its disposable Anvil fork. The fork upstream permits selected reads only and rejects requests containing the preimage. The private endpoint returns only gas or a generic error. Recovery may decode mined calldata to verify a receipt. That calldata is public once broadcast, including when the transaction reverts.
+
+**T04 wallet requests are blocked even with matching authorization and the global execution gate enabled.** The current app cannot guarantee what MetaMask sends to its RPC or simulation services before the owner approves. Before removing the block, the owner must verify the exact MetaMask version, RPC and simulation configuration with a disposable fixture and a controlled network trace through prompt, rejection and approval. Establish that reveal bytes reach only approved local components before approval, including through RPC estimates, simulations, transaction previews and telemetry. If that boundary cannot be verified, use a separately reviewed local signing and approved broadcast path that preserves it. Keep T04 review-only until that correction is reviewed.
