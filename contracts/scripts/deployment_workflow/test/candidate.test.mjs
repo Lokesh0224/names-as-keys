@@ -176,7 +176,7 @@ test('T01 confirmation rechecks wallet, nonce, quote and freshness', async () =>
 
 // Exercise the actual guarded path with a mock provider. Only this in-memory
 // test bundle has the compile-time global switched on.
-async function activatedBuild(authorization = null, entry = "export * from './candidate.mjs'; export { ReadOnlyWallet } from './workflow.mjs';") {
+async function activatedBuild(authorization = null, entry = "export * from './candidate.mjs'; export { ReadOnlyWallet } from './workflow.mjs';", sourceOnly = false) {
   const result = await build({
     stdin: { contents: entry,
       resolveDir: fileURLToPath(new URL('../', import.meta.url)) },
@@ -189,7 +189,7 @@ async function activatedBuild(authorization = null, entry = "export * from './ca
       });
       builder.onLoad({ filter: /[\\/]deployment_workflow[\\/]candidate\.mjs$/ }, async ({ path }) => {
         const source = await readFile(path, 'utf8');
-        const declaration = 'function consumeConfirmationClick(event) {';
+        const declaration = "function consumeConfirmationClick(event, buttonId = 't01-validate') {";
         assert.ok(source.includes(declaration));
         return { contents: source.replace(declaration, declaration + "\n  if (typeof window === 'undefined') return true;") };
       });
@@ -198,7 +198,8 @@ async function activatedBuild(authorization = null, entry = "export * from './ca
       }));
     } }],
   });
-  return import('data:text/javascript;base64,' + Buffer.from(result.outputFiles[0].text).toString('base64'));
+  return sourceOnly ? result.outputFiles[0].text :
+    import('data:text/javascript;base64,' + Buffer.from(result.outputFiles[0].text).toString('base64'));
 }
 
 test('T01 MetaMask submission requires both gates and sends the exact envelope once', async () => {
@@ -845,3 +846,819 @@ for (const { change, expectedError } of [
     assert.equal([...f.records.keys()].some(key => key.startsWith('nak-t01-attempt:')), false);
   });
 }
+
+const recoveryAttestation = { walletActivityChecked: true, noKnownTransaction: true, knownHashes: [] };
+
+async function recoveryFixture(t) {
+  const f = fixture();
+  const draft = open(f);
+  const reviewed = await draft.prepare('T01');
+  const approval = await draft.validateT01Confirmation(reviewed, true);
+  draft.close();
+  const attemptKey = 'nak-t01-attempt:11155111:' + inputs.owner.toLowerCase();
+  const journalKey = 'nak-candidate:' + approval.planDigest;
+  const journal = JSON.parse(f.records.get(journalKey));
+  const rejected = { nonce: reviewed.nonce, planDigest: approval.planDigest, packetDigest: approval.packetDigest,
+    transactionDigest: digest(reviewed.unsignedTransaction), status: 'REJECTED' };
+  journal.entries.T01.status = 'REJECTED';
+  journal.history.push({ kind: 'AVAILABLE_PRIOR_AUDIT', step: 'T01' });
+  f.records.set(attemptKey, JSON.stringify(rejected));
+  f.records.set(journalKey, JSON.stringify(journal));
+  const originalFetch = globalThis.fetch;
+  let auth = { stage: 'GO', step: 'T01', kind: 'T01_INTENT_V1', intentDigest: approval.intentDigest };
+  globalThis.fetch = async () => ({ ok: true, json: async () => auth });
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const { CandidateReview: Active } = await activatedBuild();
+  let held = false;
+  const locks = { async request(_key, _options, callback) {
+    if (held) return callback(null);
+    held = true;
+    try { return await callback({}); } finally { held = false; }
+  } };
+  const args = { provider: f.provider, bundle: f.data, storage: f.storage, now: f.now, locks };
+  const candidate = new Active(args);
+  t.after(() => candidate.close());
+  await candidate.refreshAuthorization();
+  return { ...f, candidate, Active, args, attemptKey, journalKey, rejected, journal,
+    intentDigest: approval.intentDigest,
+    recoveryKey: attemptKey + ':recovery', retryKey: attemptKey + ':retry',
+    setAuthorization: value => { auth = value; } };
+}
+
+test('hashless T01 recovery preserves the original and audits a distinct single-use retry through receipt recovery', async t => {
+  const f = await recoveryFixture(t);
+  const original = f.records.get(f.attemptKey);
+  await assert.rejects(f.candidate.prepare('T01'), /Prior T01 attempt/);
+  const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  assert.equal(review.rejectedAttemptDigest, digest(f.rejected));
+  assert.deepEqual(review.originalJournal, f.journal);
+  assert.equal(review.evidence.latestNonce, '0x32');
+  assert.equal(review.evidence.pendingNonce, '0x32');
+  assert.equal(review.evidence.token.balanceUnits, '0');
+  assert.equal(review.evidence.token.quoteUnits, '8000021');
+  assert.equal(f.records.has(f.recoveryKey), false);
+  assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+  await f.candidate.approveT01Recovery(review, true);
+  const recovery = f.records.get(f.recoveryKey);
+  assert.equal(f.records.get(f.attemptKey), original);
+  assert.equal(f.records.has(f.retryKey), false);
+  await assert.rejects(f.candidate.approveT01Recovery(review, true), /Recovery review missing/);
+  const retryReview = await f.candidate.prepare('T01');
+  await f.candidate.validateT01Confirmation(retryReview, true);
+  let sends = 0;
+  const request = f.provider.request.bind(f.provider);
+  f.provider.request = async input => {
+    assert.doesNotMatch(input.method, /sign|requestAccounts/i);
+    if (input.method !== 'eth_sendTransaction') return request(input);
+    sends++;
+    assert.deepEqual(input.params, [retryReview.unsignedTransaction]);
+    assert.equal(f.records.get(f.attemptKey), original);
+    assert.equal(f.records.get(f.recoveryKey), recovery);
+    const retry = JSON.parse(f.records.get(f.retryKey));
+    assert.equal(retry.status, 'REQUESTING');
+    assert.equal(retry.parentAttemptDigest, digest(f.rejected));
+    assert.equal(retry.recoveryDigest, review.recoveryDigest);
+    assert.ok(hashValue(retry.attemptId));
+    return txHash;
+  };
+  assert.equal(await f.candidate.submitT01(retryReview, true), txHash);
+  await assert.rejects(f.candidate.submitT01(retryReview, true), /execution disabled/);
+  const reload = new f.Active(f.args);
+  t.after(() => reload.close());
+  await assert.rejects(reload.prepare('T01'), /Prior T01 attempt/);
+  // Exercise receipt recovery after the retry attempt persisted but its journal hash did not.
+  const interrupted = JSON.parse(f.records.get(f.journalKey));
+  delete interrupted.entries.T01.receiptHash;
+  interrupted.entries.T01.status = 'REQUESTING';
+  f.records.set(f.journalKey, JSON.stringify(interrupted));
+  const receiptRecovery = new f.Active(f.args);
+  t.after(() => receiptRecovery.close());
+  f.confirm('0x65');
+  const receiptRequest = f.provider.request.bind(f.provider);
+  f.provider.request = input => {
+    if (input.method === 'eth_getBlockByNumber' && ['0x65', 'finalized'].includes(input.params[0])) {
+      return Promise.resolve({ ...block, number: input.params[0] === 'finalized' ? '0x70' : '0x65' });
+    }
+    return receiptRequest(input);
+  };
+  assert.equal((await receiptRecovery.reconcile('T01')).status, 'CONFIRMED');
+  assert.equal(JSON.parse(f.records.get(f.retryKey)).status, 'CONFIRMED');
+  assert.equal(f.records.get(f.attemptKey), original);
+  assert.equal(f.records.get(f.recoveryKey), recovery);
+  const history = JSON.parse(f.records.get(f.journalKey)).history;
+  assert.ok(history.some(x => x.kind === 'AVAILABLE_PRIOR_AUDIT'));
+  assert.ok(history.some(x => x.kind === 'T01_RECOVERY_APPROVED'));
+  assert.ok(history.some(x => x.kind === 'T01_RETRY_CONFIRMED'));
+  assert.equal(sends, 1);
+});
+
+function hashValue(value) { return /^0x[\da-f]{64}$/.test(value); }
+
+for (const state of ['REQUESTING', 'UNCERTAIN', 'PENDING', 'REVERTED']) {
+  test('T01 recovery refuses ' + state + ' without inventing rejection evidence', async t => {
+    const f = await recoveryFixture(t);
+    f.records.set(f.attemptKey, JSON.stringify({ ...f.rejected, status: state }));
+    await assert.rejects(f.candidate.inspectT01Recovery(recoveryAttestation), /Explicit hashless/);
+    assert.equal(f.records.has(f.recoveryKey), false);
+  });
+}
+
+test('T01 recovery rejects missing, conflicting and altered records or owner evidence', async t => {
+  const f = await recoveryFixture(t);
+  for (const attestation of [undefined, {}, { ...recoveryAttestation, walletActivityChecked: false },
+    { ...recoveryAttestation, noKnownTransaction: false }, { ...recoveryAttestation, knownHashes: [txHash] }]) {
+    await assert.rejects(f.candidate.inspectT01Recovery(attestation), /Owner wallet inspection/);
+  }
+  f.records.set(f.attemptKey, JSON.stringify({ ...f.rejected, hash: txHash }));
+  await assert.rejects(f.candidate.inspectT01Recovery(recoveryAttestation), /Explicit hashless/);
+  f.records.set(f.attemptKey, JSON.stringify({ ...f.rejected, transactionDigest: txHash }));
+  await assert.rejects(f.candidate.inspectT01Recovery(recoveryAttestation), /transaction binding/);
+  f.records.set(f.attemptKey, JSON.stringify(f.rejected));
+  const alteredJournal = structuredClone(f.journal);
+  alteredJournal.entries.T01.receiptHash = txHash;
+  f.records.set(f.journalKey, JSON.stringify(alteredJournal));
+  await assert.rejects(f.candidate.inspectT01Recovery(recoveryAttestation), /Explicit hashless/);
+  assert.equal(f.records.has(f.recoveryKey), false);
+});
+
+test('other-step attempt evidence blocks T01 recovery before approval', async t => {
+  const f = await recoveryFixture(t);
+  const key = f.attemptKey.replace('t01', 't02');
+  f.records.set(key, JSON.stringify({ nonce: '0x32', status: 'UNCERTAIN', hash: txHash }));
+  await assert.rejects(f.candidate.inspectT01Recovery(recoveryAttestation), /Conflicting attempt/);
+  f.records.delete(key);
+  const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  f.records.set(key, JSON.stringify({ nonce: '0x32', status: 'PENDING', hash: txHash }));
+  await assert.rejects(f.candidate.approveT01Recovery(review, true), /Conflicting attempt/);
+  assert.equal(f.records.has(f.recoveryKey), false);
+});
+
+test('T01 recovery approval requires the exact review and explicit dedicated trusted click', async t => {
+  const f = await recoveryFixture(t);
+  let review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  await assert.rejects(f.candidate.approveT01Recovery(review, false), /Explicit owner recovery/);
+  const altered = structuredClone(review);
+  altered.evidence.token.balanceUnits = '1';
+  await assert.rejects(f.candidate.approveT01Recovery(altered, true), /Recovery review missing/);
+  review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  globalThis.window = {};
+  try {
+    await assert.rejects(f.candidate.approveT01Recovery(review, true, new Event('click')), /dedicated button/);
+  } finally { delete globalThis.window; }
+  assert.equal(f.records.has(f.recoveryKey), false);
+});
+
+for (const change of ['owner', 'chain', 'nonce', 'pending nonce', 'balance', 'allowance', 'quote', 'canonical', 'expired', 'RPC', 'authorization']) {
+  test('T01 recovery refuses changed ' + change + ' at owner approval', async t => {
+    const f = await recoveryFixture(t);
+    const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+    const request = f.provider.request.bind(f.provider);
+    if (change === 'owner') f.setAccounts([inputs.mira]);
+    if (change === 'chain') f.setChain('0x1');
+    if (change === 'nonce') f.setNonce('0x33');
+    if (change === 'allowance') f.answers.allowance = [1];
+    if (change === 'quote') f.answers.getRegisterPrice = [8000022, 0];
+    if (change === 'authorization') f.setAuthorization(null);
+    let latestReads = 0;
+    f.provider.request = async input => {
+      if (change === 'RPC' && input.method === 'eth_getBlockByNumber') throw Error('Unavailable');
+      if (change === 'pending nonce' && input.method === 'eth_getTransactionCount' && input.params[1] === 'pending') return '0x33';
+      if (change === 'canonical' && input.method === 'eth_getBlockByNumber' && input.params[0] !== 'latest') return { ...block, hash: txHash };
+      if (change === 'expired' && input.method === 'eth_getBlockByNumber' && input.params[0] === 'latest') {
+        return { ...block, number: ++latestReads === 1 ? block.number : '0x70' };
+      }
+      if (change === 'balance' && input.method === 'eth_call' &&
+        input.params[0].data.startsWith(token.getFunction('balanceOf').selector)) return token.encodeFunctionResult('balanceOf', [1]);
+      return request(input);
+    };
+    await assert.rejects(f.candidate.approveT01Recovery(review, true));
+    assert.equal(f.records.has(f.recoveryKey), false);
+    assert.deepEqual(JSON.parse(f.records.get(f.attemptKey)), f.rejected);
+    assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+  });
+}
+
+test('T01 recovery is invalidated by wallet-context changes and reloads', async t => {
+  const f = await recoveryFixture(t);
+  const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  f.emit('accountsChanged');
+  await assert.rejects(f.candidate.approveT01Recovery(review, true), /Recovery review missing/);
+  const reload = new f.Active(f.args);
+  t.after(() => reload.close());
+  await assert.rejects(reload.approveT01Recovery(review, true), /Recovery review missing/);
+  const current = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  await f.candidate.approveT01Recovery(current, true);
+  const afterApproval = new f.Active(f.args);
+  t.after(() => afterApproval.close());
+  await assert.rejects(afterApproval.prepare('T01'), /Prior T01 attempt/);
+  await assert.rejects(afterApproval.inspectT01Recovery(recoveryAttestation), /already recorded/);
+});
+
+test('T01 recovery rejects replay and concurrent tabs under the shared lock', async t => {
+  const f = await recoveryFixture(t);
+  const other = new f.Active(f.args);
+  t.after(() => other.close());
+  const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  const otherReview = await other.inspectT01Recovery(recoveryAttestation);
+  const approving = f.candidate.approveT01Recovery(review, true);
+  await assert.rejects(other.approveT01Recovery(otherReview, true), /locked in another tab/);
+  await approving;
+  await assert.rejects(other.approveT01Recovery(otherReview, true), /already recorded/);
+  await assert.rejects(other.prepare('T01'), /Prior T01 attempt/);
+  const original = f.records.get(f.attemptKey);
+  const retryReview = await f.candidate.prepare('T01');
+  await f.candidate.validateT01Confirmation(retryReview, true);
+  let sends = 0;
+  const request = f.provider.request.bind(f.provider);
+  f.provider.request = async input => {
+    if (input.method === 'eth_sendTransaction') { sends++; return txHash; }
+    return request(input);
+  };
+  const submission = f.candidate.submitT01(retryReview, true);
+  await assert.rejects(f.candidate.submitT01(retryReview, true), /already in progress/);
+  await assert.rejects(other.prepare('T01'), /locked in another tab/);
+  await submission;
+  assert.equal(sends, 1);
+  assert.equal(f.records.get(f.attemptKey), original);
+});
+
+for (const failAt of ['recovery before write', 'recovery after write', 'approval journal', 'retry before write', 'retry after write', 'retry journal']) {
+  test('T01 recovery fails closed on interrupted ' + failAt, async t => {
+    const f = await recoveryFixture(t);
+    const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+    const setItem = f.storage.setItem;
+    let armed = true;
+    const recoveryFailure = failAt.startsWith('recovery') || failAt === 'approval journal';
+    if (!recoveryFailure) await f.candidate.approveT01Recovery(review, true);
+    const retryReview = recoveryFailure ? null : await f.candidate.prepare('T01');
+    if (retryReview) await f.candidate.validateT01Confirmation(retryReview, true);
+    f.storage.setItem = (key, value) => {
+      const target = failAt.startsWith('recovery') ? f.recoveryKey :
+        failAt.startsWith('retry ') && failAt !== 'retry journal' ? f.retryKey : f.journalKey;
+      if (armed && key === target) {
+        armed = false;
+        if (failAt.endsWith('after write')) setItem(key, value);
+        throw Error('Interrupted persistence');
+      }
+      setItem(key, value);
+    };
+    if (recoveryFailure) await assert.rejects(f.candidate.approveT01Recovery(review, true), /Interrupted/);
+    else await assert.rejects(f.candidate.submitT01(retryReview, true), /Interrupted/);
+    if (retryReview) {
+      assert.equal(f.candidate.canSubmit(retryReview), false);
+      await assert.rejects(f.candidate.submitT01(retryReview, true), /execution disabled/);
+    }
+    assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+    assert.deepEqual(JSON.parse(f.records.get(f.attemptKey)), f.rejected);
+    const reload = new f.Active(f.args);
+    t.after(() => reload.close());
+    await assert.rejects(reload.prepare('T01'), /Prior T01 attempt/);
+    await assert.rejects(f.candidate.approveT01Recovery(review, true), /Recovery review missing|already recorded/);
+  });
+}
+
+test('T01 recovery requires locks and durable T01 authorization and cannot authorize other steps', async t => {
+  const f = await recoveryFixture(t);
+  const unlocked = new f.Active({ ...f.args, locks: undefined });
+  t.after(() => unlocked.close());
+  await assert.rejects(unlocked.inspectT01Recovery(recoveryAttestation), /Exclusive browser lock/);
+  for (const auth of [null, { stage: 'GO', step: 'T02', kind: 'T01_INTENT_V1', intentDigest: txHash },
+    { stage: 'GO', step: 'T01', kind: 'T01_INTENT_V1', intentDigest: txHash }]) {
+    f.setAuthorization(auth);
+    await assert.rejects(f.candidate.inspectT01Recovery(recoveryAttestation), /durable T01 authorization/);
+  }
+  for (const step of bundle.plan.transactions.slice(1)) assert.equal(f.candidate.canSubmit({ step: step.id }), false);
+  await assert.rejects(f.candidate.submitStep({ step: 'T04' }, true), /T04 execution blocked/);
+});
+
+test('real browser delayed recovery consumes its trusted click before Web Locks and reaches only a fresh unsigned review', {
+  skip: !process.env.NAK_RECOVERY_PLAYWRIGHT,
+}, async t => {
+  const { createRequire } = await import('node:module');
+  const { createServer } = await import('node:http');
+  const { chromium } = createRequire(import.meta.url)(process.env.NAK_RECOVERY_PLAYWRIGHT);
+  const f = await recoveryFixture(t);
+  const source = await activatedBuild(null, "import './browser.mjs';", true);
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  const auth = { stage: 'GO', step: 'T01', kind: 'T01_INTENT_V1', intentDigest: f.intentDigest };
+  const server = createServer((req, res) => {
+    const files = {
+      '/': ['text/html', html], '/app.js': ['text/javascript', source],
+      '/style.css': ['text/css', ''], '/candidate-bundle.json': ['application/json', JSON.stringify(f.data)],
+      '/step-authorization.json': ['application/json', JSON.stringify(auth)],
+      '/favicon.ico': ['image/x-icon', ''],
+    };
+    const file = files[req.url];
+    res.writeHead(file ? 200 : 404, { 'content-type': file?.[0] ?? 'text/plain' }).end(file?.[1] ?? '');
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const browser = await chromium.launch({
+    ...(process.env.NAK_RECOVERY_BROWSER_EXECUTABLE ? { executablePath: process.env.NAK_RECOVERY_BROWSER_EXECUTABLE } : {}),
+    headless: true, args: ['--no-sandbox', '--disable-extensions'],
+  });
+  t.after(() => browser.close());
+  const page = await browser.newPage();
+  const errors = [], forbidden = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+  await page.exposeBinding('testRead', async (_, input) => {
+    if (/send|sign|requestAccounts/i.test(input.method)) {
+      forbidden.push(input.method);
+      throw Error('Test forbids wallet permissions, signing and sends');
+    }
+    return f.provider.request(input);
+  });
+  await page.addInitScript(({ records, timestamp }) => {
+    Date.now = () => timestamp;
+    for (const [key, value] of records) localStorage.setItem(key, value);
+    window.ethereum = { isMetaMask: true, on() {}, removeListener() {}, request: input => window.testRead(input) };
+    window.unhandled = [];
+    window.addEventListener('unhandledrejection', event => window.unhandled.push(String(event.reason)));
+  }, { records: [...f.records], timestamp: f.now() });
+  await page.goto('http://127.0.0.1:' + server.address().port);
+  await page.waitForFunction(() => !document.getElementById('prepare').disabled);
+  await page.check('#t01-recovery-activity');
+  await page.check('#t01-recovery-no-transaction');
+  await page.click('#t01-recovery-inspect');
+  await page.waitForFunction(() => !document.getElementById('t01-recovery-confirmed').disabled);
+  assert.match(await page.locator('#t01-recovery-review').textContent(), /T01_HASHLESS_REJECTION_V1/);
+  const inspectedBrowserReview = JSON.parse(await page.locator('#t01-recovery-review').textContent());
+  const delayedHead = { ...block, number: '0x80', hash: txHash,
+    timestamp: '0x' + (BigInt(block.timestamp) + 240n).toString(16) };
+  const browserRead = f.provider.request.bind(f.provider);
+  f.provider.request = input => input.method === 'eth_getBlockByNumber' &&
+    (input.params[0] === 'latest' || input.params[0] === delayedHead.number) ?
+    Promise.resolve(delayedHead) : browserRead(input);
+  await page.evaluate(timestamp => { Date.now = () => timestamp; }, f.now() + 240_000);
+  await page.check('#t01-recovery-confirmed');
+  await page.click('#t01-recovery-approve');
+  await page.waitForFunction(() => document.getElementById('status').textContent.startsWith('T01 recovery approved.'));
+  const stored = await page.evaluate(() => ({ ...localStorage }));
+  assert.equal(stored[f.attemptKey], f.records.get(f.attemptKey));
+  assert.equal(JSON.parse(stored[f.recoveryKey]).rejectedAttemptDigest, digest(f.rejected));
+  assert.deepEqual(JSON.parse(stored[f.recoveryKey]), inspectedBrowserReview);
+  assert.equal(stored[f.retryKey], undefined);
+  await page.click('#prepare');
+  await page.waitForFunction(() => !document.getElementById('prepare').disabled);
+  assert.equal(JSON.parse(await page.locator('#journal').textContent()).entries.T01.status, 'PREPARED');
+  assert.deepEqual(errors, []);
+  assert.deepEqual(await page.evaluate(() => window.unhandled), []);
+  assert.deepEqual(forbidden, []);
+});
+
+test('a hash discovered after recovery approval blocks retry in every tab without changing original evidence', async t => {
+  const f = await recoveryFixture(t);
+  const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  await f.candidate.approveT01Recovery(review, true);
+  const retryReview = await f.candidate.prepare('T01');
+  await f.candidate.validateT01Confirmation(retryReview, true);
+  const original = f.records.get(f.attemptKey);
+  const other = new f.Active(f.args);
+  t.after(() => other.close());
+  await assert.rejects(other.reconcile('T01', txHash), /Transaction evidence appeared/);
+  assert.equal(f.candidate.canSubmit(retryReview), false);
+  await assert.rejects(f.candidate.submitT01(retryReview, true), /execution disabled/);
+  assert.equal(f.records.get(f.attemptKey), original);
+  assert.equal(f.records.has(f.retryKey), false);
+  assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+});
+
+for (const change of ['estimate', 'journal', 'attempt', 'context', 'final nonce', 'time']) {
+  test('T01 recovery rejects altered ' + change + ' evidence before persistence', async t => {
+    const f = await recoveryFixture(t);
+    const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+    if (change === 'estimate') f.setEstimate('0xc351');
+    if (change === 'journal') {
+      const updated = structuredClone(f.journal);
+      updated.history.push({ kind: 'CONFLICTING_AUDIT' });
+      f.records.set(f.journalKey, JSON.stringify(updated));
+    }
+    if (change === 'attempt') f.records.set(f.attemptKey, JSON.stringify({ ...f.rejected, status: 'UNCERTAIN' }));
+    if (change === 'time') f.candidate.now = () => f.now() + 121_000;
+    let accounts = 0;
+    f.provider.hook = async method => {
+      if (method === 'eth_accounts' && ++accounts === 2) {
+        await Promise.resolve();
+        if (change === 'context') f.emit('chainChanged');
+        if (change === 'final nonce') f.setNonce('0x33');
+      }
+    };
+    await assert.rejects(f.candidate.approveT01Recovery(review, true));
+    assert.equal(f.records.has(f.recoveryKey), false);
+    assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+  });
+}
+
+for (const write of ['recovery', 'approval journal', 'retry', 'retry journal']) {
+  test('silent storage loss at ' + write + ' never permits a wallet handoff', async t => {
+    const f = await recoveryFixture(t);
+    const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+    const approving = write === 'recovery' || write === 'approval journal';
+    if (!approving) await f.candidate.approveT01Recovery(review, true);
+    const retryReview = approving ? null : await f.candidate.prepare('T01');
+    if (retryReview) await f.candidate.validateT01Confirmation(retryReview, true);
+    const setItem = f.storage.setItem;
+    f.storage.setItem = (key, value) => {
+      const target = write === 'recovery' ? f.recoveryKey : write === 'retry' ? f.retryKey : f.journalKey;
+      if (key !== target) setItem(key, value);
+    };
+    if (approving) await assert.rejects(f.candidate.approveT01Recovery(review, true), /persistence failed/);
+    else {
+      await assert.rejects(f.candidate.submitT01(retryReview, true), /persistence failed|submission uncertain/);
+      assert.equal(f.candidate.canSubmit(retryReview), false);
+    }
+    assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+    assert.deepEqual(JSON.parse(f.records.get(f.attemptKey)), f.rejected);
+  });
+}
+
+test('a supplied hash before recovery is retained and cannot be forgotten by a later attestation', async t => {
+  const f = await recoveryFixture(t);
+  await assert.rejects(f.candidate.reconcile('T01', txHash), /Transaction evidence appeared/);
+  await assert.rejects(f.candidate.inspectT01Recovery(recoveryAttestation), /Transaction evidence blocks/);
+  assert.equal(JSON.parse(f.records.get(f.recoveryKey + ':transaction-evidence')).hash, txHash);
+  assert.equal(f.records.has(f.recoveryKey), false);
+  assert.deepEqual(JSON.parse(f.records.get(f.attemptKey)), f.rejected);
+});
+
+test('delayed recovery approval retains the inspected digest while refreshing evidence across blocks and time', async t => {
+  const f = await recoveryFixture(t);
+  const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  const original = f.records.get(f.attemptKey);
+  const inspected = structuredClone(review);
+  f.candidate.now = () => f.now() + 240_000;
+  const head = { ...block, number: '0x80', hash: txHash,
+    timestamp: '0x' + (BigInt(block.timestamp) + 240n).toString(16), baseFeePerGas: '0x12' };
+  const request = f.provider.request.bind(f.provider);
+  f.provider.request = async input => {
+    assert.doesNotMatch(input.method, /send|sign|requestAccounts/i);
+    if (input.method === 'eth_getBlockByNumber' &&
+      (input.params[0] === 'latest' || input.params[0] === head.number)) return head;
+    return request(input);
+  };
+  const result = await f.candidate.approveT01Recovery(review, true);
+  assert.equal(result.recoveryDigest, inspected.recoveryDigest);
+  assert.deepEqual(JSON.parse(f.records.get(f.recoveryKey)), inspected);
+  assert.equal(f.records.get(f.attemptKey), original);
+  assert.equal(f.records.has(f.retryKey), false);
+  const prepared = await f.candidate.prepare('T01');
+  assert.equal(prepared.snapshot.number, head.number);
+  assert.equal(f.candidate.canSubmit(prepared), false);
+});
+
+for (const failure of ['inspected reorg', 'fresh reorg', 'fresh block lag', 'fresh time age', 'nonce', 'balance', 'conflict', 'missing inspected block']) {
+  test('delayed recovery approval fails closed on ' + failure, async t => {
+    const f = await recoveryFixture(t);
+    const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+    let now = f.now() + 240_000;
+    f.candidate.now = () => now;
+    const head = { ...block, number: '0x80', hash: txHash,
+      timestamp: '0x' + (BigInt(block.timestamp) + 240n).toString(16) };
+    const request = f.provider.request.bind(f.provider);
+    let accountReads = 0;
+    f.provider.request = async input => {
+      assert.doesNotMatch(input.method, /send|sign|requestAccounts/i);
+      if (input.method === 'eth_accounts' && ++accountReads === 2) {
+        await Promise.resolve();
+        if (failure === 'fresh time age') now += 121_000;
+        if (failure === 'nonce') f.setNonce('0x33');
+        if (failure === 'conflict') {
+          f.records.set(f.attemptKey.replace('t01', 't02'), JSON.stringify({ nonce: '0x32', status: 'UNCERTAIN' }));
+        }
+      }
+      if (input.method === 'eth_getBlockByNumber') {
+        if (input.params[0] === block.number) {
+          if (failure === 'missing inspected block') return null;
+          if (failure === 'inspected reorg') return { ...block, hash: '0x' + '33'.repeat(32) };
+        }
+        if (input.params[0] === 'latest') {
+          return failure === 'fresh block lag' && accountReads === 2 ? { ...head, number: '0x83' } : head;
+        }
+        if (input.params[0] === head.number) {
+          return failure === 'fresh reorg' && accountReads === 2 ? { ...head, hash: '0x' + '33'.repeat(32) } : head;
+        }
+      }
+      if (failure === 'balance' && input.method === 'eth_call' &&
+        input.params[0].data.startsWith(token.getFunction('balanceOf').selector)) {
+        return token.encodeFunctionResult('balanceOf', [1]);
+      }
+      return request(input);
+    };
+    await assert.rejects(f.candidate.approveT01Recovery(review, true));
+    assert.equal(f.records.has(f.recoveryKey), false);
+    assert.equal(f.records.has(f.retryKey), false);
+    assert.deepEqual(JSON.parse(f.records.get(f.attemptKey)), f.rejected);
+  });
+}
+
+test('delayed recovery approval remains exclusive and fail-closed if persistence is interrupted', async t => {
+  const f = await recoveryFixture(t);
+  const review = await f.candidate.inspectT01Recovery(recoveryAttestation);
+  const other = new f.Active(f.args);
+  t.after(() => other.close());
+  const otherReview = await other.inspectT01Recovery(recoveryAttestation);
+  const now = f.now() + 240_000;
+  f.candidate.now = () => now;
+  other.now = () => now;
+  const head = { ...block, number: '0x80', hash: txHash,
+    timestamp: '0x' + (BigInt(block.timestamp) + 240n).toString(16) };
+  const request = f.provider.request.bind(f.provider);
+  f.provider.request = async input => {
+    assert.doesNotMatch(input.method, /send|sign|requestAccounts/i);
+    if (input.method === 'eth_getBlockByNumber' &&
+      (input.params[0] === 'latest' || input.params[0] === head.number)) return head;
+    return request(input);
+  };
+  const setItem = f.storage.setItem;
+  f.storage.setItem = (key, value) => {
+    setItem(key, value);
+    if (key === f.recoveryKey) throw Error('Interrupted recovery write');
+  };
+  const approving = f.candidate.approveT01Recovery(review, true);
+  await assert.rejects(other.approveT01Recovery(otherReview, true), /locked in another tab/);
+  await assert.rejects(approving, /Interrupted recovery write/);
+  assert.equal(f.records.has(f.recoveryKey), true);
+  await assert.rejects(f.candidate.prepare('T01'), /Prior T01 attempt/);
+  await assert.rejects(other.prepare('T01'), /Prior T01 attempt/);
+  assert.equal(f.records.has(f.retryKey), false);
+  assert.deepEqual(JSON.parse(f.records.get(f.attemptKey)), f.rejected);
+});
+
+const reviewedT02Caps = { gas: '155240', maxFeePerGas: '35', maxPriorityFeePerGas: '1' };
+const approvedT02PacketDigest = '0xbe3bd4e1c0a8468be55adb826cec4e8ac58cb374143f02ed04098b278904b358';
+
+async function retainedT02Fixture(t) {
+  const f = fixture();
+  const draft = open(f);
+  await draft.prepare('T01');
+  f.confirm('0x65');
+  let now = f.now();
+  let head = { ...block, number: '0x70', baseFeePerGas: '0x11' };
+  const history = new Map([[block.number, block], ['0x65', { ...block, number: '0x65' }], [head.number, { ...head }]]);
+  const request = f.provider.request.bind(f.provider);
+  f.provider.request = async input => {
+    if (input.method === 'eth_getBlockByNumber') {
+      if (input.params[0] === 'latest') return head;
+      if (input.params[0] === 'finalized') return history.get('0x65');
+      if (input.params[0] === head.number) return head;
+      if (history.has(input.params[0])) return history.get(input.params[0]);
+    }
+    if (input.method === 'eth_getTransactionCount' && input.params[1] === block.number) return '0x32';
+    return request(input);
+  };
+  await draft.reconcile('T01', txHash);
+  f.setNonce('0x33');
+  f.setEstimate('0x1f956');
+  const initial = await draft.prepare('T02');
+  const approval = await draft.validateConfirmation(initial, true);
+  assert.equal(approval.packetDigest, approvedT02PacketDigest);
+  draft.close();
+  let auth = { stage: 'GO', step: 'T02', planDigest: approval.planDigest, packetDigest: approval.packetDigest };
+  const priorFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, json: async () => auth });
+  t.after(() => { globalThis.fetch = priorFetch; });
+  const { CandidateReview: Active } = await activatedBuild();
+  let held = false;
+  const locks = { async request(_key, _options, callback) {
+    if (held) return callback(null);
+    held = true;
+    try { return await callback({}); } finally { held = false; }
+  } };
+  const args = { provider: f.provider, bundle: f.data, storage: f.storage, now: () => now, locks };
+  const active = new Active(args);
+  t.after(() => active.close());
+  const advance = (number, fee = '0x10', seconds = 12) => {
+    history.set(head.number, { ...head });
+    now += seconds * 1000;
+    head = { ...head, number, hash: '0x' + number.slice(2).padStart(64, '0'),
+      timestamp: '0x' + (BigInt(block.timestamp) + BigInt((now - f.now()) / 1000)).toString(16),
+      baseFeePerGas: fee };
+    history.set(number, { ...head });
+  };
+  advance('0x80', '0x10', 240);
+  return { ...f, active, Active, args, approval, advance, history,
+    setAuthorization: value => { auth = value; }, getAuthorization: () => auth,
+    head: () => head, clock: () => now };
+}
+
+test('retained T02 prepares the exact authorized packet across base-fee drift and refreshes observations', async t => {
+  const f = await retainedT02Fixture(t);
+  const review = await f.active.prepare('T02', reviewedT02Caps);
+  assert.equal(review.unsignedTransaction.maxFeePerGas, '0x23');
+  assert.equal(review.unsignedTransaction.gas, '0x25e68');
+  assert.equal(f.active.journal().entries.T01.status, 'CONFIRMED');
+  const journalKey = 'nak-candidate:' + f.approval.planDigest;
+  const saved = JSON.parse(f.records.get(journalKey)).entries.T02;
+  assert.equal(saved.packetDigest, approvedT02PacketDigest);
+  assert.deepEqual(saved.anchor.reviewedCaps, { gas: '0x25e68', maxFeePerGas: '0x23', maxPriorityFeePerGas: '0x1' });
+  f.advance('0x90', '0x12', 240);
+  const result = await f.active.validateConfirmation(review, true);
+  assert.equal(result.packetDigest, approvedT02PacketDigest);
+  assert.equal(f.active.canSubmit(review), true);
+  assert.deepEqual(JSON.parse(f.records.get(journalKey)).entries.T02, saved);
+  const simulation = f.calls.filter(x => x.method === 'eth_estimateGas').at(-1);
+  assert.deepEqual(simulation.params, [review.unsignedTransaction, '0x90']);
+  f.advance('0xa0', '0x22', 240);
+  await f.active.validateConfirmation(review, true);
+  assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+  // Retained fees must also reconstruct after reload at a block with a different base fee.
+  const reload = new f.Active(f.args);
+  t.after(() => reload.close());
+  const fresh = await reload.prepare('T02', reviewedT02Caps);
+  assert.equal(fresh.unsignedTransaction.maxFeePerGas, '0x23');
+  assert.equal((await reload.validateConfirmation(fresh, true)).packetDigest, approvedT02PacketDigest);
+  for (const step of bundle.plan.transactions.filter(x => x.id !== 'T02')) {
+    assert.equal(reload.canSubmit({ step: step.id }), false);
+  }
+});
+
+for (const change of ['gas', 'fee', 'priority', 'nonce', 'allowance', 'quote', 'estimate', 'authorization', 'policy']) {
+  test('retained T02 fails closed on changed ' + change, async t => {
+    const f = await retainedT02Fixture(t);
+    const caps = { ...reviewedT02Caps };
+    if (change === 'gas') caps.gas = '155241';
+    if (change === 'fee') caps.maxFeePerGas = '33';
+    if (change === 'priority') caps.maxPriorityFeePerGas = '2';
+    if (change === 'nonce') f.setNonce('0x34');
+    if (change === 'allowance') f.answers.allowance = [1];
+    if (change === 'quote') f.answers.getRegisterPrice = [8000022, 0];
+    if (change === 'estimate') f.setEstimate('0x1f957');
+    if (change === 'authorization') f.setAuthorization({ ...f.getAuthorization(), packetDigest: txHash });
+    if (change === 'policy') caps.maxFeePerGas = '2000000001';
+    await assert.rejects(f.active.prepare('T02', caps));
+    assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+    assert.equal([...f.records.keys()].some(key => key.startsWith('nak-t02-attempt:')), false);
+  });
+}
+
+for (const change of ['insufficient cap', 'nonce', 'estimate', 'allowance', 'old reorg', 'fresh reorg', 'stale head', 'stale time', 'late fee']) {
+  test('retained T02 handoff blocks ' + change + ' before attempt persistence', async t => {
+    const f = await retainedT02Fixture(t);
+    const review = await f.active.prepare('T02', reviewedT02Caps);
+    const anchorNumber = review.snapshot.number;
+    f.advance('0x90', '0x10', 240);
+    if (change === 'insufficient cap') f.advance('0x91', '0x23');
+    if (change === 'nonce') f.setNonce('0x34');
+    if (change === 'estimate') f.setEstimate('0x1f957');
+    if (change === 'allowance') f.answers.allowance = [1];
+    const request = f.provider.request.bind(f.provider);
+    let nonceReads = 0, sends = 0;
+    f.provider.request = async input => {
+      if (input.method === 'eth_getTransactionCount' && ++nonceReads === 8) {
+        await Promise.resolve();
+        if (change === 'stale head') f.advance('0x94', '0x10', 0);
+        if (change === 'stale time') f.active.now = () => f.clock() + 121_000;
+        if (change === 'late fee') f.advance('0x91', '0x23', 0);
+      }
+      if (input.method === 'eth_getBlockByNumber') {
+        if (change === 'old reorg' && input.params[0] === anchorNumber) return { ...f.history.get(anchorNumber), hash: txHash };
+        if (change === 'fresh reorg' && input.params[0] === '0x90' && nonceReads >= 8) return { ...f.head(), hash: txHash };
+      }
+      if (input.method === 'eth_sendTransaction') { sends++; return txHash; }
+      return request(input);
+    };
+    await assert.rejects(f.active.submitStep(review, true));
+    assert.equal(sends, 0);
+    assert.equal([...f.records.keys()].some(key => key.startsWith('nak-t02-attempt:')), false);
+  });
+}
+
+test('retained T02 preserves a separate Request action and prevents concurrent and duplicate requests', async t => {
+  const f = await retainedT02Fixture(t);
+  const review = await f.active.prepare('T02', reviewedT02Caps);
+  await f.active.validateConfirmation(review, true);
+  let sends = 0;
+  assert.equal(f.calls.some(x => /send|sign|requestAccounts/i.test(x.method)), false);
+  const request = f.provider.request.bind(f.provider);
+  f.provider.request = async input => {
+    if (input.method === 'eth_sendTransaction') {
+      sends++;
+      assert.deepEqual(input.params, [review.unsignedTransaction]);
+      return txHash;
+    }
+    return request(input);
+  };
+  const submission = f.active.submitStep(review, true);
+  await assert.rejects(f.active.submitStep(review, true), /already in progress/);
+  await submission;
+  await assert.rejects(f.active.submitStep(review, true), /execution disabled/);
+  const reload = new f.Active(f.args);
+  t.after(() => reload.close());
+  await assert.rejects(reload.prepare('T02', reviewedT02Caps), /Prior T02 attempt/);
+  assert.equal(sends, 1);
+});
+
+test('retained T02 preparation cannot be applied to any other step', async t => {
+  const f = await retainedT02Fixture(t);
+  for (const step of bundle.plan.transactions.filter(x => x.id !== 'T02')) {
+    await assert.rejects(f.active.prepare(step.id, reviewedT02Caps), /T02-only/);
+    assert.equal(f.active.canSubmit({ step: step.id }), false);
+  }
+  await assert.rejects(f.active.submitStep({ step: 'T04' }, true), /T04 execution blocked/);
+});
+
+test('real browser explicitly prepares the retained T02 packet and requests only after a separate trusted action', {
+  skip: !process.env.NAK_RECOVERY_PLAYWRIGHT,
+}, async t => {
+  const { createRequire } = await import('node:module');
+  const { createServer } = await import('node:http');
+  const { chromium } = createRequire(import.meta.url)(process.env.NAK_RECOVERY_PLAYWRIGHT);
+  const f = await retainedT02Fixture(t);
+  const source = await activatedBuild(null, "import './browser.mjs';", true);
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  let servedAuth = f.getAuthorization();
+  const server = createServer((req, res) => {
+    const files = {
+      '/': ['text/html', html], '/app.js': ['text/javascript', source],
+      '/style.css': ['text/css', ''], '/candidate-bundle.json': ['application/json', JSON.stringify(f.data)],
+      '/step-authorization.json': ['application/json', JSON.stringify(servedAuth)],
+      '/favicon.ico': ['image/x-icon', ''],
+    };
+    const file = files[req.url];
+    res.writeHead(file ? 200 : 404, { 'content-type': file?.[0] ?? 'text/plain' }).end(file?.[1] ?? '');
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const browser = await chromium.launch({
+    ...(process.env.NAK_RECOVERY_BROWSER_EXECUTABLE ? { executablePath: process.env.NAK_RECOVERY_BROWSER_EXECUTABLE } : {}),
+    headless: true, args: ['--no-sandbox', '--disable-extensions'],
+  });
+  t.after(() => browser.close());
+  const errors = [], sends = [];
+  let expectedTransaction;
+  const openPage = async () => {
+    const page = await browser.newPage();
+    page.on('pageerror', error => errors.push(error.message));
+    await page.exposeBinding('testWallet', async (_, input) => {
+      assert.doesNotMatch(input.method, /sign|requestAccounts/i);
+      if (input.method === 'eth_sendTransaction') {
+        assert.ok(expectedTransaction, 'A separate Request action must be expected');
+        assert.deepEqual(input.params, [expectedTransaction]);
+        sends.push(input);
+        return '0x' + '34'.repeat(32);
+      }
+      return f.provider.request(input);
+    });
+    await page.addInitScript(({ records, timestamp }) => {
+      Date.now = () => timestamp;
+      for (const [key, value] of records) localStorage.setItem(key, value);
+      window.ethereum = { isMetaMask: true, on() {}, removeListener() {}, request: input => window.testWallet(input) };
+      window.unhandled = [];
+      window.addEventListener('unhandledrejection', event => window.unhandled.push(String(event.reason)));
+    }, { records: [...f.records], timestamp: f.clock() });
+    await page.goto('http://127.0.0.1:' + server.address().port);
+    await page.waitForFunction(() => !document.getElementById('prepare').disabled);
+    await page.selectOption('#step', 'T02');
+    assert.equal(await page.locator('#t02-reviewed-caps').isVisible(), true);
+    assert.equal(await page.locator('#t02-retain-caps').isChecked(), false);
+    assert.equal(await page.inputValue('#t02-gas'), '155240');
+    assert.equal(await page.inputValue('#t02-fee'), '35');
+    assert.equal(await page.inputValue('#t02-tip'), '1');
+    await page.check('#t02-retain-caps');
+    return page;
+  };
+  const page = await openPage();
+  await page.click('#prepare');
+  await page.waitForFunction(() => !document.getElementById('prepare').disabled);
+  const review = JSON.parse(await page.locator('#review').textContent());
+  const stored = await page.evaluate(() => ({ ...localStorage }));
+  const journal = JSON.parse(stored['nak-candidate:' + f.approval.planDigest]);
+  assert.equal(journal.entries.T02.packetDigest, approvedT02PacketDigest);
+  assert.equal(journal.entries.T01.status, 'CONFIRMED');
+  assert.equal(review.unsignedTransaction.maxFeePerGas, '0x23');
+  assert.equal(review.unsignedTransaction.gas, '0x25e68');
+  assert.equal(await page.locator('#t01-validate').isDisabled(), true);
+  assert.equal(sends.length, 0);
+  f.advance('0x90', '0x12', 240);
+  await page.evaluate(timestamp => { Date.now = () => timestamp; }, f.clock());
+  await page.check('#t01-confirmed');
+  assert.equal(sends.length, 0);
+  assert.equal(await page.locator('#t01-validate').textContent(), 'Request T02 in MetaMask');
+  expectedTransaction = review.unsignedTransaction;
+  await page.click('#t01-validate');
+  await page.waitForFunction(() => document.getElementById('status').textContent.startsWith('T02 pending.'));
+  assert.equal(sends.length, 1);
+  assert.equal(await page.locator('#t01-validate').isDisabled(), true);
+  assert.deepEqual(await page.evaluate(() => window.unhandled), []);
+  await page.close();
+  expectedTransaction = undefined;
+
+  for (const failure of ['missing authorization', 'different authorization', 'fee cap', 'nonce']) {
+    servedAuth = failure === 'missing authorization' ? null : failure === 'different authorization' ?
+      { ...f.getAuthorization(), packetDigest: txHash } : f.getAuthorization();
+    f.setNonce(failure === 'nonce' ? '0x34' : '0x33');
+    f.advance('0x' + (0xa0 + ['missing authorization', 'different authorization', 'fee cap', 'nonce'].indexOf(failure)).toString(16),
+      failure === 'fee cap' ? '0x23' : '0x10');
+    const negative = await openPage();
+    await negative.click('#prepare');
+    await negative.waitForFunction(() => !document.getElementById('prepare').disabled);
+    const status = await negative.locator('#status').textContent();
+    assert.match(status, /authorization|Base fee moved outside reviewed envelope|nonce/i);
+    assert.equal(await negative.locator('#t01-validate').isDisabled(), true);
+    assert.equal(sends.length, 1);
+    assert.deepEqual(await negative.evaluate(() => window.unhandled), []);
+    await negative.close();
+  }
+  assert.deepEqual(errors, []);
+});

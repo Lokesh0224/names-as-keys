@@ -33,3 +33,16 @@ secrets.*
 **/__pycache__/
 *.pyc
 .DS_Store
+
+# Local execution authority is operator state, never publication material.
+contracts/scripts/deployment_workflow/step-authorization.json
+contracts/scripts/deployment_workflow/step-authorization.json.*
+
+# New runtime output and browser exports. Historical reviewed evidence stays tracked.
+*.log
+*.har
+**/playwright-report/
+**/test-results/
+anvil-state*.json
+**/anvil-state*.json
+docs/local/

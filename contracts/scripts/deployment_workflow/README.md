@@ -1,6 +1,6 @@
 # Unsigned deployment review
 
-Stage 3F remains NO-GO. The main page uses existing MetaMask account access through a read-only adapter. Select the approved owner on Sepolia (11155111). The default page uses read-only wallet requests. It clears the displayed review on account, chain or connection changes.
+A fresh source build defaults to NO-GO. T01 and T02 have finalized Sepolia receipts; see the [current project status](../../../README.md#verified-sepolia-progress). T03–T15 are not executed, and T04 remains hard-blocked. The main page uses existing MetaMask account access through a read-only adapter. Select the approved owner on Sepolia (11155111). The default page uses read-only wallet requests. It clears the displayed review on account, chain or connection changes.
 
 From the repository root, with Node.js 22 and Foundry installed:
 
@@ -31,11 +31,17 @@ This starts an ephemeral loopback Anvil fork and enforces a read-only upstream. 
 
 1. Select the first included step without a verified receipt. Choose **Prepare unsigned review** and inspect the sender, destination or predicted CREATE address, arguments, nonce, gas and `reservedWei` (maximum network fee).
 2. Check the per-step confirmation box and select **Revalidate … confirmation**. The dashboard returns the step, plan digest, and packet digest after repeating receipt, identity, state, nonce, estimate, and fee checks. With the default build this is a read-only action.
-3. After a separate Stage 3F GO decision and an explicitly enabled build, the local operator can provide one exact authorization in `step-authorization.json` beside `serve.mjs`. Its default value is `null`. The authorized record has `stage: "GO"`, `step`, `planDigest`, and `packetDigest` from that exact approved review. The loopback server reads the file per request. Revalidate from the same tab to pick up the authorization without reloading. This allows the T03 preimage to stay in memory while authorization is reviewed. T04 remains blocked for wallet execution. The existing static T01 authorization remains supported and defaults to null.
+3. After a separate Stage 3F GO decision and an explicitly enabled build, the local operator can provide one exact authorization in `step-authorization.json` beside `serve.mjs`. This local file is excluded from Git; an absent file or `null` grants no authorization. The authorized record has `stage: "GO"`, `step`, `planDigest`, and `packetDigest` from that exact approved review. The loopback server reads the file per request. Revalidate from the same tab to pick up the authorization without reloading. This allows the T03 preimage to stay in memory while authorization is reviewed. T04 remains blocked for wallet execution. The existing static T01 authorization remains supported and defaults to null.
 4. When the exact authorization matches, confirm the displayed envelope again and click **Request … in MetaMask**. The runner checks the approval again, revalidates the envelope and all preceding included receipts, and saves a durable attempt under an exclusive browser lock. Compare the exact envelope in MetaMask before approving the single transaction. A changed envelope requires a new review and authorization.
 5. Use **Verify against session review** to check the transaction, canonical receipt, exact events, confirmations, finalized coverage, and current postconditions. Deployment steps additionally verify the expected deployed address and runtime. Advance only after **CONFIRMED**. Pending transactions can be checked again. Rejection, uncertainty, replacement, or revert requires manual reconciliation and leaves the attempt locked.
 
 Use the same browser profile and loopback origin for recovery. A recorded hash is offered after reload. If MetaMask returned no hash, inspect the wallet's transaction history and enter the exact hash for verification. Keep the same tab open across T03 and T04. Reload or wallet-context changes discard the unrevealed preimage. Browser storage and Web Locks coordinate one origin and profile.
+
+## T02 preparation with reviewed gas and fees
+
+Select T02 and explicitly check **Prepare with these reviewed gas and fee fields** to retain gas limit 155240, maximum fee 35 wei/gas and priority fee 1 wei/gas. The existing server authorization must match the complete resulting packet and current plan. This option cannot create or replace an authorization. An insufficient cap, different estimate, changed quote or other packet difference blocks preparation or revalidation.
+
+For exact-authorized T02, revalidation and the separate Request action simulate the exact reviewed envelope against fresh identified chain state. The original review and recovery anchor remain bound to the packet. The original block must remain canonical, and the fresh observation must pass the two-block / 120-second check after wallet and nonce reads immediately before handoff. Current base fee plus priority fee must fit the retained cap. A reload reconstructs retained gas and fees from the saved anchor. Other steps retain their authorization behavior, and T04 remains blocked.
 
 ## T01 intent approval
 
@@ -46,10 +52,34 @@ Use the same browser profile and loopback origin for recovery. A recorded hash i
 
 The intent digest excludes block identifiers, observation timestamps, informational latest headers, and the RPC-derived gas limit and maximum fee. It binds the rest of the candidate bundle and packet, including chain, signer, recipient, destination, calldata, nonce, ETH value, priority fee, contract identities, and the approved fee and gas policy. Changes outside the observation fields require a new intent approval. The wallet request, journal and receipt checks still bind the exact refreshed packet, including its gas limit and fees.
 
+## T01 hashless rejection recovery
+
+Use this procedure only after owner acceptance of the recovery implementation and separate authorization to perform live recovery. Recovery itself makes read-only wallet/RPC calls. It requires the existing durable T01 authorization and Web Locks. The original attempt must be explicitly `REJECTED`, have no hash property, and match the saved journal and reconstructed historical transaction. `REQUESTING`, `UNCERTAIN`, hashed attempts, conflicting nonce evidence and unavailable historical state block this path.
+
+1. Keep the original wallet profile and loopback origin. Check Sepolia wallet Activity and all available transaction evidence. If any hash or pending transaction is known, use receipt reconciliation or stop for manual investigation.
+2. In **T01 rejected request recovery**, check both wallet-inspection attestations, then choose **Inspect T01 recovery evidence**. Inspect the original rejection and journal snapshot, current owner/chain, canonical block, latest/pending nonce, token balance, mint deficit, quote and recovery digest. The checks rerun T01 contract identity and state prerequisites, gas simulation, funding and policy validation.
+3. Read the evidence limitations. Existing `REJECTED` means the prior runner received wallet error 4001. That code was not separately persisted, so the recovery record preserves the status without fabricating historical evidence. Unchanged nonces, token balance and Activity cannot prove absence from all transaction pools. Missing or inconsistent evidence blocks approval.
+4. Check the dedicated recovery approval checkbox and choose **Approve T01 recovery**. This trusted click repeats fresh state, authorization, nonce, canonicality and freshness checks under the shared owner lock. The inspected digest stays bound to the evidence the owner reviewed even as blocks advance. Approval verifies that inspected block remains canonical and requires a fresh evaluation with an identical packet and estimate. The new observation must satisfy the existing two-block / 120-second policy immediately before persistence. No record is written on a failed evidence check.
+5. Keep the tab open. Recovery approval permits one linked retry request after a separate transaction review. Use **Prepare unsigned review**, inspect the full new T01 envelope, and perform the ordinary confirmation and revalidation flow. The recovery action does not request MetaMask. Any Request click and wallet approval require their existing separate owner actions.
+
+The original attempt key remains byte-for-byte intact. An append-only recovery record at the original key plus `:recovery` contains the original attempt, complete available journal snapshot, evidence and recovery digest. The new attempt at the original key plus `:retry` has its own ID, parent attempt digest and recovery digest. The normal journal records approval and retry transitions, and receipt verification follows the linked retry. Only this single retry is supported.
+
+The recovery permission also lives in memory in the approving tab and is bound to the wallet epoch. Reloading, closing the tab, wallet-context changes, another tab, or interruption after durable approval leaves the recovery locked for manual reconciliation. The permission is consumed before writing the retry attempt. Partial writes and ambiguous requests cannot automatically retry. Never delete, edit or reset these keys. A transaction hash discovered after approval and before retry must be entered in Receipt review, which preserves the evidence and blocks the unused permission across tabs. Future recovery from a locked or repeated rejection requires a separately reviewed procedure.
+
+Run the complete workflow suite with the real-browser recovery regression using an installed Playwright module and browser executable.
+
+```sh
+NAK_RECOVERY_PLAYWRIGHT=/absolute/path/to/node_modules/playwright \
+NAK_RECOVERY_BROWSER_EXECUTABLE=/absolute/path/to/brave-or-chromium \
+npm --prefix contracts/scripts/deployment_workflow test
+```
+
+The browser test serves an isolated built dashboard on an ephemeral loopback port, injects a mock wallet, uses real trusted clicks and Web Locks, and rejects permission, signing and sending methods. It never opens the owner's profile. Without `NAK_RECOVERY_PLAYWRIGHT`, that browser test is explicitly skipped and the deterministic workflow tests still run.
+
 ## Before live activation
 
 - Obtain a fresh reviewed candidate, with current owner/Mira identities, canonical state and runtime checks, funding, quote, nonce prefix and fees.
-- Obtain independent acceptance of the integrated runner and the Stage 3F GO decision, then authorize each exact packet separately or use the reviewed T01 intent procedure. The global live flag, the legacy T01 authorization, and the sequential authorization file are closed in this checkout.
+- Obtain independent acceptance of the integrated runner and the Stage 3F GO decision, then authorize each exact packet separately or use the reviewed T01 intent procedure. The global live flag and legacy T01 authorization are closed in the committed source. A local sequential authorization file may exist on an operator machine; it is ignored, must never be published, and does not authorize other steps.
 - Validate the selected MetaMask version and Sepolia RPC setup with the reviewed envelope format, including contract creation.
 - Resolve the T04 wallet privacy block before starting a live T03 commitment.
 - Verify every real receipt and deployed runtime before using dependent steps or configuring the Stage 3G frontend.

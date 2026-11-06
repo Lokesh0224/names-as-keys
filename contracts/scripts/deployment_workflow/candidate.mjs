@@ -16,9 +16,9 @@ const eventIsTrusted = (Object.getOwnPropertyDescriptor(new Event('click'), 'isT
 const usedClicks = new WeakSet();
 const revealBlocked = 'T04 execution blocked until the wallet and RPC reveal boundary is verified';
 
-function consumeConfirmationClick(event) {
+function consumeConfirmationClick(event, buttonId = 't01-validate') {
   try {
-    const button = document.getElementById('t01-validate');
+    const button = document.getElementById(buttonId);
     if (!button || eventType.call(event) !== 'click' || eventCurrentTarget.call(event) !== button ||
         eventIsTrusted.call(event) !== true || usedClicks.has(event)) return false;
     usedClicks.add(event);
@@ -30,6 +30,7 @@ export class CandidateReview {
   #wallet; #journal; #prepared = new Map(); #secret; #epoch = 0; #busy = false;
   #handlers; #update; #privateEstimate; #random; #state; #storage; #registrationKey;
   #provider; #t01Authorization; #locks; #grant; #authorization; #lockKey; #validatedIntentReview;
+  #recoveryReview; #recoveryPermission;
   constructor({ provider, bundle, storage, update = () => {}, privateEstimate, random = bytes => crypto.getRandomValues(bytes), now = () => Date.now(),
     locks = globalThis.navigator?.locks }) {
     const { plan, inputs, observation, abis, addresses } = bundle;
@@ -111,12 +112,152 @@ export class CandidateReview {
     try { return await fn(this.#epoch); } finally { this.#busy = false; }
   }
   #save(id, entry) {
-    const next = { ...this.#state, entries: { ...this.#state.entries, [id]: entry } };
+    const retry = id === 'T01' ? JSON.parse(this.#storage.getItem(this.#retryKey()) ?? 'null') : null;
+    const history = retry ? [...this.#state.history, { kind: 'T01_RETRY_' + entry.status,
+      attemptId: retry.attemptId, recoveryDigest: retry.recoveryDigest,
+      packetDigest: entry.packetDigest, ...(entry.receiptHash ? { hash: entry.receiptHash } : {}) }] : this.#state.history;
+    const next = { ...this.#state, history, entries: { ...this.#state.entries, [id]: entry } };
     this.#journal.write(next);
     this.#state = next;
   }
   #attemptKey(id) { return 'nak-' + id.toLowerCase() + '-attempt:11155111:' + this.owner.toLowerCase(); }
-  #attempt(id) { return JSON.parse(this.#storage.getItem(this.#attemptKey(id)) ?? 'null'); }
+  #recoveryKey() { return this.#attemptKey('T01') + ':recovery'; }
+  #retryKey() { return this.#attemptKey('T01') + ':retry'; }
+  #transactionEvidenceKey() { return this.#recoveryKey() + ':transaction-evidence'; }
+  #originalAttempt() { return JSON.parse(this.#storage.getItem(this.#attemptKey('T01')) ?? 'null'); }
+  #recoveryRecord() {
+    const record = JSON.parse(this.#storage.getItem(this.#recoveryKey()) ?? 'null');
+    if (record) {
+      const { recoveryDigest, ...review } = record;
+      need(recoveryDigest === digest(review) && review.kind === 'T01_HASHLESS_REJECTION_V1' &&
+        review.rejectedAttemptDigest === digest(this.#originalAttempt()) &&
+        review.planDigest === this.#state.planDigest, 'T01 recovery record inconsistent; manual reconciliation required');
+    }
+    return record;
+  }
+  #attemptStorageKey(id) {
+    if (id === 'T01' && this.#recoveryRecord()) return this.#retryKey();
+    return this.#attemptKey(id);
+  }
+  #attempt(id) {
+    if (id === 'T01') {
+      const retry = JSON.parse(this.#storage.getItem(this.#retryKey()) ?? 'null');
+      if (retry) {
+        const recovery = this.#recoveryRecord();
+        need(recovery && retry.recoveryDigest === recovery.recoveryDigest &&
+          retry.parentAttemptDigest === recovery.rejectedAttemptDigest, 'T01 retry linkage missing or changed');
+        return retry;
+      }
+      this.#recoveryRecord();
+    }
+    return JSON.parse(this.#storage.getItem(this.#attemptKey(id)) ?? 'null');
+  }
+  #retryAllowed() {
+    const record = this.#recoveryRecord();
+    return Boolean(record && this.#recoveryPermission?.epoch === this.#epoch &&
+      this.#recoveryPermission.digest === record.recoveryDigest && !this.#storage.getItem(this.#retryKey()) &&
+      !this.#storage.getItem(this.#transactionEvidenceKey()));
+  }
+  #attemptAvailable(id) {
+    return !this.#attempt(id) || (id === 'T01' && this.#retryAllowed());
+  }
+  #rejectedT01() {
+    need(!this.#storage.getItem(this.#transactionEvidenceKey()), 'Transaction evidence blocks T01 recovery');
+    need(!this.#storage.getItem(this.#recoveryKey()) && !this.#storage.getItem(this.#retryKey()),
+      'T01 recovery already recorded; manual reconciliation required');
+    const attempt = this.#originalAttempt();
+    const journal = this.#journal.read();
+    const entry = journal?.entries.T01;
+    need(attempt?.status === 'REJECTED' && !Object.hasOwn(attempt, 'hash') &&
+      !entry?.receiptHash && entry?.anchor && attempt.planDigest === this.#state.planDigest &&
+      attempt.packetDigest === entry.packetDigest && hash(attempt.transactionDigest) &&
+      attempt.nonce === this.bundle.plan.transactions[0].candidateNonce,
+    'Explicit hashless T01 rejection and matching journal required');
+    for (const step of this.bundle.plan.transactions.slice(1)) {
+      const other = this.#attempt(step.id);
+      need(!other || (typeof other.nonce === 'string' && BigInt(other.nonce) !== BigInt(attempt.nonce)),
+        'Conflicting attempt evidence blocks T01 recovery');
+    }
+    return { attempt, journal };
+  }
+  async inspectT01Recovery(attestation) {
+    this.#recoveryReview = undefined;
+    return this.#run(epoch => this.#exclusive(async () => {
+      need(this.#locks?.request, 'Exclusive browser lock unavailable');
+      need(attestation?.walletActivityChecked === true && attestation.noKnownTransaction === true &&
+        attestation.knownHashes?.length === 0, 'Owner wallet inspection and no known transaction evidence required');
+      const { attempt, journal } = this.#rejectedT01();
+      await this.identity();
+      await this.refreshAuthorization();
+      const original = await this.#recover('T01', journal.entries.T01);
+      this.#assertT01Envelope(original.packet);
+      need(digest(original.packet.tx) === attempt.transactionDigest, 'Rejected transaction binding mismatch');
+      const fresh = await this.#evaluate(this.bundle.plan.transactions[0], epoch);
+      const auth = this.#auth('T01');
+      need(isT01IntentAuthorization(auth) && auth.intentDigest === t01IntentDigest(this.bundle, original.packet) &&
+        auth.intentDigest === t01IntentDigest(this.bundle, fresh.packet), 'Approved durable T01 authorization required');
+      const review = {
+        kind: 'T01_HASHLESS_REJECTION_V1', step: 'T01', chainId: '11155111', owner: this.owner,
+        planDigest: this.#state.planDigest, intentDigest: auth.intentDigest,
+        rejectedAttemptDigest: digest(attempt), rejectedAttempt: attempt, originalJournal: journal,
+        evidence: { snapshot: fresh.review.snapshot, nonce: fresh.packet.tx.nonce,
+          latestNonce: fresh.packet.tx.nonce, pendingNonce: fresh.packet.tx.nonce,
+          token: fresh.packet.tokenReview, packetDigest: digest(fresh.packet), estimate: fresh.review.estimate,
+          walletActivityChecked: true, knownHashes: [], observedAt: this.now() },
+        limitations: 'REJECTED records wallet rejection under the existing runner. No historical error code was separately persisted. Unchanged nonces and wallet Activity cannot prove absence from all transaction pools.',
+      };
+      this.#recoveryReview = { digest: digest(review), epoch, fresh, journalDigest: digest(journal) };
+      return structuredClone({ ...review, recoveryDigest: digest(review) });
+    }));
+  }
+  async approveT01Recovery(displayed, confirmed, event) {
+    return this.#run(epoch => {
+      need(this.#locks?.request, 'Exclusive browser lock unavailable');
+      need(confirmed === true && consumeConfirmationClick(event, 't01-recovery-approve'),
+        'Explicit owner recovery approval through the dedicated button required');
+      return this.#exclusive(async () => {
+        const pending = this.#recoveryReview;
+        this.#recoveryReview = undefined;
+        const { recoveryDigest, ...review } = structuredClone(displayed ?? {});
+        need(pending?.epoch === epoch && pending.digest === recoveryDigest && digest(review) === recoveryDigest,
+          'Recovery review missing, changed or invalidated');
+        const { attempt, journal } = this.#rejectedT01();
+        need(digest(attempt) === review.rejectedAttemptDigest && digest(journal) === pending.journalDigest,
+          'Rejected attempt or journal changed during recovery');
+        await this.refreshAuthorization();
+        const auth = this.#auth('T01');
+        need(isT01IntentAuthorization(auth) && auth.intentDigest === review.intentDigest,
+          'Approved durable T01 authorization required');
+        const fresh = await this.#evaluate(this.bundle.plan.transactions[0], epoch,
+          undefined, undefined, undefined, pending.fresh.packet.tx);
+        need(digest(fresh.packet) === review.evidence.packetDigest && fresh.review.estimate === review.evidence.estimate,
+          'T01 recovery evidence changed; inspect again');
+        // Human approval stays bound to the inspected evidence. Only the new
+        // observation must be recent, but the inspected block must remain canonical.
+        const inspected = await this.read('eth_getBlockByNumber', [review.evidence.snapshot.number, false]);
+        need(headerOK(inspected) && inspected.number === review.evidence.snapshot.number &&
+          inspected.hash === review.evidence.snapshot.hash, 'Inspected recovery block lost canonicality');
+        const [, latest, pendingNonce] = await Promise.all([this.identity(),
+          this.read('eth_getTransactionCount', [this.owner, 'latest']),
+          this.read('eth_getTransactionCount', [this.owner, 'pending'])]);
+        need([latest, pendingNonce].every(n => BigInt(n) === BigInt(attempt.nonce)), 'T01 recovery nonce changed');
+        await this.#checkSnapshotFreshness(fresh.header, epoch, true);
+        const current = this.#rejectedT01();
+        need(digest(current.journal) === pending.journalDigest &&
+          digest(current.attempt) === review.rejectedAttemptDigest, 'Recovery evidence changed during verification');
+        const record = JSON.stringify({ ...review, recoveryDigest });
+        this.#storage.setItem(this.#recoveryKey(), record);
+        need(this.#storage.getItem(this.#recoveryKey()) === record, 'Recovery persistence failed');
+        this.#state.history.push({ kind: 'T01_RECOVERY_APPROVED', recoveryDigest, rejectedAttemptDigest: review.rejectedAttemptDigest });
+        this.#journal.write(this.#state);
+        need(digest(this.#journal.read()) === digest(this.#state), 'Recovery audit persistence failed');
+        this.#recoveryPermission = { digest: recoveryDigest, epoch };
+        this.#validatedIntentReview = undefined;
+        this.#prepared.delete('T01');
+        return { status: 'RECOVERY_APPROVED', recoveryDigest };
+      });
+    });
+  }
   #receiptHash(id, attempt = this.#attempt(id)) {
     const entry = this.#state.entries[id];
     return entry?.receiptHash ?? (entry && attempt?.planDigest === this.#state.planDigest &&
@@ -183,15 +324,35 @@ export class CandidateReview {
     await this.identity();
     return this.#checkSnapshotFreshness(header, epoch);
   }
-  async prepare(stepId) {
+  #t02ReviewedCaps(caps) {
+    const keys = ['gas', 'maxFeePerGas', 'maxPriorityFeePerGas'];
+    need(caps && Object.keys(caps).length === keys.length &&
+      keys.every(key => typeof caps[key] === 'string' && /^(?:[0-9]+|0x[0-9a-f]+)$/i.test(caps[key])),
+    'Explicit T02 gas and fee fields required');
+    const retained = Object.fromEntries(keys.map(key => [key, toQuantity(BigInt(caps[key]))]));
+    const gas = BigInt(retained.gas), fee = BigInt(retained.maxFeePerGas), tip = BigInt(retained.maxPriorityFeePerGas);
+    const { fees } = this.bundle.inputs;
+    need(gas > 0n && gas <= BigInt(fees.maxGasPerStep) && fee > 0n &&
+      fee <= BigInt(fees.maxFeePerGasWei) && tip <= fee && tip <= BigInt(fees.maxPriorityFeePerGasWei) &&
+      gas * fee <= BigInt(fees.maxTotalWei), 'T02 retained envelope exceeds approved ceilings');
+    return retained;
+  }
+  async prepare(stepId, reviewedCaps) {
+    need(reviewedCaps === undefined || stepId === 'T02', 'Retained preparation fields are T02-only');
+    const retained = reviewedCaps === undefined ? undefined : this.#t02ReviewedCaps(reviewedCaps);
     this.#validatedIntentReview = undefined;
     return this.#run(epoch => this.#exclusive(async () => {
       const { plan } = this.bundle;
       const step = plan.transactions.find(s => s.id === stepId);
       need(step?.conditionallyIncluded, 'Step excluded or unknown');
-      need(!this.#storage.getItem(this.#attemptKey(stepId)), 'Prior ' + stepId + ' attempt requires manual reconciliation');
+      need(this.#attemptAvailable(stepId), 'Prior ' + stepId + ' attempt requires manual reconciliation');
       need(!this.#state.entries[stepId]?.receiptHash, 'Existing receipt requires reconciliation');
       await this.identity();
+      if (retained) {
+        await this.refreshAuthorization();
+        need(LIVE_EXECUTION_ALLOWED && this.#auth('T02')?.stage === 'GO' &&
+          this.#auth('T02').planDigest === this.#state.planDigest, 'Exact T02 authorization required for retained preparation');
+      }
       await this.#prerequisites(step);
       if (stepId === 'T03' && !this.#secret) await this.#checkLostCommitment();
       const saved = this.#state.entries[stepId];
@@ -202,8 +363,15 @@ export class CandidateReview {
       const { header, estimate, packet, spec, review } = await this.#evaluate(step, epoch, () => {
         if (stepId === 'T03' && !this.#secret) this.#secret = this.#random(new Uint8Array(32));
         return stepId === 'T03' ? [this.commitmentForReview(this.#revealArgs())] : stepId === 'T04' ? this.#revealArgs() : undefined;
-      });
+      }, undefined, undefined, retained);
+      if (retained) {
+        need(BigInt(retained.gas) === (estimate * BigInt(this.bundle.inputs.fees.gasLimitMultiplierPercent) + 99n) / 100n,
+          'T02 gas estimate changed from reviewed limit; new owner review required');
+        need(this.#matchesAuthorization(this.#auth('T02'), 'T02', packet, { packetDigest: digest(packet) }),
+          'Prepared T02 packet differs from existing authorization; new owner review required');
+      }
       const anchor = { number: header.number, hash: header.hash, estimate: estimate.toString() };
+      if (retained) anchor.reviewedCaps = retained;
       if (stepId === 'T03') this.#storage.setItem(this.#registrationKey, JSON.stringify({
         planDigest: this.#state.planDigest, commitment: spec.args[0],
       }));
@@ -267,19 +435,21 @@ export class CandidateReview {
     const auth = this.#auth(stepId);
     const durable = LIVE_EXECUTION_ALLOWED && stepId === 'T01' && isT01IntentAuthorization(auth) &&
       auth.intentDigest === t01IntentDigest(this.bundle, packet);
-    if (!durable) await this.#fresh(review.snapshot, epoch);
+    const exactT02 = LIVE_EXECUTION_ALLOWED && stepId === 'T02' && this.#matchesAuthorization(auth, stepId, packet, saved);
+    const refreshReviewed = durable || exactT02;
+    if (!refreshReviewed) await this.#fresh(review.snapshot, epoch);
     await this.#prerequisites(step);
     const fresh = await this.#evaluate(step, epoch,
       () => stepId === 'T03' || stepId === 'T04' ? packet.arguments : undefined,
       stepId === 'T08' || stepId === 'T15' ? packet.arguments.at(-1) : undefined,
-      durable ? undefined : review.snapshot, durable ? packet.tx : undefined);
+      refreshReviewed ? undefined : review.snapshot, refreshReviewed ? packet.tx : undefined);
     need(digest(fresh.packet) === saved.packetDigest && fresh.review.estimate === review.estimate,
       stepId + ' state, estimate or fee changed. Prepare a new review.');
-    if (durable && fresh.header.number !== review.snapshot.number) {
+    if (refreshReviewed && fresh.header.number !== review.snapshot.number) {
       // The displayed block still anchors receipt recovery, even after it ages out.
       const anchor = await this.read('eth_getBlockByNumber', [review.snapshot.number, false]);
       need(anchor?.hash === review.snapshot.hash, 'Review block lost canonicality');
-    } else if (durable) {
+    } else if (refreshReviewed) {
       need(fresh.header.hash === review.snapshot.hash, 'Review block lost canonicality');
     }
     const [, latestNonce, pendingNonce] = await Promise.all([
@@ -291,7 +461,7 @@ export class CandidateReview {
       'Wallet context or owner nonce changed during confirmation');
     // Finish wallet and nonce reads before the last chain snapshot check.
     // Submission persists the attempt and calls the wallet without another RPC read.
-    const latest = await this.#checkSnapshotFreshness(durable ? fresh.header : review.snapshot, epoch, durable);
+    const latest = await this.#checkSnapshotFreshness(refreshReviewed ? fresh.header : review.snapshot, epoch, refreshReviewed);
     need(BigInt(packet.tx.maxFeePerGas) >= BigInt(latest.baseFeePerGas) + BigInt(packet.tx.maxPriorityFeePerGas),
       'Base fee moved outside reviewed envelope');
     return { saved, packet, durable };
@@ -351,7 +521,7 @@ export class CandidateReview {
     const tx = structuredClone(packet.tx);
     const persisted = this.#journal.read();
     const entry = persisted?.entries[stepId];
-    need(this.#storage.getItem(this.#attemptKey(stepId)) === JSON.stringify(attempt) &&
+    need(this.#storage.getItem(this.#attemptStorageKey(stepId)) === JSON.stringify(attempt) &&
       attempt.transactionDigest === digest(tx) &&
       persisted?.planDigest === attempt.planDigest && entry?.status === 'REQUESTING' &&
       entry.packetDigest === attempt.packetDigest, 'Durable ' + stepId + ' attempt lock missing or changed');
@@ -385,7 +555,7 @@ export class CandidateReview {
     const saved = this.#state.entries[stepId];
     return Boolean(stepId !== 'T04' && LIVE_EXECUTION_ALLOWED && saved?.status === 'PREPARED' &&
       this.#matchesAuthorization(auth, stepId, this.#prepared.get(stepId)?.packet, saved) &&
-      digest(displayed) === saved.reviewDigest && !this.#storage.getItem(this.#attemptKey(stepId)));
+      digest(displayed) === saved.reviewDigest && this.#attemptAvailable(stepId));
   }
   canSubmitT01(displayed) { return displayed?.step === 'T01' && this.canSubmit(displayed); }
   async submitT01(displayed, confirmed, event) {
@@ -410,14 +580,25 @@ export class CandidateReview {
         });
         authorized();
         for (const prior of this.bundle.plan.transactions) {
+          if (prior.id === 'T01' && stepId === 'T01' && this.#retryAllowed()) continue;
           const outstanding = this.#attempt(prior.id);
           need(!outstanding || BigInt(outstanding.nonce) !== BigInt(packet.tx.nonce),
             'Owner nonce already has a durable attempt for ' + prior.id);
         }
-        const key = this.#attemptKey(stepId);
+        const key = this.#attemptStorageKey(stepId);
         const attempt = { nonce: packet.tx.nonce, planDigest: this.#state.planDigest, packetDigest: saved.packetDigest,
           transactionDigest: digest(packet.tx), status: 'REQUESTING' };
+        if (key === this.#retryKey()) {
+          const recovery = this.#recoveryRecord();
+          attempt.recoveryDigest = recovery.recoveryDigest;
+          attempt.parentAttemptDigest = recovery.rejectedAttemptDigest;
+          attempt.attemptId = digest({ recoveryDigest: recovery.recoveryDigest, transactionDigest: attempt.transactionDigest });
+          this.#recoveryPermission = undefined;
+        }
         this.#storage.setItem(key, JSON.stringify(attempt));
+        if (key === this.#retryKey()) {
+          need(this.#storage.getItem(key) === JSON.stringify(attempt), 'Attempt persistence failed');
+        }
         this.#save(stepId, { ...saved, status: 'REQUESTING' });
         let txHash;
         try {
@@ -520,9 +701,11 @@ export class CandidateReview {
       if (stepId === 'T04') privateArgs = step.candidateArguments.map((value, index) => value ?? privateArgs[index]);
     }
     const spec = await candidateStep(this, step, header, privateArgs, this.#state.entries);
-    const { tx, creation } = this.#envelope(step, header, spec.args);
+    const retained = stepId === 'T02' && anchor.reviewedCaps ? this.#t02ReviewedCaps(anchor.reviewedCaps) : undefined;
+    const { tx, creation } = this.#envelope(step, header, spec.args, retained);
     const estimate = BigInt(anchor.estimate);
-    const gas = (estimate * BigInt(inputs.fees.gasLimitMultiplierPercent) + 99n) / 100n;
+    const gas = retained ? BigInt(retained.gas) :
+      (estimate * BigInt(inputs.fees.gasLimitMultiplierPercent) + 99n) / 100n;
     need(gas >= estimate && gas <= BigInt(inputs.fees.maxGasPerStep) &&
       gas * BigInt(tx.maxFeePerGas) <= BigInt(inputs.fees.maxTotalWei), 'Recovered gas budget exceeds policy');
     tx.gas = toQuantity(gas);
@@ -535,6 +718,18 @@ export class CandidateReview {
     return this.#run(() => this.#exclusive(async () => {
       const step = this.bundle.plan.transactions.find(s => s.id === stepId);
       need(step?.conditionallyIncluded, 'Step excluded or unknown');
+      const original = stepId === 'T01' ? this.#originalAttempt() : null;
+      if (original?.status === 'REJECTED' && !Object.hasOwn(original, 'hash') &&
+          !this.#storage.getItem(this.#retryKey()) && hash(txHash)) {
+        this.#recoveryPermission = undefined;
+        this.#validatedIntentReview = undefined;
+        const key = this.#transactionEvidenceKey();
+        if (!this.#storage.getItem(key)) {
+          this.#storage.setItem(key, JSON.stringify({ hash: txHash, observedAt: this.now() }));
+        }
+        need(this.#storage.getItem(key), 'Transaction evidence persistence failed; stop all deployment tabs');
+        throw new Error('Transaction evidence appeared for rejected T01; manual reconciliation required');
+      }
       await this.#prerequisites(step);
       return this.#verify(stepId, txHash ?? this.#receiptHash(stepId));
     }));
@@ -583,7 +778,7 @@ export class CandidateReview {
       'Reverted transaction differs from reviewed packet');
       await this.identity();
       need(epoch === this.#epoch, 'Wallet context changed');
-      if (attempt) this.#storage.setItem(this.#attemptKey(stepId), JSON.stringify({ ...attempt, hash: txHash, status: 'REVERTED' }));
+      if (attempt) this.#storage.setItem(this.#attemptStorageKey(stepId), JSON.stringify({ ...attempt, hash: txHash, status: 'REVERTED' }));
       this.#save(stepId, { ...saved, status: 'REVERTED', receiptHash: txHash });
       throw new Error(stepId + ' reverted; dependent steps remain blocked');
     }
@@ -604,7 +799,7 @@ export class CandidateReview {
       const costWei = (BigInt(receipt.gasUsed) * BigInt(receipt.effectiveGasPrice)).toString();
       const entry = { ...saved, status: 'CONFIRMED', receiptHash: txHash, evidence: journal.entries[stepId].receiptEvidence,
         bindings: bound.bindings ?? {}, costWei };
-      if (attempt) this.#storage.setItem(this.#attemptKey(stepId), JSON.stringify({ ...attempt, hash: txHash, status: 'CONFIRMED' }));
+      if (attempt) this.#storage.setItem(this.#attemptStorageKey(stepId), JSON.stringify({ ...attempt, hash: txHash, status: 'CONFIRMED' }));
       this.#save(stepId, entry);
       this.#prepared.set(stepId, item);
       if (stepId === 'T04') this.#clearSecret();

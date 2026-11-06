@@ -25,6 +25,7 @@ async function load() {
     return;
   }
   let displayed;
+  let recoveryReview;
   function dashboard() {
     const journal = candidate.journal();
     const ready = plan.transactions.find(step => step.conditionallyIncluded && journal.entries[step.id]?.status !== 'CONFIRMED');
@@ -53,6 +54,10 @@ async function load() {
       return;
     }
     displayed = undefined;
+    recoveryReview = undefined;
+    element('t01-recovery-confirmed').checked = false;
+    element('t01-recovery-confirmed').disabled = true;
+    element('t01-recovery-approve').disabled = true;
     resetConfirmation();
     show('review', 'Wallet context changed. Prepare a new review.');
     dashboard();
@@ -61,6 +66,8 @@ async function load() {
     displayed = undefined;
     resetConfirmation();
     const step = plan.transactions.find(s => s.id === element('step').value);
+    element('t02-reviewed-caps').hidden = step.id !== 'T02';
+    element('t02-retain-caps').checked = false;
     element('hash').value = candidate.journal().entries[step.id]?.receiptHash ?? '';
     show('review', { step: step.id, reviewedArguments: step.arguments, deferred: step.remainingBindings,
       prerequisiteReceipts: plan.transactions.slice(0, plan.transactions.indexOf(step))
@@ -71,6 +78,8 @@ async function load() {
     element('prepare').disabled = true;
     element('receipt').disabled = true;
     element('t01-validate').disabled = true;
+    element('t01-recovery-inspect').disabled = true;
+    element('t01-recovery-approve').disabled = true;
     try { await fn(); }
     catch (error) {
       // Provider errors can include raw input. Candidate errors are reported only as a generic block.
@@ -80,6 +89,8 @@ async function load() {
       element('step').disabled = false;
       element('prepare').disabled = false;
       element('receipt').disabled = false;
+      element('t01-recovery-inspect').disabled = false;
+      element('t01-recovery-approve').disabled = !recoveryReview || !element('t01-recovery-confirmed').checked;
       element('t01-validate').disabled = !displayed || !element('t01-confirmed').checked;
       const current = candidate.journal().entries[displayed?.step];
       if (current && current.status !== 'PREPARED') {
@@ -91,12 +102,47 @@ async function load() {
     }
   }
   element('step').onchange = selected;
+  element('t01-recovery-inspect').onclick = () => action(async () => {
+    recoveryReview = undefined;
+    element('t01-recovery-confirmed').checked = false;
+    element('t01-recovery-confirmed').disabled = true;
+    element('t01-recovery-approve').disabled = true;
+    show('status', 'Checking rejected T01 request and current Sepolia evidence…');
+    recoveryReview = await candidate.inspectT01Recovery({
+      walletActivityChecked: element('t01-recovery-activity').checked,
+      noKnownTransaction: element('t01-recovery-no-transaction').checked,
+      knownHashes: [],
+    });
+    show('t01-recovery-review', recoveryReview);
+    element('t01-recovery-confirmed').disabled = false;
+    show('status', 'Review the recovery digest and limitations, then explicitly approve recovery.');
+  });
+  element('t01-recovery-confirmed').onchange = () => {
+    element('t01-recovery-approve').disabled = !recoveryReview || !element('t01-recovery-confirmed').checked;
+  };
+  element('t01-recovery-approve').onclick = event => action(async () => {
+    element('t01-recovery-approve').disabled = true;
+    const confirmed = element('t01-recovery-confirmed').checked &&
+      element('t01-recovery-activity').checked && element('t01-recovery-no-transaction').checked;
+    element('t01-recovery-confirmed').checked = false;
+    const review = recoveryReview;
+    recoveryReview = undefined;
+    element('t01-recovery-confirmed').disabled = true;
+    await candidate.approveT01Recovery(review, confirmed, event);
+    displayed = undefined;
+    resetConfirmation();
+    show('status', 'T01 recovery approved. Keep this tab open. Prepare a new T01 review and separately confirm its exact envelope.');
+  });
   element('prepare').onclick = () => action(async () => {
     displayed = undefined;
     resetConfirmation();
     const step = element('step').value;
     show('review', 'Checking current prerequisites…');
-    const review = await candidate.prepare(step);
+    const retained = step === 'T02' && element('t02-retain-caps').checked ? {
+      gas: element('t02-gas').value, maxFeePerGas: element('t02-fee').value,
+      maxPriorityFeePerGas: element('t02-tip').value,
+    } : undefined;
+    const review = await candidate.prepare(step, retained);
     if (step === element('step').value) {
       displayed = review;
       show('review', displayed);

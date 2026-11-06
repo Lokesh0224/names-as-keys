@@ -19,6 +19,13 @@
   <section>
     <h2>Current step</h2>
     <label>Step <select id="step"></select></label>
+    <fieldset id="t02-reviewed-caps" hidden>
+      <legend>Previously reviewed T02 envelope</legend>
+      <label>Gas limit <input id="t02-gas" value="155240" readonly></label>
+      <label>Maximum fee (wei/gas) <input id="t02-fee" value="35" readonly></label>
+      <label>Priority fee (wei/gas) <input id="t02-tip" value="1" readonly></label>
+      <label><input id="t02-retain-caps" type="checkbox"> Prepare with these reviewed gas and fee fields. The complete packet must match the existing T02 authorization.</label>
+    </fieldset>
     <button id="prepare" disabled>Prepare unsigned review</button>
     <pre id="review"></pre>
     <fieldset id="t01-confirmation" hidden>
@@ -26,6 +33,16 @@
       <label><input id="t01-confirmed" type="checkbox"> I confirm this step’s displayed sender, destination or CREATE address, arguments, nonce, gas and maximum network fee (reservedWei).</label>
       <button id="t01-validate" type="button" disabled>Revalidate confirmation</button>
     </fieldset>
+  </section>
+  <section>
+    <h2>T01 rejected request recovery</h2>
+    <p>For an explicitly rejected T01 request with no known transaction hash. Recovery permits one linked retry request in this tab after a separate transaction review.</p>
+    <label><input id="t01-recovery-activity" type="checkbox"> I inspected Sepolia wallet Activity.</label>
+    <label><input id="t01-recovery-no-transaction" type="checkbox"> I have no transaction hash or other evidence of a broadcast or pending T01 transaction.</label>
+    <button id="t01-recovery-inspect" type="button">Inspect T01 recovery evidence</button>
+    <pre id="t01-recovery-review"></pre>
+    <label><input id="t01-recovery-confirmed" type="checkbox" disabled> I approve recovery for the displayed digest and acknowledge the evidence limitations. I will separately review and confirm any retry.</label>
+    <button id="t01-recovery-approve" type="button" disabled>Approve T01 recovery</button>
   </section>
   <section>
     <h2>Receipt review</h2>
