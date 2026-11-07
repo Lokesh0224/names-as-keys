@@ -141,5 +141,3 @@ Building or preparing a review is not permission to transact. Live activation re
 - [Guarded deployment runner and operator runbook](contracts/scripts/deployment_workflow)
 - [Deployment manifest](docs/prep/stage3e/deployment-manifest.json) / [ABI inventory](docs/prep/stage3e/abis)
 - [Approved candidate inputs](docs/prep/deployment-candidate/APPROVED_INPUTS.json)
-
-No project-wide license has been selected yet. Preserve the existing third-party notices; the owner should choose a project license before inviting reuse.
