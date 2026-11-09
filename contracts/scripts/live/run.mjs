@@ -152,9 +152,10 @@ export function parseArgs(args) {
     const a=args[i];if(a==='--execute')o.execute=true;
     else if(a==='--allow-mira')o.allowMira=true;
     else if(a==='--status')o.status=true;
-    else if(['--step','--from','--to'].includes(a)){need(args[i+1],'Missing CLI option value');o[a.slice(2)]=args[++i];}
+    else if(['--step','--from','--to','--diagnose'].includes(a)){need(args[i+1],'Missing CLI option value');o[a.slice(2)]=args[++i];}
     else throw new Error('Unknown CLI option');
   }
+  if(o.diagnose){need(args.length===2&&o.diagnose==='T12','Use --diagnose T12 alone; execution options forbidden');return o;}
   if(o.status){need(args.length===1,'--status cannot be combined with other options');return o;}
   need(Boolean(o.step)!==Boolean(o.from),'Use --step or --from/--to');
   need(!o.step||!o.to,'--to requires --from');
@@ -164,6 +165,7 @@ export function parseArgs(args) {
 }
 export async function main(args=process.argv.slice(2),env=process.env,contextOptions={}) {
   const options=parseArgs(args);
+  if(options.diagnose){const {diagnoseT12}=await import('./diagnose.mjs');return diagnoseT12(env,contextOptions);}
   const ctx=await createContext(env,contextOptions);
   try {
     if(options.status)return await status(ctx);
