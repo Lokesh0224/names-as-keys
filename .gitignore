@@ -46,3 +46,11 @@ contracts/scripts/deployment_workflow/step-authorization.json.*
 anvil-state*.json
 **/anvil-state*.json
 docs/local/
+
+# Terminal-only toolkit local secrets, attempts and live evidence
+.live/
+.env
+.env.*
+contracts/scripts/live/node_modules/
+contracts/deployments/sepolia.live.json
+contracts/deployments/live-proof.md
