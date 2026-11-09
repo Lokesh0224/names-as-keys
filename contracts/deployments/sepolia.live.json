@@ -1,0 +1,284 @@
+{
+  "schema": 1,
+  "chainId": "11155111",
+  "owner": "0xF763081Ed25050C5080780d3b203314aaf636462",
+  "guest": "0xbdf9302F7Fdf36E24D282e2664623E01a150D0f6",
+  "root": "nak-lokesh-20261105",
+  "entries": [
+    {
+      "step": "T01",
+      "status": "VERIFIED",
+      "txHash": "0x581127e6418b5b8310caafdd3bbd644fa225f621f0dc4bf79f3fd5d55ca101a1",
+      "blockNumber": 12096217,
+      "blockHash": "0x01af3b8cf978c719d70f52c6a5d0d7cd62c41394c3589fd61279cd39ecbc40f0",
+      "facts": {
+        "base": "8000021",
+        "premium": "0",
+        "price": "8000021",
+        "balance": "0",
+        "allowance": "0"
+      },
+      "derivedAddresses": {},
+      "costWei": "10122408",
+      "envelope": {
+        "nonce": "0",
+        "to": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "dataHash": "0xa5989f9e4647e08e0d1e0313ae7873b98fa50c0a4a74e2b6bb56710225c8ad9f",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T02",
+      "status": "VERIFIED",
+      "txHash": "0x1f0d97a5165b736b42445c1662ab71d4ecad7216f9b1eacb9298891c28b55a50",
+      "blockNumber": 12096220,
+      "blockHash": "0xd57befee28ebc96fb1f0db26612f2e085a406ba6136300b7ad4eae810af7fdd1",
+      "facts": {
+        "base": "8000021",
+        "premium": "0",
+        "price": "8000021",
+        "balance": "8000021",
+        "allowance": "0"
+      },
+      "derivedAddresses": {},
+      "costWei": "9235728",
+      "envelope": {
+        "nonce": "1",
+        "to": "0x240b0316df57887dbbe58b586508b19e633a14aa",
+        "dataHash": "0x579b6e029ca6af6213ee65277ea2a1d8a8689bff67349afa44fd4676a61d00d5",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T03",
+      "status": "VERIFIED",
+      "txHash": "0x03824890406cc465edacd8ae0a2d5c3ba07b25a480f8b857f8daf5dfb4c3a060",
+      "blockNumber": 12096614,
+      "blockHash": "0x8391756799ebb30415237bfab6fac13f416abf84cdfad0e9be08e59bb40f783d",
+      "facts": {
+        "base": "8000021",
+        "premium": "0",
+        "price": "8000021",
+        "balance": "8000021",
+        "allowance": "8000021",
+        "commitment": "0xb79d30ad285282b884cfbb67a042af4c89ad6383822e2d1ff5d484f18b8b004d"
+      },
+      "derivedAddresses": {
+        "commitmentAt": "1794216276",
+        "commitment": "0xb79d30ad285282b884cfbb67a042af4c89ad6383822e2d1ff5d484f18b8b004d"
+      },
+      "costWei": "9303558",
+      "envelope": {
+        "nonce": "2",
+        "to": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "dataHash": "0x5f1633409f0d03ca12b85c394bf4897a3ebd3694981641dc6fee026b02126cca",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T04",
+      "status": "VERIFIED",
+      "txHash": "0xb3099754911adc2adf8eb4b55364edf2e65eb2b15aa562a60c32ca1d4ff9aab9",
+      "blockNumber": 12096627,
+      "blockHash": "0x69e0de45ada67c1f264263dfae7b34c8db8b80d9f32fc11944726cecc09abc23",
+      "facts": {
+        "base": "8000021",
+        "premium": "0",
+        "price": "8000021",
+        "balance": "8000021",
+        "allowance": "8000021",
+        "commitment": "0xb79d30ad285282b884cfbb67a042af4c89ad6383822e2d1ff5d484f18b8b004d"
+      },
+      "derivedAddresses": {
+        "rootTokenId": "80528888745245994281891050364927917536355893854608130930097487246952469889024",
+        "rootResource": "80528888745245994281891050364927917536355893854608130930097487246952469889024",
+        "rootExpiry": "1825752432"
+      },
+      "costWei": "47935231",
+      "envelope": {
+        "nonce": "3",
+        "to": "0xf633e7fc17e2bbe0d0965d18ec1821dcb754a3d3",
+        "dataHash": "0xdece77a92f4ae95dbc6ac5e4adb27a9bc23481f81bd9a0905918727d062bafa4",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T05",
+      "status": "VERIFIED",
+      "txHash": "0xa822a6e17e9695035bb5020b60f252ff0ff4feac68cba51e494ba3c0bd699e49",
+      "blockNumber": 12096640,
+      "blockHash": "0x32757e10c75a8026d14aa737021425fcaa1887f0a6228e341ae26e070e7fe776",
+      "facts": {
+        "salt": "31001"
+      },
+      "derivedAddresses": {
+        "R1": "0xB938622E835762c3fe70147678f57FC96B858611"
+      },
+      "costWei": "65893450",
+      "envelope": {
+        "nonce": "4",
+        "to": "0xda70306c98e97ece36f997a21368e53298572991",
+        "dataHash": "0x4d7a04b13920f1459d74abeded32f986a81ec9bc73f700309eafb1d9cad742d0",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T06",
+      "status": "VERIFIED",
+      "txHash": "0x9782a1f93e3e51f099431a660e9bfda3ed1f6f3dc2aac4ca21e9c6d8bf938c56",
+      "blockNumber": 12096644,
+      "blockHash": "0x57394eb8844aff71aa5f59f1472427c5b285b2996b8cac82aa5fee37ad5940a7",
+      "facts": {},
+      "derivedAddresses": {},
+      "costWei": "10187296",
+      "envelope": {
+        "nonce": "5",
+        "to": "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4",
+        "dataHash": "0x51b5cf85f5d842b566d0a70615a102aef27973d52eb69693c4514f481100419d",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T07",
+      "status": "VERIFIED",
+      "txHash": "0x315bd793e08c3d3c9c2f1a1a5c381374a6bde59e088643909fcb60b65ed9ce92",
+      "blockNumber": 12096648,
+      "blockHash": "0x31b231c891b2519b17b1134c52fec234811345f202f005099d722d623fa6a966",
+      "facts": {},
+      "derivedAddresses": {},
+      "costWei": "18377239",
+      "envelope": {
+        "nonce": "6",
+        "to": "0xB938622E835762c3fe70147678f57FC96B858611",
+        "dataHash": "0x836d176b910e20ce270147ed691b46f40c153138375be00b8b47f54787d08dd8",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T08",
+      "status": "VERIFIED",
+      "txHash": "0x305fb0815a183ddc1889083273eb8e58817e9be8a53b1786fe1911f991f7f1e5",
+      "blockNumber": 12096662,
+      "blockHash": "0xeab6a2c76bef7ecb09e01ab9d2ee24b73b34645aae16d3e2f3b4308bd3dc0c97",
+      "facts": {
+        "expiry": "1801992828"
+      },
+      "derivedAddresses": {
+        "lockTokenId": "44058796675038520504801569636438252801473183425383913991093836489951650250752",
+        "lockResource": "44058796675038520504801569636438252801473183425383913991093836489951650250752",
+        "lockExpiry": "1801992828"
+      },
+      "costWei": "48286800",
+      "envelope": {
+        "nonce": "7",
+        "to": "0xB938622E835762c3fe70147678f57FC96B858611",
+        "dataHash": "0xd3ca28924c4d2a1c841c1d841114cb695f8df49565c8ad7a888ba276c3d9ddf0",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T09",
+      "status": "VERIFIED",
+      "txHash": "0x36dc7ee9d711e1089ea30901975d7e43933534abb6c35633522789563e4fa040",
+      "blockNumber": 12096666,
+      "blockHash": "0xe32ec0f816123ac4951c7d3dabd4807afdbc0694191f771483cca48a911d40de",
+      "facts": {
+        "salt": "31002"
+      },
+      "derivedAddresses": {
+        "R2": "0xB19b8a4B8cb1E612D0964cC46F37589705E06fA9"
+      },
+      "costWei": "71309350",
+      "envelope": {
+        "nonce": "8",
+        "to": "0xda70306c98e97ece36f997a21368e53298572991",
+        "dataHash": "0x74ae2b70ed549978691237ab5349edf29f7bf8a07c62f0eedde1b82ea19dc345",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T10",
+      "status": "VERIFIED",
+      "txHash": "0x2b32cf5c44399ee84fb9e0dc2a8a7ded91b0a98fb6b76d32198747f25310230f",
+      "blockNumber": 12096670,
+      "blockHash": "0x9dafd22423dc2ee2c8dd93e22cac52174b021f81457131a0f8b12079cfbf8c5b",
+      "facts": {},
+      "derivedAddresses": {},
+      "costWei": "11556636",
+      "envelope": {
+        "nonce": "9",
+        "to": "0xB938622E835762c3fe70147678f57FC96B858611",
+        "dataHash": "0xbf70caf378831c8228ac06f53ed5312a3a4605371599a1e90c80404bc3f1ce28",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T11",
+      "status": "VERIFIED",
+      "txHash": "0x416895c1996dd46cf8f88ce72bc4eba6a5b0c51cdd1ac27c6fb287c91bd4d9e3",
+      "blockNumber": 12096681,
+      "blockHash": "0x45235a0f45426554b3532e2082399b119a29b6a594960a19fdf47af654f17587",
+      "facts": {},
+      "derivedAddresses": {},
+      "costWei": "19118788",
+      "envelope": {
+        "nonce": "10",
+        "to": "0xB19b8a4B8cb1E612D0964cC46F37589705E06fA9",
+        "dataHash": "0xa3a678440aea0464820f639ba7dc9df34d2b9b3fdf9e03ee8caf0c0fe79e50b5",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T12",
+      "status": "VERIFIED",
+      "txHash": "0xb4637132fc53a10f8157a012f4aef9ecf28483f1f0328269fa1306a66150a17c",
+      "blockNumber": 12097027,
+      "blockHash": "0x8bb40bcaa349068a3f403eb5d014f93bb08a79c0d81be1b1abf218598b163d59",
+      "facts": {},
+      "derivedAddresses": {
+        "CredentialRegistrar": "0x0437Aa8542EbaE75DE30F029A7fdd79D1245700A"
+      },
+      "costWei": "1062671950",
+      "envelope": {
+        "nonce": "11",
+        "to": null,
+        "dataHash": "0x6f87c95b6e173cbc5ec29762dff873658ebc9b58e9aa08bd78e730b8cc735c2e",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T13",
+      "status": "VERIFIED",
+      "txHash": "0xa7ff9e28223e410dd5c7768c5580dd321626df170cd2e08463f00bec742906c6",
+      "blockNumber": 12097044,
+      "blockHash": "0xab40549d363d1282f8b828741c8c92df4e45fb373de2994307ad95e6df6a330a",
+      "facts": {},
+      "derivedAddresses": {},
+      "costWei": "11192433",
+      "envelope": {
+        "nonce": "12",
+        "to": "0xB19b8a4B8cb1E612D0964cC46F37589705E06fA9",
+        "dataHash": "0x8f625fec0074422262199780504910f656588c17029cfff550b0b4dec4029fa2",
+        "value": "0"
+      }
+    },
+    {
+      "step": "T14",
+      "status": "VERIFIED",
+      "txHash": "0x376d777cc9336686efc6d4b8f5e3d490951f416e1349ca903b790511dcc36806",
+      "blockNumber": 12097578,
+      "blockHash": "0x383d86b6d52907f786847b6c231c8d6030708b4850010ef57d30d6dacfa14397",
+      "facts": {},
+      "derivedAddresses": {
+        "DoorKeys": "0x8f30cff82BD7c12fDb13329A5BdE5c79906Ee57c"
+      },
+      "costWei": "465377380",
+      "envelope": {
+        "nonce": "13",
+        "to": null,
+        "dataHash": "0x0f0920d9cfcb0006c9f831197e708ddaadae10452ae90d96c8e7d2a26894f38a",
+        "value": "0"
+      }
+    }
+  ]
+}
